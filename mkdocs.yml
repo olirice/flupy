@@ -1,0 +1,13 @@
+site_name: chainable
+site_description: Method chaining built on generators
+site_author: Oliver Rice
+repo_url: https://github.com/olirice/chainable
+
+theme: readthedocs
+
+pages:
+- Home: index.md
+- About:
+  - Release Notes: about/changelog.md
+  - Contributing: about/contributing.md
+  - License: about/license.md
