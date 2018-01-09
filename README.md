@@ -1,5 +1,7 @@
 # Chainable
 
+[![CircleCI](https://circleci.com/gh/olirice/chainable/tree/master.svg?style=shield&circle-token=85a918f9c0c015e0d9f747f7c09d808ede0ed488)](https://circleci.com/gh/olirice/chainable/tree/master)
+
 Process big data in python using method chaining built on generators.
 
 ### TL;DR
