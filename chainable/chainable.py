@@ -39,6 +39,8 @@ class Chainable():
         if the iterable is not evenly divisiible by *n*, the final list will be shorter
         """
         def __imp():
+            #TODO(OR): DeprecationWarning PEP 479
+            # Don't manually raise StopIteration within a generator
             while True:
                 out = list(self.take(n))
                 if len(out) > 0:

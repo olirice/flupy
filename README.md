@@ -14,9 +14,9 @@ pipeline = chainable(count()) \
                 .chunk(5) \
                 .take(3)
           
-print(next(pipeline)) # prints [0, 9, 36, 81, 144]
-print(next(pipeline)) # prints [225, 324, 441, 576, 729]
-print(next(pipeline)) # prints [26728900, 32341969, 38489616, 45171841, 52388644]
+print(next(pipeline)) # prints [0, 267289, 1069156, 2405601, 4276624] 
+print(next(pipeline)) # prints [6682225, 9622404, 13097161, 17106496, 21650409] 
+print(next(pipeline)) # prints [26728900, 32341969, 38489616, 45171841, 52388644] 
 print(next(pipeline)) # raises StopIteration
 ```
 
@@ -31,7 +31,7 @@ When working with large data sets, storing intermediate results of ETL pipelines
 
 ### Requirements
 
-* Python 3.6+
+* Python 3.5+
 
 ### Installation
 
