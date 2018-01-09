@@ -1,0 +1,24 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.1
+      
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Run Tests
+      - run:
+          name: run tests
+          command: python3 -m unittest
+
+      - store_artifacts:
+          path: test-reports
+          destination: test-reports
+          
