@@ -54,16 +54,11 @@ setuptools.setup(
 
     packages=setuptools.find_packages(),
 
-    entry_points={'console_scripts': [
-        'chainable-cli = chainable.cli:main',
-        'chainable-gui = chainable.gui:main',
-    ]},
-
     long_description=build_description(),
     license='MIT',
     classifiers=[
         # TODO: update this list to match your application: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 1 - Planning',
+        'Development Status :: 4 - Beta'
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',

@@ -1,4 +1,4 @@
-from typing import Iterable, Callable
+from typing import Iterable, Callable, Type
 from itertools import islice
 
 __all__ = [
@@ -48,6 +48,37 @@ class Chainable():
                 else:
                     raise StopIteration
         return Chainable(__imp())
+
+    def flatten(self, depth: int=1, base_type: Type=None, iterate_strings=False):
+        """Recursively flatten nested iterables (e.g., a list of lists of tuples)
+        into non-iterable type or an optional user-defined base_type
+
+        Strings are treated as non-iterable for convenience. set iterate_string=True
+        to change that behavior.
+        """
+        def walk(node, level):
+            if (
+                ((depth is not None) and (level > depth)) or
+                # TODO(OR): Not python2 compatible
+                (isinstance(node, str) and not iterate_strings) or
+                ((base_type is not None) and isinstance(node, base_type))
+            ):
+                yield node
+                return
+
+            try:
+                tree = iter(node)
+            except TypeError:
+                yield node
+                return
+            else:
+                for child in tree:
+                    for x in walk(child, level + 1):
+                        yield x
+
+        return Chainable(walk(self, level=0))
+
+
 
     def __iter__(self):
          return self

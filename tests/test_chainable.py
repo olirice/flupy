@@ -1,4 +1,5 @@
 import unittest
+import sys
 from itertools import count
 from chainable import chainable
 
@@ -40,6 +41,33 @@ class TestChainable(unittest.TestCase):
                 .chunk(5) \
                 .take(3)
         assert next(gen) == [0, 267289, 1069156, 2405601, 4276624] 
+
+    def test_flatten(self):
+        nested = [1, [2, (3, [4])], ['rbsd', 'abc'], (7,)]
+
+        # Defaults with depth of 1
+        gen = chainable(nested).flatten()
+        assert [x for x in gen] == [1, 2, (3, [4]), 'rbsd', 'abc', 7]
+
+        # Depth 2
+        gen = chainable(nested).flatten(depth=2)
+        assert [x for x in gen] == [1, 2, 3, [4], 'rbsd', 'abc', 7] 
+        
+        # Depth 3
+        gen = chainable(nested).flatten(depth=3)
+        assert [x for x in gen] == [1, 2, 3, 4, 'rbsd', 'abc', 7]
+
+        # Depth infinite
+        gen = chainable(nested).flatten(depth=sys.maxsize)
+        assert [x for x in gen] == [1, 2, 3, 4, 'rbsd', 'abc', 7]
+
+        # Depth 2 with tuple base_type
+        gen = chainable(nested).flatten(depth=2, base_type=tuple)
+        assert [x for x in gen] == [1, 2, (3, [4]), 'rbsd', 'abc', (7,)]
+
+        # Depth 2 with iterate strings 
+        gen = chainable(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
+        assert [x for x in gen] == [1, 2, (3, [4]), 'r', 'b', 's', 'd', 'a', 'b', 'c', (7,)]
 
 
 if __name__ == '__main__':
