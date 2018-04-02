@@ -57,8 +57,7 @@ setuptools.setup(
     long_description=build_description(),
     license='MIT',
     classifiers=[
-        # TODO: update this list to match your application: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 4 - Beta'
+        'Development Status :: 4 - Beta',
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
@@ -66,7 +65,4 @@ setuptools.setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-
-    install_requires=[
-    ]
 )
