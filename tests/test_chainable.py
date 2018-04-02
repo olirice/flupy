@@ -2,7 +2,7 @@ import unittest
 import sys
 from itertools import count
 from chainable import chainable
-
+import chainable as cha
 
 class TestChainable(unittest.TestCase):
 
@@ -13,23 +13,19 @@ class TestChainable(unittest.TestCase):
  
     def test_map(self):
         gen = chainable(range(3)).map(lambda x: x+2)
-        collected = [x for x in gen]
-        assert collected == [2, 3, 4]
+        assert gen.collect() == [2, 3, 4]
 
     def test_filter(self):
         gen = chainable(range(3)).filter(lambda x: 0 < x < 2)
-        collected = [x for x in gen]
-        assert collected == [1]
+        assert gen.collect() == [1]
 
     def test_take(self):
         gen = chainable(range(10)).take(5)
-        collected = [x for x in gen]
-        assert collected == [0, 1, 2, 3, 4]
+        assert gen.collect() == [0, 1, 2, 3, 4]
 
     def test_chunk(self):
         gen = chainable(range(5)).chunk(2)
-        collected = [x for x in gen]
-        assert collected == [[0, 1], [2, 3], [4]]
+        assert gen.collect() == [[0, 1], [2, 3], [4]]
 
     def test_next(self):
         gen = chainable(range(5))
