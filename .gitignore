@@ -10,6 +10,12 @@ __pycache__
 # Temporary OS files
 Icon*
 
+# Pytest cache
+.pytest_cache/*
+
+# Virtual environment
+venv/*
+
 # Temporary virtual environment files
 /.cache/
 /.venv/
