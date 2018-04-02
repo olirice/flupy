@@ -7,11 +7,20 @@ Process big data in python using method chaining built on generators.
 ## Overview
 chainable implements a 'Chainable' class that enables stringing multiple methods together on a single line. All chainable methods return generators and are evaluated lazily in 'depth-first' order.
 
+## Setup
+
+### Requirements
+
+* Python 3.5+
+
+### Installation
+
+Install chainable with pip:
 ```sh
 $ pip install chainable
 ```
 
-###  
+### Usage
 ```python
 from itertools import count
 from chainable import chainable
@@ -31,15 +40,3 @@ print(next(pipeline)) # raises StopIteration
 
 ### y tho
 When working with large data sets, storing intermediate results of ETL pipelines consume unnecessary memory. A depth-first generator pipline minimize the memory required to process records so the entire dataset doesn't need to fit in-memory.
-
-
-## Setup
-
-### Requirements
-
-* Python 3.5+
-
-### Installation
-
-Install chainable with pip:
-
