@@ -11,6 +11,18 @@ class TestChainable(unittest.TestCase):
         assert chainable(range(3)).collect(container_type=tuple) == (0, 1, 2)
         assert chainable(range(3)).collect(n=2) == [0, 1]
  
+    def test_sum(self):
+        gen = chainable(range(3))
+        assert gen.sum() == 3
+
+    def test_min(self):
+        gen = chainable(range(3))
+        assert gen.min() == 0
+
+    def test_max(self):
+        gen = chainable(range(3))
+        assert gen.max() == 2
+
     def test_map(self):
         gen = chainable(range(3)).map(lambda x: x+2)
         assert gen.collect() == [2, 3, 4]

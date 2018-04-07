@@ -13,6 +13,7 @@ class Chainable():
     def __init__(self, iterable: Iterable):
         self._iterable = iter(iterable)
 
+    ### Summary ###
     def collect(self, n: int=None, container_type: Collection=list):
         """Returns *n* values from iterable as type *container_type*
 
@@ -20,6 +21,19 @@ class Chainable():
         for chainable equivalent
         """
         return container_type(v for v in self.take(n))
+
+    def sum(self):
+        """Sum of elements in the iterable"""
+        return sum(self)
+
+    def min(self):
+        """Smallest element in the interable"""
+        return min(self)
+
+    def max(self):
+        """Largest element in the interable"""
+        return max(self)
+    ### End Summary ###
 
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable"""
