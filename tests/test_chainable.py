@@ -1,6 +1,6 @@
 import unittest
 import sys
-from itertools import count
+from itertools import count, cycle
 from chainable import chainable
 import chainable as cha
 
@@ -34,6 +34,14 @@ class TestChainable(unittest.TestCase):
     def test_take(self):
         gen = chainable(range(10)).take(5)
         assert gen.collect() == [0, 1, 2, 3, 4]
+
+    def test_takewhile(self):
+        gen = chainable(cycle(range(10))).takewhile(lambda x: x < 4) 
+        assert gen.collect() == [0, 1, 2, 3]
+
+    def test_dropwhile(self):
+        gen = chainable([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
+        assert gen.collect() == [4, 3, 2, 1]
 
     def test_chunk(self):
         gen = chainable(range(5)).chunk(2)

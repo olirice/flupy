@@ -1,6 +1,6 @@
 from collections import deque
 from typing import Callable, Collection, Iterable, Type 
-from itertools import islice, zip_longest
+from itertools import islice, zip_longest, takewhile, dropwhile
 
 __all__ = [
     'chainable'
@@ -60,12 +60,19 @@ class Chainable():
         is a count from initial value *start*."""
         return Chainable(enumerate(self, start=start))
 
-
     def take(self, n: int):
         """Yield first *n* items of the iterable"""
         def __imp():
             return islice(self._iterable, n)
         return Chainable(__imp())
+
+    def takewhile(self, predicate: Callable):
+        """Yield elements from the chainable so long as the predicate is true"""
+        return Chainable(takewhile(predicate, self._iterable))
+
+    def dropwhile(self, predicate: Callable):
+        """Drop elements from the chainable as long as the predicate is true; afterwards, return every element"""
+        return Chainable(dropwhile(predicate, self._iterable))
 
     def chunk(self, n: int):
         """Yield lists of elements from iterable in groups of *n*
