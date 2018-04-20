@@ -1,6 +1,6 @@
 from collections import deque
-from typing import Callable, Collection, Iterable, Type 
-from itertools import islice, zip_longest, takewhile, dropwhile
+from typing import Callable, Collection, Iterable, Type
+from itertools import islice, takewhile, dropwhile, groupby
 
 __all__ = [
     'chainable'
@@ -12,6 +12,16 @@ class Chainable():
 
     def __init__(self, iterable: Iterable):
         self._iterable = iter(iterable)
+
+    def __getitem__(self, key):
+        """asdf"""
+        if isinstance(key, int) and key >= 0:
+            return Chainable(islice(self._iterable, key, key + 1))
+        elif isinstance(key, slice):
+            return Chainable(islice(self._iterable, key.start, key.stop, key.step))
+        else:
+            raise KeyError("Key must be non-negative integer or slice, not {}"
+                           .format(key))
 
     ### Summary ###
     def collect(self, n: int=None, container_type: Collection=list):
@@ -38,24 +48,24 @@ class Chainable():
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable"""
         def __imp():
-            for v in self._iterable:
-                yield func(v, *args, **kwargs)
+            for val in self._iterable:
+                yield func(val, *args, **kwargs)
         return Chainable(__imp())
 
     def filter(self, func: Callable, *args, **kwargs):
         """Yield elements of iterable where *func* returns truthy"""
         def __imp():
-            for v in self._iterable:
-                if func(v, *args, **kwargs):
-                    yield v
+            for val in self._iterable:
+                if func(val, *args, **kwargs):
+                    yield val
         return Chainable(__imp())
 
     def zip(self, iterable: Iterable):
-        """Yields tuples containing the i-th element from the i-th 
+        """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable"""
         return Chainable(zip(self, iterable))
 
-    def enumerate(self, start: int=0):
+    def enumerate(self, start: int = 0):
         """Yields tuples from the chainable where the first element
         is a count from initial value *start*."""
         return Chainable(enumerate(self, start=start))
@@ -71,8 +81,14 @@ class Chainable():
         return Chainable(takewhile(predicate, self._iterable))
 
     def dropwhile(self, predicate: Callable):
-        """Drop elements from the chainable as long as the predicate is true; afterwards, return every element"""
+        """Drop elements from the chainable as long as the predicate is true;
+        afterwards, return every element"""
         return Chainable(dropwhile(predicate, self._iterable))
+
+    def groupby(self, key=lambda x: x):
+        """Yield consecutive keys and groups from the iterable. Key defaults to identify function
+        Iterable must be sorted on the sme key function"""
+        return Chainable(groupby(self._iterable, key)).map(lambda x: (x[0], Chainable(x[1])))
 
     def chunk(self, n: int):
         """Yield lists of elements from iterable in groups of *n*
@@ -80,17 +96,15 @@ class Chainable():
         if the iterable is not evenly divisiible by *n*, the final list will be shorter
         """
         def __imp():
-            #TODO(OR): DeprecationWarning PEP 479
-            # Don't manually raise StopIteration within a generator
             while True:
                 out = list(self.take(n))
-                if len(out) > 0:
+                if out:
                     yield out
                 else:
-                    raise StopIteration
+                    return
         return Chainable(__imp())
 
-    def flatten(self, depth: int=1, base_type: Type=None, iterate_strings=False):
+    def flatten(self, depth: int = 1, base_type: Type = None, iterate_strings=False):
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
         into non-iterable type or an optional user-defined base_type
 
@@ -100,13 +114,11 @@ class Chainable():
         def walk(node, level):
             if (
                 ((depth is not None) and (level > depth)) or
-                # TODO(OR): Not python2 compatible
-                (isinstance(node, str) and not iterate_strings) or
-                ((base_type is not None) and isinstance(node, base_type))
+                    (isinstance(node, str) and not iterate_strings) or
+                    ((base_type is not None) and isinstance(node, base_type))
             ):
                 yield node
                 return
-
             try:
                 tree = iter(node)
             except TypeError:
@@ -114,8 +126,8 @@ class Chainable():
                 return
             else:
                 for child in tree:
-                    for x in walk(child, level + 1):
-                        yield x
+                    for val in walk(child, level + 1):
+                        yield val
 
         return Chainable(walk(self, level=0))
 
@@ -124,7 +136,7 @@ class Chainable():
 
         Each window will advance in increments of *step*:
 
-        If the length of the iterable does not evenly divide by the *step* 
+        If the length of the iterable does not evenly divide by the *step*
         the final output is padded with *fill_value*
         """
         def _imp():
@@ -162,11 +174,10 @@ class Chainable():
         return Chainable(_imp())
 
     def __iter__(self):
-         return self
+        return self
 
     def __next__(self):
         return next(self._iterable)
 
 def chainable(iterable: Iterable) -> Chainable:
     return Chainable(iterable)
-

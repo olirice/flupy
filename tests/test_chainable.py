@@ -42,6 +42,24 @@ class TestChainable(unittest.TestCase):
     def test_dropwhile(self):
         gen = chainable([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
         assert gen.collect() == [4, 3, 2, 1]
+        
+    def test_groupby(self):
+        gen = chainable([1, 1, 1, 2, 2, 2, 2, 3]).zip(range(100)).groupby(lambda x: x[0]) 
+        g1, g2, g3 = gen.map(lambda x: (x[0], x[1].collect())).collect()
+        # Standard usage
+        assert g1 == (1, [(1, 0), (1, 1), (1, 2)])
+        assert g2 == (2, [(2, 3), (2, 4), (2, 5), (2, 6)])
+        assert g3 == (3, [(3, 7)])
+        # No param usage
+        v1 = chainable(range(10)).groupby().map(lambda x: (x[0], list(x[1])))
+        v2 = chainable(range(10)).map(lambda x: (x, [x]))
+        assert v1.collect() == v2.collect()
+
+
+
+    def test_slice(self):
+        gen = chainable([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
+        assert gen.collect() == [4, 3, 2, 1]
 
     def test_chunk(self):
         gen = chainable(range(5)).chunk(2)
