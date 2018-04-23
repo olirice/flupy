@@ -53,6 +53,11 @@ setuptools.setup(
     author_email='oliver@oliverrice.com',
 
     packages=setuptools.find_packages(),
+    entry_points={
+        'console_scripts': [
+            'chainable = chainable.cli:main',
+            ]
+        },
 
     long_description=build_description(),
     license='MIT',
