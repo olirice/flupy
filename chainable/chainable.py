@@ -1,6 +1,6 @@
 from collections import deque
 from typing import Callable, Collection, Iterable, Type
-from itertools import islice, takewhile, dropwhile, groupby
+from itertools import islice, takewhile, dropwhile, groupby, zip_longest
 
 __all__ = [
     'chainable'
@@ -64,6 +64,14 @@ class Chainable():
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable"""
         return Chainable(zip(self, iterable))
+
+    def zip_longest(self, iterable: Iterable, fillvalue=None):
+        """Yields tuples containing the i-th element from the i-th
+        argument in the chainable, and the iterable
+        Iteration continues until the longest iterable is exhaused.
+        If iterables are uneven in length, missing values are filled in with fillvalue
+        """
+        return Chainable(zip_longest(self, iterable, fillvalue=fillvalue))
 
     def enumerate(self, start: int = 0):
         """Yields tuples from the chainable where the first element

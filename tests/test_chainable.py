@@ -55,8 +55,6 @@ class TestChainable(unittest.TestCase):
         v2 = chainable(range(10)).map(lambda x: (x, [x]))
         assert v1.collect() == v2.collect()
 
-
-
     def test_slice(self):
         gen = chainable([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
         assert gen.collect() == [4, 3, 2, 1]
@@ -85,7 +83,13 @@ class TestChainable(unittest.TestCase):
     def test_zip(self):
         gen = chainable(range(3)).zip(range(3))
         assert gen.collect() == [(0, 0), (1, 1), (2, 2)]
-    
+
+    def test_zip_longest(self):
+        gen = chainable(range(3)).zip_longest(range(5))
+        assert gen.collect() == [(0, 0), (1, 1), (2, 2), (None, 3), (None, 4)]
+        gen = chainable(range(3)).zip_longest(range(5), fillvalue='a')
+        assert gen.collect() == [(0, 0), (1, 1), (2, 2), ('a', 3), ('a', 4)]
+
     def test_window(self):
         # Check default
         gen = chainable(range(5)).window(n=3)
