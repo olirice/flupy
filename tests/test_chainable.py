@@ -15,6 +15,10 @@ class TestChainable(unittest.TestCase):
         gen = chainable(range(3))
         assert gen.sum() == 3
 
+    def test_count(self):
+        gen = chainable(range(3))
+        assert gen.count() == 3
+
     def test_min(self):
         gen = chainable(range(3))
         assert gen.min() == 0
@@ -26,6 +30,18 @@ class TestChainable(unittest.TestCase):
     def test_map(self):
         gen = chainable(range(3)).map(lambda x: x+2)
         assert gen.collect() == [2, 3, 4]
+
+    def test_map_item(self):
+        gen = chainable(range(3)).map(lambda x: {'a': x}).map_item('a')
+        assert gen.collect() == [0, 1, 2]
+
+    def test_map_attr(self):
+        class Person:
+            def __init__(self, age: int):
+                self.age = age
+
+        gen = chainable(range(3)).map(lambda x: Person(x)).map_attr('age')
+        assert gen.collect() == [0, 1, 2]
 
     def test_filter(self):
         gen = chainable(range(3)).filter(lambda x: 0 < x < 2)

@@ -1,6 +1,6 @@
 from collections import deque
-from typing import Callable, Collection, Iterable, Type, Hashable
-from itertools import islice, takewhile, dropwhile, groupby, zip_longest
+from typing import Callable, Collection, Iterable, Type
+from itertools import islice, takewhile, dropwhile, groupby
 
 __all__ = [
     'chainable'
@@ -24,7 +24,7 @@ class Chainable():
                            .format(key))
 
     ### Summary ###
-    def collect(self, n: int= None, container_type: Collection= list):
+    def collect(self, n: int=None, container_type: Collection=list):
         """Returns *n* values from iterable as type *container_type*
 
         NOTE: Chainable.collect is not chainable. See Chainable.take
@@ -35,11 +35,6 @@ class Chainable():
     def sum(self):
         """Sum of elements in the iterable"""
         return sum(self)
-
-    def count(self):
-        """Count of elements in the iterable"""
-        return sum(1 for _ in self)
-
 
     def min(self):
         """Smallest element in the interable"""
@@ -57,14 +52,6 @@ class Chainable():
                 yield func(val, *args, **kwargs)
         return Chainable(__imp())
 
-    def map_item(self, item):
-        """Extracts *item* from every element of the iterable"""
-        return self.map(lambda x: x[item])
-
-    def map_attr(self, attr):
-        """Extracts the attribute *attr* from each element of the iterable"""
-        return self.map(lambda x: getattr(x, attr))
-
     def filter(self, func: Callable, *args, **kwargs):
         """Yield elements of iterable where *func* returns truthy"""
         def __imp():
@@ -77,14 +64,6 @@ class Chainable():
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable"""
         return Chainable(zip(self, iterable))
-
-    def zip_longest(self, iterable: Iterable, fillvalue=None):
-        """Yields tuples containing the i-th element from the i-th
-        argument in the chainable, and the iterable
-        Iteration continues until the longest iterable is exhaused.
-        If iterables are uneven in length, missing values are filled in with fillvalue
-        """
-        return Chainable(zip_longest(self, iterable, fillvalue=fillvalue))
 
     def enumerate(self, start: int = 0):
         """Yields tuples from the chainable where the first element
@@ -202,10 +181,3 @@ class Chainable():
 
 def chainable(iterable: Iterable) -> Chainable:
     return Chainable(iterable)
-
-
-def map_item(iterable: Iterable, item: Hashable) -> Chainable:
-    return Chainable(iterable).map_item(item)
-
-def map_attr(iterable: Iterable, attr: str) -> Chainable:
-    return Chainable(iterable).map_attr(attr)
