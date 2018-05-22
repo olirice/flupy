@@ -27,6 +27,10 @@ class TestChainable(unittest.TestCase):
         gen = chainable(range(3))
         assert gen.max() == 2
 
+    def test_sort(self):
+        gen = chainable(range(3, 0, -1)).sort()
+        assert gen.collect() == [1, 2, 3]
+
     def test_map(self):
         gen = chainable(range(3)).map(lambda x: x+2)
         assert gen.collect() == [2, 3, 4]

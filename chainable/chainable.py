@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Callable, Collection, Iterable, Type, Hashable
+from typing import Callable, Collection, Iterable, Type, Hashable, Optional
 from itertools import islice, takewhile, dropwhile, groupby, zip_longest
 
 __all__ = [
@@ -40,7 +40,6 @@ class Chainable():
         """Count of elements in the iterable"""
         return sum(1 for _ in self)
 
-
     def min(self):
         """Smallest element in the interable"""
         return min(self)
@@ -49,6 +48,15 @@ class Chainable():
         """Largest element in the interable"""
         return max(self)
     ### End Summary ###
+
+    ### Non-Constant Memory
+    def sort(self, key: Optional[Callable] = None, reverse=False):
+        """Sort iterable by *key* function if provided or identity otherwise
+
+        WARNING: sorting loads the entire iterable into memory
+        """
+        return Chainable(sorted(self, key=key, reverse=reverse))
+    ### End Non-Constant Memory
 
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable"""
@@ -202,7 +210,6 @@ class Chainable():
 
 def chainable(iterable: Iterable) -> Chainable:
     return Chainable(iterable)
-
 
 def map_item(iterable: Iterable, item: Hashable) -> Chainable:
     return Chainable(iterable).map_item(item)
