@@ -13,12 +13,12 @@ def main():
         sys.stdout.write("Call chainable with 1 argument, a pipeline", flush=True)
         sys.exit()
 
-    _ = chainable(sys.stdin)
+    _ = chainable(sys.stdin).map(str.rstrip)
 
     pipeline = eval(sys.argv[1])
 
     if hasattr(pipeline, '__iter__'):
         for r in pipeline:
-            sys.stdout.write(str(r) + '\n' + '\0')
+            sys.stdout.write(str(r) + '\n')
     else:
-        sys.stdout.write(str(pipeline) + '\n' + '\0')
+        sys.stdout.write(str(pipeline) + '\n')
