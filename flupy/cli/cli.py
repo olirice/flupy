@@ -1,8 +1,17 @@
+import importlib
 import sys
 
 from signal import signal, SIGPIPE, SIG_DFL
 
-from chainable import chainable
+from flupy import flu 
+from flupy.cli.utils import LazyObject
+
+
+lazy_modules = ['json', 'os', 'csv', 're', 'math', 'random', 'statistics']
+for module in lazy_modules:
+    locals()[module] = LazyObject(load=lambda : importlib.import_module('os'),
+                                  ctx=globals(),
+                                  name='os')
 
 
 def main():
@@ -13,7 +22,7 @@ def main():
         sys.stdout.write("Call chainable with 1 argument, a pipeline", flush=True)
         sys.exit()
 
-    _ = chainable(sys.stdin).map(str.rstrip)
+    _ = flu(sys.stdin).map(str.rstrip)
 
     pipeline = eval(sys.argv[1])
 

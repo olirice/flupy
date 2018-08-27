@@ -3,11 +3,11 @@ from typing import Callable, Collection, Iterable, Type, Hashable, Optional
 from itertools import islice, takewhile, dropwhile, groupby, zip_longest
 
 __all__ = [
-    'chainable'
+    'flu'
 ]
 
 
-class Chainable():
+class Fluent():
     """Enables chaining of generator producing functions"""
 
     def __init__(self, iterable: Iterable):
@@ -16,9 +16,9 @@ class Chainable():
     def __getitem__(self, key):
         """asdf"""
         if isinstance(key, int) and key >= 0:
-            return Chainable(islice(self._iterable, key, key + 1))
+            return Fluent(islice(self._iterable, key, key + 1))
         elif isinstance(key, slice):
-            return Chainable(islice(self._iterable, key.start, key.stop, key.step))
+            return Fluent(islice(self._iterable, key.start, key.stop, key.step))
         else:
             raise KeyError("Key must be non-negative integer or slice, not {}"
                            .format(key))
@@ -27,7 +27,7 @@ class Chainable():
     def collect(self, n: int= None, container_type: Collection= list):
         """Returns *n* values from iterable as type *container_type*
 
-        NOTE: Chainable.collect is not chainable. See Chainable.take
+        NOTE: Fluent.collect is not chainable. See Fluent.take
         for chainable equivalent
         """
         return container_type(v for v in self.take(n))
@@ -55,7 +55,7 @@ class Chainable():
 
         WARNING: sorting loads the entire iterable into memory
         """
-        return Chainable(sorted(self, key=key, reverse=reverse))
+        return Fluent(sorted(self, key=key, reverse=reverse))
     ### End Non-Constant Memory
 
     def map(self, func: Callable, *args, **kwargs):
@@ -63,7 +63,7 @@ class Chainable():
         def __imp():
             for val in self._iterable:
                 yield func(val, *args, **kwargs)
-        return Chainable(__imp())
+        return Fluent(__imp())
 
     def map_item(self, item):
         """Extracts *item* from every element of the iterable"""
@@ -79,12 +79,12 @@ class Chainable():
             for val in self._iterable:
                 if func(val, *args, **kwargs):
                     yield val
-        return Chainable(__imp())
+        return Fluent(__imp())
 
     def zip(self, iterable: Iterable):
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable"""
-        return Chainable(zip(self, iterable))
+        return Fluent(zip(self, iterable))
 
     def zip_longest(self, iterable: Iterable, fillvalue=None):
         """Yields tuples containing the i-th element from the i-th
@@ -92,32 +92,32 @@ class Chainable():
         Iteration continues until the longest iterable is exhaused.
         If iterables are uneven in length, missing values are filled in with fillvalue
         """
-        return Chainable(zip_longest(self, iterable, fillvalue=fillvalue))
+        return Fluent(zip_longest(self, iterable, fillvalue=fillvalue))
 
     def enumerate(self, start: int = 0):
         """Yields tuples from the chainable where the first element
         is a count from initial value *start*."""
-        return Chainable(enumerate(self, start=start))
+        return Fluent(enumerate(self, start=start))
 
     def take(self, n: int):
         """Yield first *n* items of the iterable"""
         def __imp():
             return islice(self._iterable, n)
-        return Chainable(__imp())
+        return Fluent(__imp())
 
     def takewhile(self, predicate: Callable):
         """Yield elements from the chainable so long as the predicate is true"""
-        return Chainable(takewhile(predicate, self._iterable))
+        return Fluent(takewhile(predicate, self._iterable))
 
     def dropwhile(self, predicate: Callable):
         """Drop elements from the chainable as long as the predicate is true;
         afterwards, return every element"""
-        return Chainable(dropwhile(predicate, self._iterable))
+        return Fluent(dropwhile(predicate, self._iterable))
 
     def groupby(self, key=lambda x: x):
         """Yield consecutive keys and groups from the iterable. Key defaults to identify function
         Iterable must be sorted on the sme key function"""
-        return Chainable(groupby(self._iterable, key)).map(lambda x: (x[0], Chainable(x[1])))
+        return Fluent(groupby(self._iterable, key)).map(lambda x: (x[0], Fluent(x[1])))
 
     def chunk(self, n: int):
         """Yield lists of elements from iterable in groups of *n*
@@ -131,7 +131,7 @@ class Chainable():
                     yield out
                 else:
                     return
-        return Chainable(__imp())
+        return Fluent(__imp())
 
     def flatten(self, depth: int = 1, base_type: Type = None, iterate_strings=False):
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
@@ -158,7 +158,7 @@ class Chainable():
                     for val in walk(child, level + 1):
                         yield val
 
-        return Chainable(walk(self, level=0))
+        return Fluent(walk(self, level=0))
 
     def window(self, n: int, step: int=1, fill_value: object=None):
         """Yield a sliding window of width *n* over the given iterable.
@@ -200,7 +200,7 @@ class Chainable():
                     append(fill_value)
                 yield tuple(window)
 
-        return Chainable(_imp())
+        return Fluent(_imp())
 
     def __iter__(self):
         return self
@@ -208,11 +208,11 @@ class Chainable():
     def __next__(self):
         return next(self._iterable)
 
-def chainable(iterable: Iterable) -> Chainable:
-    return Chainable(iterable)
+def flu(iterable: Iterable) -> Fluent:
+    return Fluent(iterable)
 
-def map_item(iterable: Iterable, item: Hashable) -> Chainable:
-    return Chainable(iterable).map_item(item)
+def map_item(iterable: Iterable, item: Hashable) -> Fluent:
+    return Fluent(iterable).map_item(item)
 
-def map_attr(iterable: Iterable, attr: str) -> Chainable:
-    return Chainable(iterable).map_attr(attr)
+def map_attr(iterable: Iterable, attr: str) -> Fluent:
+    return Fluent(iterable).map_attr(attr)

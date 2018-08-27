@@ -8,7 +8,7 @@ import logging
 import setuptools
 
 
-PACKAGE_NAME = 'chainable'
+PACKAGE_NAME = 'flupy'
 MINIMUM_PYTHON_VERSION = '3.5'
 
 
@@ -48,14 +48,14 @@ setuptools.setup(
     version=read_package_variable('__version__'),
 
     description="Method chaining built on generators",
-    url='https://github.com/olirice/chainable',
+    url='https://github.com/olirice/flupy',
     author='Oliver Rice',
     author_email='oliver@oliverrice.com',
 
     packages=setuptools.find_packages(),
     entry_points={
         'console_scripts': [
-            'chainable = chainable.cli:main',
+            'flu = flupy.cli.cli:main',
             ]
         },
 
