@@ -3,7 +3,7 @@ import sys
 
 from signal import signal, SIGPIPE, SIG_DFL
 
-from flupy import flu 
+from flupy import flu
 from flupy.cli.utils import LazyObject
 
 
@@ -13,18 +13,31 @@ for module in lazy_modules:
                                   ctx=globals(),
                                   name='os')
 
+def read_file(filename):
+    with open(filename, 'r') as f:
+        yield from f
+
+
+import argparse
+parser = argparse.ArgumentParser(description='flupy: a fluent interface for python')
+parser.add_argument('command', help='flupy command to execute on input')
+parser.add_argument('-f', '--file', help='path to input file')
+
 
 def main():
-    # Do not raise exception for Broken Pipe
-    signal(SIGPIPE, SIG_DFL)
+    args = parser.parse_args()
 
-    if len(sys.argv) > 2:
-        sys.stdout.write("Call chainable with 1 argument, a pipeline", flush=True)
-        sys.exit()
+    _command = args.command
+    _file = args.file
 
-    _ = flu(sys.stdin).map(str.rstrip)
+    if _file:
+        _ = flu(read_file(_file)).map(str.rstrip)
+    else: 
+        # Do not raise exception for Broken Pipe
+        signal(SIGPIPE, SIG_DFL)
+        _ = flu(sys.stdin).map(str.rstrip)
 
-    pipeline = eval(sys.argv[1])
+    pipeline = eval(_command)
 
     if hasattr(pipeline, '__iter__'):
         for r in pipeline:

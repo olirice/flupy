@@ -3,7 +3,9 @@ from typing import Callable, Collection, Iterable, Type, Hashable, Optional
 from itertools import islice, takewhile, dropwhile, groupby, zip_longest
 
 __all__ = [
-    'flu'
+    'flu',
+    'map_attr',
+    'map_item',
 ]
 
 
@@ -25,10 +27,18 @@ class Fluent():
 
     ### Summary ###
     def collect(self, n: int= None, container_type: Collection= list):
-        """Returns *n* values from iterable as type *container_type*
+        """Consume items from the iterable into a container
 
-        NOTE: Fluent.collect is not chainable. See Fluent.take
-        for chainable equivalent
+        Note: 
+            Fluent.collect terminates a method chaining pipelines
+            
+        Args:
+            n: the number of items to collect from the iterable
+            container_type: class of data structure  
+        
+        Returns:
+            container_type with n elements from the iterable
+
         """
         return container_type(v for v in self.take(n))
 

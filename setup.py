@@ -43,6 +43,21 @@ def build_description():
 
 check_python_version()
 
+
+#see http://www.niteoweb.com/blog/setuptools-run-custom-code-during-install
+#This is so we can call "make" automatically during setup
+class CustomInstall(install):
+    def run(self):
+        try:
+            subprocess.call(['make'],cwd=path.join(here,'flupy'))
+        except Exception as e:
+            print e
+            print "Error compiling t2p.c.   Try running 'make'."
+            exit(1)
+        else:
+            install.run(self)
+
+
 setuptools.setup(
     name=read_package_variable('__project__'),
     version=read_package_variable('__version__'),
@@ -51,14 +66,12 @@ setuptools.setup(
     url='https://github.com/olirice/flupy',
     author='Oliver Rice',
     author_email='oliver@oliverrice.com',
-
     packages=setuptools.find_packages(),
     entry_points={
         'console_scripts': [
             'flu = flupy.cli.cli:main',
             ]
         },
-
     long_description=build_description(),
     license='MIT',
     classifiers=[
@@ -70,4 +83,9 @@ setuptools.setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
+    include_package_data=True,
+    package_data={
+        'flupy': ['Makefile']
+    },
+    cmdclass={'install': CustomInstall}
 )
