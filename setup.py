@@ -44,15 +44,13 @@ def build_description():
 check_python_version()
 
 
-#see http://www.niteoweb.com/blog/setuptools-run-custom-code-during-install
-#This is so we can call "make" automatically during setup
 class CustomInstall(install):
     def run(self):
         try:
             subprocess.call(['make'],cwd=path.join(here,'flupy'))
         except Exception as e:
-            print e
-            print "Error compiling t2p.c.   Try running 'make'."
+            print(e)
+            print("Error building docs. Try running 'make'.")
             exit(1)
         else:
             install.run(self)
