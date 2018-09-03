@@ -23,6 +23,7 @@ venv/*
 # Temporary server files
 .env
 *.pid
+*.swp
 
 # Generated documentation
 /docs/gen/

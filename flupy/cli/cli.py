@@ -1,24 +1,16 @@
+import argparse
 import importlib
 import sys
-
-from signal import signal, SIGPIPE, SIG_DFL
+from signal import SIG_DFL, SIGPIPE, signal
 
 from flupy import flu
-from flupy.cli.utils import LazyObject
+from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics
 
-
-lazy_modules = ['json', 'os', 'csv', 're', 'math', 'random', 'statistics']
-for module in lazy_modules:
-    locals()[module] = LazyObject(load=lambda : importlib.import_module('os'),
-                                  ctx=globals(),
-                                  name='os')
 
 def read_file(filename):
     with open(filename, 'r') as f:
         yield from f
 
-
-import argparse
 parser = argparse.ArgumentParser(description='flupy: a fluent interface for python')
 parser.add_argument('command', help='flupy command to execute on input')
 parser.add_argument('-f', '--file', help='path to input file')
