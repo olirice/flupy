@@ -6,6 +6,7 @@ __all__ = [
     'flu',
     'map_attr',
     'map_item',
+    'as_flu',
 ]
 
 
@@ -57,6 +58,17 @@ class Fluent():
     def max(self):
         """Largest element in the interable"""
         return max(self)
+
+    def head(self, n: int= 10, container_type: Collection= list):
+        """Returns a collection of up to n elements, defaults to 10"""
+        return self.take(n).collect(container_type=container_type)
+
+    def tail(self, n: int= 10, container_type: Collection= list):
+        """Return up to last n elements"""
+        class Empty: ...
+        for val in self.window(n, fill_value=Empty()):
+            pass
+        return container_type([x for x in val if not isinstance(x, Empty)])
     ### End Summary ###
 
     ### Non-Constant Memory
@@ -226,3 +238,14 @@ def map_item(iterable: Iterable, item: Hashable) -> Fluent:
 
 def map_attr(iterable: Iterable, attr: str) -> Fluent:
     return Fluent(iterable).map_attr(attr)
+
+
+def as_flu(func: Callable) -> Fluent:
+    """Decorates a function to make its output a Fluent instance"""
+    def wrapper(*args, **kwargs):
+        return Fluent(func(*args, **kwargs))
+    return wrapper
+
+
+
+

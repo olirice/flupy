@@ -1,7 +1,7 @@
 import unittest
 import sys
 from itertools import count, cycle
-from flupy import flu
+from flupy import flu, as_flu
 
 class TestFlu(unittest.TestCase):
 
@@ -21,6 +21,22 @@ class TestFlu(unittest.TestCase):
     def test_min(self):
         gen = flu(range(3))
         assert gen.min() == 0
+        
+    def test_head(self):
+        gen = flu(range(30))
+        assert gen.head(n=2) == [0, 1]
+        gen = flu(range(30))
+        assert gen.head(n=3, container_type=set) == set([0, 1, 2])
+        gen = flu(range(3))
+        assert gen.head(n=50) == [0, 1, 2]
+
+    def test_tail(self):
+        gen = flu(range(30))
+        assert gen.tail(n=2) == [28, 29]
+        gen = flu(range(30))
+        assert gen.tail(n=3, container_type=set) == set([27, 28, 29])
+        gen = flu(range(3))
+        assert gen.tail(n=50) == [0, 1, 2]
 
     def test_max(self):
         gen = flu(range(3))
@@ -160,6 +176,14 @@ class TestFlu(unittest.TestCase):
         # Depth 2 with iterate strings 
         gen = flu(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
         assert [x for x in gen] == [1, 2, (3, [4]), 'r', 'b', 's', 'd', 'a', 'b', 'c', (7,)]
+
+    def test_as_flu(self):
+
+        @as_flu
+        def myfunc():
+            return [1, 2, 3]
+        assert myfunc().take(1).collect() == [1]
+
 
 
 if __name__ == '__main__':

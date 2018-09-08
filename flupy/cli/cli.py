@@ -5,6 +5,7 @@ from signal import SIG_DFL, SIGPIPE, signal
 
 from flupy import flu
 from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics
+from flupy.cli.utils import walk_files, walk_folders
 
 
 def read_file(filename):
@@ -31,8 +32,11 @@ def main():
 
     pipeline = eval(_command)
 
-    if hasattr(pipeline, '__iter__'):
+    if hasattr(pipeline, '__iter__') and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:
             sys.stdout.write(str(r) + '\n')
+
+    elif pipeline is None:
+        pass
     else:
         sys.stdout.write(str(pipeline) + '\n')
