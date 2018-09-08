@@ -1,5 +1,5 @@
 from collections import deque
-from typing import Callable, Collection, Iterable, Type, Hashable, Optional
+from typing import Callable, Collection, Iterable, Type, Hashable, Optional, ContextManager
 from itertools import islice, takewhile, dropwhile, groupby, zip_longest
 
 __all__ = [
@@ -7,6 +7,7 @@ __all__ = [
     'map_attr',
     'map_item',
     'as_flu',
+    'with_iter',
 ]
 
 
@@ -239,6 +240,10 @@ def map_item(iterable: Iterable, item: Hashable) -> Fluent:
 def map_attr(iterable: Iterable, attr: str) -> Fluent:
     return Fluent(iterable).map_attr(attr)
 
+def with_iter(context_manager: ContextManager):
+    with context_manager as cm:
+        for rec in cm:
+            yield rec
 
 def as_flu(func: Callable) -> Fluent:
     """Decorates a function to make its output a Fluent instance"""

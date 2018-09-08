@@ -3,7 +3,7 @@ import importlib
 import sys
 from signal import SIG_DFL, SIGPIPE, signal
 
-from flupy import flu
+from flupy import flu, with_iter
 from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics
 from flupy.cli.utils import walk_files, walk_folders
 

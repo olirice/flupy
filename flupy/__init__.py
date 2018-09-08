@@ -1,4 +1,4 @@
 __project__ = 'flupy'
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
-from flupy.fluent import flu, map_item, map_attr, as_flu
+from flupy.fluent import flu, map_item, map_attr, as_flu, with_iter
