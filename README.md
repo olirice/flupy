@@ -21,7 +21,7 @@ Install flupy with pip:
 $ pip install flupy
 ```
 
-### Usage
+### Library
 ```python
 from itertools import count
 from flupy import flu
@@ -41,5 +41,33 @@ for item in pipeline:
 # [26728900, 32341969, 38489616, 45171841, 52388644] 
 ```
 
-### Motivation
+### CLI
+flupy has a highly compatible command line interface that brings lazy piplines to your shell. Inputs to the `flu` command are automatically populated into a `Fluent` context named `_`.
+````
+$ flu
+usage: flu [-h] [-f FILE] command
+````
+#### Pipe Input
+```
+$ cat logs.txt | flu "_.filter(lambda x: 'ERROR:' in x).head()"
+```
 
+#### File Input
+```
+$ flu -f logs.txt "_.filter(lambda x: 'ERROR:' in x).head()"
+```
+
+#### No Input
+```
+$ flu "flu(range(100)).takewhile(lambda x: x < 20)"
+```
+
+#### Standard Library Imports
+The following standard library modules are available to the flu command by default.
+
+```json, os, csv, re, math, random, statistics, itertools, collections```
+
+#### Helper Functions
+```walk_files(path='.') = recursively walk files starting at *path*```
+
+```walk_dirs(path='.') = recursively walk directories starting at *path*```
