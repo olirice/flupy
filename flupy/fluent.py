@@ -1,6 +1,9 @@
+import time
+
 from collections import deque
-from typing import Callable, Collection, Iterable, Type, Hashable, Optional, ContextManager
 from itertools import islice, takewhile, dropwhile, groupby, zip_longest
+from typing import Callable, Collection, Iterable, Type, Hashable, Optional, ContextManager
+
 
 __all__ = [
     'flu',
@@ -80,6 +83,17 @@ class Fluent():
         """
         return Fluent(sorted(self, key=key, reverse=reverse))
     ### End Non-Constant Memory
+
+    def rate_limit(self, per_second=100):
+        """Restrict consumption of iterable to n *per_second*"""
+        def _impl():
+            wait_time = 1.0 / per_second
+            for val in self:
+                start_time = time.time()
+                yield val
+                call_duration = time.time() - start_time
+                time.sleep(max(wait_time - call_duration, 0.0))
+        return Fluent(_impl())
 
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable"""

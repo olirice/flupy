@@ -4,7 +4,7 @@ import sys
 from signal import SIG_DFL, SIGPIPE, signal
 
 from flupy import flu, with_iter
-from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics
+from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics, collections, itertools
 from flupy.cli.utils import walk_files, walk_folders
 
 
@@ -25,7 +25,7 @@ def main():
 
     if _file:
         _ = flu(read_file(_file)).map(str.rstrip)
-    else: 
+    else:
         # Do not raise exception for Broken Pipe
         signal(SIGPIPE, SIG_DFL)
         _ = flu(sys.stdin).map(str.rstrip)

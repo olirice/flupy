@@ -9,7 +9,7 @@ class TestFlu(unittest.TestCase):
         assert flu(range(3)).collect() == [0, 1, 2]
         assert flu(range(3)).collect(container_type=tuple) == (0, 1, 2)
         assert flu(range(3)).collect(n=2) == [0, 1]
- 
+
     def test_sum(self):
         gen = flu(range(3))
         assert gen.sum() == 3
@@ -21,7 +21,7 @@ class TestFlu(unittest.TestCase):
     def test_min(self):
         gen = flu(range(3))
         assert gen.min() == 0
-        
+
     def test_head(self):
         gen = flu(range(30))
         assert gen.head(n=2) == [0, 1]
@@ -50,6 +50,11 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3)).map(lambda x: x+2)
         assert gen.collect() == [2, 3, 4]
 
+    def test_rate_limit(self):
+        resA = flu(range(3)).collect()
+        resB= flu(range(3)).rate_limit(5000).collect()
+        assert resA == resB
+
     def test_map_item(self):
         gen = flu(range(3)).map(lambda x: {'a': x}).map_item('a')
         assert gen.collect() == [0, 1, 2]
@@ -71,15 +76,15 @@ class TestFlu(unittest.TestCase):
         assert gen.collect() == [0, 1, 2, 3, 4]
 
     def test_takewhile(self):
-        gen = flu(cycle(range(10))).takewhile(lambda x: x < 4) 
+        gen = flu(cycle(range(10))).takewhile(lambda x: x < 4)
         assert gen.collect() == [0, 1, 2, 3]
 
     def test_dropwhile(self):
-        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
+        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4)
         assert gen.collect() == [4, 3, 2, 1]
-        
+
     def test_groupby(self):
-        gen = flu([1, 1, 1, 2, 2, 2, 2, 3]).zip(range(100)).groupby(lambda x: x[0]) 
+        gen = flu([1, 1, 1, 2, 2, 2, 2, 3]).zip(range(100)).groupby(lambda x: x[0])
         g1, g2, g3 = gen.map(lambda x: (x[0], x[1].collect())).collect()
         # Standard usage
         assert g1 == (1, [(1, 0), (1, 1), (1, 2)])
@@ -91,7 +96,7 @@ class TestFlu(unittest.TestCase):
         assert v1.collect() == v2.collect()
 
     def test_slice(self):
-        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4) 
+        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4)
         assert gen.collect() == [4, 3, 2, 1]
 
     def test_chunk(self):
@@ -101,7 +106,7 @@ class TestFlu(unittest.TestCase):
     def test_next(self):
         gen = flu(range(5))
         assert next(gen) == 0
-        
+
     def test_iter(self):
         gen = flu(range(5))
         assert next(iter(gen)) == 0
@@ -144,7 +149,7 @@ class TestFlu(unittest.TestCase):
                 .filter(lambda x: x % 517 == 0) \
                 .chunk(5) \
                 .take(3)
-        assert next(gen) == [0, 267289, 1069156, 2405601, 4276624] 
+        assert next(gen) == [0, 267289, 1069156, 2405601, 4276624]
 
     def test_lazy(self):
         #TODO(or)
@@ -159,8 +164,8 @@ class TestFlu(unittest.TestCase):
 
         # Depth 2
         gen = flu(nested).flatten(depth=2)
-        assert [x for x in gen] == [1, 2, 3, [4], 'rbsd', 'abc', 7] 
-        
+        assert [x for x in gen] == [1, 2, 3, [4], 'rbsd', 'abc', 7]
+
         # Depth 3
         gen = flu(nested).flatten(depth=3)
         assert [x for x in gen] == [1, 2, 3, 4, 'rbsd', 'abc', 7]
@@ -173,7 +178,7 @@ class TestFlu(unittest.TestCase):
         gen = flu(nested).flatten(depth=2, base_type=tuple)
         assert [x for x in gen] == [1, 2, (3, [4]), 'rbsd', 'abc', (7,)]
 
-        # Depth 2 with iterate strings 
+        # Depth 2 with iterate strings
         gen = flu(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
         assert [x for x in gen] == [1, 2, (3, [4]), 'r', 'b', 's', 'd', 'a', 'b', 'c', (7,)]
 
@@ -183,7 +188,6 @@ class TestFlu(unittest.TestCase):
         def myfunc():
             return [1, 2, 3]
         assert myfunc().take(1).collect() == [1]
-
 
 
 if __name__ == '__main__':
