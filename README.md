@@ -44,8 +44,25 @@ for item in pipeline:
 ### CLI
 flupy has a highly compatible command line interface that brings lazy piplines to your shell. Inputs to the `flu` command are automatically populated into a `Fluent` context named `_`.
 ````
-$ flu
-usage: flu [-h] [-f FILE] command
+$ flu -h
+usage: flu [-h] [-f FILE] [-i [IMPORT [IMPORT ...]]] command
+
+flupy: a fluent interface for python
+
+positional arguments:
+  command               flupy command to execute on input
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -f FILE, --file FILE  path to input file
+  -i [IMPORT [IMPORT ...]], --import [IMPORT [IMPORT ...]]
+                        modules to import
+                        Syntax: <module>:<object>:<alias>
+                        Examples:
+                                'import os' = '-i os'
+                                'import os as op_sys' = '-i os::op_sys'
+                                'from os import environ' = '-i os:environ'
+                                'from os import environ as env' = '-i os:environ:env'
 ````
 #### Pipe Input
 ```
@@ -61,11 +78,6 @@ $ flu -f logs.txt "_.filter(lambda x: 'ERROR:' in x).head()"
 ```
 $ flu "flu(range(100)).takewhile(lambda x: x < 20)"
 ```
-
-#### Standard Library Imports
-The following standard library modules are available to the flu command by default.
-
-```json, os, csv, re, math, random, statistics, itertools, collections```
 
 #### Helper Functions
 ```walk_files(path='.') = recursively walk files starting at *path*```
