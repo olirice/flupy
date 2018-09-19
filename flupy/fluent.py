@@ -1,46 +1,39 @@
 import time
-
 from collections import deque
-from itertools import islice, takewhile, dropwhile, groupby, zip_longest
-from typing import Callable, Collection, Iterable, Type, Hashable, Optional, ContextManager
+from itertools import dropwhile, groupby, islice, takewhile, zip_longest
+from typing import (Callable, Collection, Container, ContextManager, Hashable, Iterable, Optional,
+                    Type)
+
+__all__ = ["flu", "map_attr", "map_item", "as_flu", "with_iter"]
 
 
-__all__ = [
-    'flu',
-    'map_attr',
-    'map_item',
-    'as_flu',
-    'with_iter',
-]
-
-
-class Fluent():
+class Fluent:
     """Enables chaining of generator producing functions"""
 
-    def __init__(self, iterable: Iterable):
+    def __init__(self, iterable: Iterable) -> None:
         self._iterable = iter(iterable)
 
     def __getitem__(self, key):
-        """asdf"""
         if isinstance(key, int) and key >= 0:
             return Fluent(islice(self._iterable, key, key + 1))
         elif isinstance(key, slice):
             return Fluent(islice(self._iterable, key.start, key.stop, key.step))
         else:
-            raise KeyError("Key must be non-negative integer or slice, not {}"
-                           .format(key))
+            raise KeyError(
+                "Key must be non-negative integer or slice, not {}".format(key)
+            )
 
     ### Summary ###
-    def collect(self, n: int= None, container_type: Collection= list):
+    def collect(self, n: int = None, container_type: Type = list):
         """Consume items from the iterable into a container
 
-        Note: 
+        Note:
             Fluent.collect terminates a method chaining pipelines
-            
+
         Args:
             n: the number of items to collect from the iterable
-            container_type: class of data structure  
-        
+            container_type: class of data structure
+
         Returns:
             container_type with n elements from the iterable
 
@@ -63,16 +56,20 @@ class Fluent():
         """Largest element in the interable"""
         return max(self)
 
-    def head(self, n: int= 10, container_type: Collection= list):
+    def head(self, n: int = 10, container_type: Type = list):
         """Returns a collection of up to n elements, defaults to 10"""
         return self.take(n).collect(container_type=container_type)
 
-    def tail(self, n: int= 10, container_type: Collection= list):
+    def tail(self, n: int = 10, container_type: Type = list):
         """Return up to last n elements"""
-        class Empty: ...
+
+        class Empty:
+            ...
+
         for val in self.window(n, fill_value=Empty()):
             pass
         return container_type([x for x in val if not isinstance(x, Empty)])
+
     ### End Summary ###
 
     ### Non-Constant Memory
@@ -82,10 +79,18 @@ class Fluent():
         WARNING: sorting loads the entire iterable into memory
         """
         return Fluent(sorted(self, key=key, reverse=reverse))
+
+    def groupby(self, key=lambda x: x, sort: bool = True):
+        """Yield consecutive keys and groups from the iterable. Key defaults to identify function
+        Iterable must be sorted on the same key function or *sort* set to True"""
+        gen = self.sort(key) if sort else self
+        return Fluent(groupby(gen, key)).map(lambda x: (x[0], Fluent(x[1])))
+
     ### End Non-Constant Memory
 
     def rate_limit(self, per_second=100):
         """Restrict consumption of iterable to n *per_second*"""
+
         def _impl():
             wait_time = 1.0 / per_second
             for val in self:
@@ -93,13 +98,16 @@ class Fluent():
                 yield val
                 call_duration = time.time() - start_time
                 time.sleep(max(wait_time - call_duration, 0.0))
+
         return Fluent(_impl())
 
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable"""
+
         def __imp():
             for val in self._iterable:
                 yield func(val, *args, **kwargs)
+
         return Fluent(__imp())
 
     def map_item(self, item):
@@ -112,10 +120,12 @@ class Fluent():
 
     def filter(self, func: Callable, *args, **kwargs):
         """Yield elements of iterable where *func* returns truthy"""
+
         def __imp():
             for val in self._iterable:
                 if func(val, *args, **kwargs):
                     yield val
+
         return Fluent(__imp())
 
     def zip(self, iterable: Iterable):
@@ -136,10 +146,12 @@ class Fluent():
         is a count from initial value *start*."""
         return Fluent(enumerate(self, start=start))
 
-    def take(self, n: int):
+    def take(self, n: Optional[int] = None):
         """Yield first *n* items of the iterable"""
+
         def __imp():
             return islice(self._iterable, n)
+
         return Fluent(__imp())
 
     def takewhile(self, predicate: Callable):
@@ -151,16 +163,12 @@ class Fluent():
         afterwards, return every element"""
         return Fluent(dropwhile(predicate, self._iterable))
 
-    def groupby(self, key=lambda x: x):
-        """Yield consecutive keys and groups from the iterable. Key defaults to identify function
-        Iterable must be sorted on the sme key function"""
-        return Fluent(groupby(self._iterable, key)).map(lambda x: (x[0], Fluent(x[1])))
-
     def chunk(self, n: int):
         """Yield lists of elements from iterable in groups of *n*
 
         if the iterable is not evenly divisiible by *n*, the final list will be shorter
         """
+
         def __imp():
             while True:
                 out = list(self.take(n))
@@ -168,6 +176,7 @@ class Fluent():
                     yield out
                 else:
                     return
+
         return Fluent(__imp())
 
     def flatten(self, depth: int = 1, base_type: Type = None, iterate_strings=False):
@@ -177,11 +186,12 @@ class Fluent():
         Strings are treated as non-iterable for convenience. set iterate_string=True
         to change that behavior.
         """
+
         def walk(node, level):
             if (
-                ((depth is not None) and (level > depth)) or
-                    (isinstance(node, str) and not iterate_strings) or
-                    ((base_type is not None) and isinstance(node, base_type))
+                ((depth is not None) and (level > depth))
+                or (isinstance(node, str) and not iterate_strings)
+                or ((base_type is not None) and isinstance(node, base_type))
             ):
                 yield node
                 return
@@ -197,7 +207,7 @@ class Fluent():
 
         return Fluent(walk(self, level=0))
 
-    def window(self, n: int, step: int=1, fill_value: object=None):
+    def window(self, n: int, step: int = 1, fill_value: object = None):
         """Yield a sliding window of width *n* over the given iterable.
 
         Each window will advance in increments of *step*:
@@ -205,14 +215,15 @@ class Fluent():
         If the length of the iterable does not evenly divide by the *step*
         the final output is padded with *fill_value*
         """
+
         def _imp():
             if n < 0:
-                raise ValueError('n must be >= 0')
+                raise ValueError("n must be >= 0")
             if n == 0:
                 yield tuple()
                 return
             if step < 1:
-                raise ValueError('step must be >= 1')
+                raise ValueError("step must be >= 1")
 
             window = deque([], n)
             append = window.append
@@ -245,26 +256,29 @@ class Fluent():
     def __next__(self):
         return next(self._iterable)
 
+
 def flu(iterable: Iterable) -> Fluent:
     return Fluent(iterable)
+
 
 def map_item(iterable: Iterable, item: Hashable) -> Fluent:
     return Fluent(iterable).map_item(item)
 
+
 def map_attr(iterable: Iterable, attr: str) -> Fluent:
     return Fluent(iterable).map_attr(attr)
+
 
 def with_iter(context_manager: ContextManager):
     with context_manager as cm:
         for rec in cm:
             yield rec
 
-def as_flu(func: Callable) -> Fluent:
+
+def as_flu(func: Callable) -> Callable:
     """Decorates a function to make its output a Fluent instance"""
-    def wrapper(*args, **kwargs):
+
+    def wrapper(*args, **kwargs) -> Fluent:
         return Fluent(func(*args, **kwargs))
+
     return wrapper
-
-
-
-

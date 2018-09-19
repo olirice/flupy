@@ -2,11 +2,11 @@
 
 """Setup script for the package."""
 
+import logging
 import os
 import sys
-import logging
-import setuptools
 
+import setuptools
 
 PACKAGE_NAME = 'flupy'
 MINIMUM_PYTHON_VERSION = '3.5'

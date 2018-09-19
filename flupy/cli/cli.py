@@ -4,17 +4,19 @@ import sys
 from signal import SIG_DFL, SIGPIPE, signal
 
 from flupy import flu, with_iter
-from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics, collections, itertools
-from flupy.cli.utils import walk_files, walk_dirs
+from flupy.cli.lazy_import import (collections, csv, itertools, json, math, os, random, re,
+                                   statistics)
+from flupy.cli.utils import walk_dirs, walk_files
 
 
 def read_file(filename):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         yield from f
 
-parser = argparse.ArgumentParser(description='flupy: a fluent interface for python')
-parser.add_argument('command', help='flupy command to execute on input')
-parser.add_argument('-f', '--file', help='path to input file')
+
+parser = argparse.ArgumentParser(description="flupy: a fluent interface for python")
+parser.add_argument("command", help="flupy command to execute on input")
+parser.add_argument("-f", "--file", help="path to input file")
 
 
 def main():
@@ -32,11 +34,11 @@ def main():
 
     pipeline = eval(_command)
 
-    if hasattr(pipeline, '__iter__') and not isinstance(pipeline, (str, bytes)):
+    if hasattr(pipeline, "__iter__") and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:
-            sys.stdout.write(str(r) + '\n')
+            sys.stdout.write(str(r) + "\n")
 
     elif pipeline is None:
         pass
     else:
-        sys.stdout.write(str(pipeline) + '\n')
+        sys.stdout.write(str(pipeline) + "\n")

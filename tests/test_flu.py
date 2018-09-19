@@ -1,7 +1,9 @@
-import unittest
 import sys
+import unittest
 from itertools import count, cycle
-from flupy import flu, as_flu
+
+from flupy import as_flu, flu
+
 
 class TestFlu(unittest.TestCase):
 
@@ -61,7 +63,7 @@ class TestFlu(unittest.TestCase):
 
     def test_map_attr(self):
         class Person:
-            def __init__(self, age: int):
+            def __init__(self, age: int) -> None:
                 self.age = age
 
         gen = flu(range(3)).map(lambda x: Person(x)).map_attr('age')
@@ -94,6 +96,11 @@ class TestFlu(unittest.TestCase):
         v1 = flu(range(10)).groupby().map(lambda x: (x[0], list(x[1])))
         v2 = flu(range(10)).map(lambda x: (x, [x]))
         assert v1.collect() == v2.collect()
+        # Sort
+        gen = flu([1, 2, 1, 2]).groupby(lambda x: x, sort=False)
+        assert gen.count() == 4
+        gen = flu([1, 2, 1, 2]).groupby(lambda x: x, sort=True)
+        assert gen.count() == 2
 
     def test_slice(self):
         gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4)
