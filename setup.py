@@ -44,18 +44,6 @@ def build_description():
 check_python_version()
 
 
-class CustomInstall(install):
-    def run(self):
-        try:
-            subprocess.call(['make'],cwd=path.join(here,'flupy'))
-        except Exception as e:
-            print(e)
-            print("Error building docs. Try running 'make'.")
-            exit(1)
-        else:
-            install.run(self)
-
-
 setuptools.setup(
     name=read_package_variable('__project__'),
     version=read_package_variable('__version__'),
@@ -85,5 +73,4 @@ setuptools.setup(
     package_data={
         'flupy': ['Makefile']
     },
-    cmdclass={'install': CustomInstall}
 )

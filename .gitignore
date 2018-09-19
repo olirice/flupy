@@ -1,3 +1,4 @@
+docs/*
 # Temporary Python files
 *.pyc
 *.egg-info
