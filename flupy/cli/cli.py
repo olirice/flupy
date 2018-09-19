@@ -5,7 +5,7 @@ from signal import SIG_DFL, SIGPIPE, signal
 
 from flupy import flu, with_iter
 from flupy.cli.lazy_import import csv, json, math, os, random, re, statistics, collections, itertools
-from flupy.cli.utils import walk_files, walk_folders
+from flupy.cli.utils import walk_files, walk_dirs
 
 
 def read_file(filename):
