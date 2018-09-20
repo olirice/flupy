@@ -3,7 +3,7 @@ import importlib
 import sys
 from signal import SIG_DFL, SIGPIPE, signal
 
-from flupy import flu, with_iter
+from flupy import flu, with_iter, __version__
 from flupy.cli.utils import walk_dirs, walk_files
 
 
@@ -15,7 +15,8 @@ def read_file(filename):
 parser = argparse.ArgumentParser(
         description="flupy: a fluent interface for python",
         formatter_class=argparse.RawTextHelpFormatter)
-parser.add_argument("command", help="flupy command to execute on input")
+parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
+parser.add_argument("command", help="command to execute against input")
 parser.add_argument("-f", "--file", help="path to input file")
 parser.add_argument(
         "-i",
