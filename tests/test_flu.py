@@ -24,6 +24,24 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3))
         assert gen.min() == 0
 
+    def test_first(self):
+        gen = flu(range(3))
+        assert gen.first() == 0
+        gen = flu([])
+        with self.assertRaises(IndexError):
+            gen.first()
+        gen = flu([])
+        assert gen.first(default=1) == 1
+
+    def test_last(self):
+        gen = flu(range(3))
+        assert gen.last() == 2
+        gen = flu([])
+        with self.assertRaises(IndexError):
+            gen.last()
+        gen = flu([])
+        assert gen.last(default=1) == 1
+
     def test_head(self):
         gen = flu(range(30))
         assert gen.head(n=2) == [0, 1]

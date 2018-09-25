@@ -7,6 +7,9 @@ from typing import (Callable, Collection, Container, ContextManager, Hashable, I
 __all__ = ["flu", "map_attr", "map_item", "as_flu", "with_iter"]
 
 
+class Empty: ...
+
+
 class Fluent:
     """Enables chaining of generator producing functions"""
 
@@ -56,6 +59,24 @@ class Fluent:
         """Largest element in the interable"""
         return max(self)
 
+    def first(self, default=Empty()):
+        """Return the first item of the iterble. Raise IndexError if empty or default if provided."""
+        x = default
+        for x in self:
+            return x
+        if isinstance(x, Empty):
+            raise IndexError('Empty iterator')
+        return default
+
+    def last(self, default=Empty()):
+        """Return the last item of the iterble. Raise IndexError if empty or default if provided."""
+        x = default
+        for x in self:
+            pass
+        if isinstance(x, Empty):
+            raise IndexError('Empty iterator')
+        return x
+
     def head(self, n: int = 10, container_type: Type = list):
         """Returns a collection of up to n elements, defaults to 10"""
         return self.take(n).collect(container_type=container_type)
@@ -63,9 +84,7 @@ class Fluent:
     def tail(self, n: int = 10, container_type: Type = list):
         """Return up to last n elements"""
 
-        class Empty:
-            ...
-
+        
         for val in self.window(n, fill_value=Empty()):
             pass
         return container_type([x for x in val if not isinstance(x, Empty)])
