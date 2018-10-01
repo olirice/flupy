@@ -62,6 +62,24 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3))
         assert gen.max() == 2
 
+    def test_unique(self):
+
+        class NoHash:
+            def __init__(self, letter, keyf):
+                self.letter = letter
+                self.keyf = keyf
+
+        a = NoHash('a', 1)
+        b = NoHash('b', 1)
+        c = NoHash('c', 2)
+
+        gen = flu([a, b, c]).unique()
+        assert gen.collect() == [a, b, c]
+        gen = flu([a, b, c]).unique(lambda x: x.letter)
+        assert gen.collect() == [a, b, c]
+        gen = flu([a, b, c]).unique(lambda x: x.keyf)
+        assert gen.collect() == [a, c]
+
     def test_sort(self):
         gen = flu(range(3, 0, -1)).sort()
         assert gen.collect() == [1, 2, 3]

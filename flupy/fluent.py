@@ -105,6 +105,18 @@ class Fluent:
         gen = self.sort(key) if sort else self
         return Fluent(groupby(gen, key)).map(lambda x: (x[0], Fluent(x[1])))
 
+    def unique(self, key=lambda x: x):
+        """Yield elements that are unique by a *key*"""
+        def impl():
+            seen = set()
+            for x in self:
+                x_hash = key(x)
+                if x_hash in seen:
+                    continue
+                else:
+                    seen.add(x_hash)
+                    yield x
+        return Fluent(impl())
     ### End Non-Constant Memory
 
     def rate_limit(self, per_second=100):
