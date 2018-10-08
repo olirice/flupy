@@ -29,6 +29,7 @@ venv/*
 # Generated documentation
 /docs/gen/
 /docs/apidocs/
+/docs/_build/
 /site/
 /*.html
 /*.rst

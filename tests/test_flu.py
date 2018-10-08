@@ -12,6 +12,12 @@ class TestFlu(unittest.TestCase):
         assert flu(range(3)).collect(container_type=tuple) == (0, 1, 2)
         assert flu(range(3)).collect(n=2) == [0, 1]
 
+    def test___getitem__(self):
+        assert flu(range(3))[1] == 1
+        assert flu(range(3))[1:].collect() == [1, 2]
+        assert flu(range(35))[1:2].collect() == [1]
+        assert flu(range(35))[1:3].collect() == [1, 2]
+
     def test_sum(self):
         gen = flu(range(3))
         assert gen.sum() == 3
@@ -79,6 +85,46 @@ class TestFlu(unittest.TestCase):
         assert gen.collect() == [a, b, c]
         gen = flu([a, b, c]).unique(lambda x: x.keyf)
         assert gen.collect() == [a, c]
+
+    def test_side_effect(self):
+
+        class FakeFile:
+            def __init__(self):
+                self.is_open = False
+                self.content = []
+            
+            def write(self, text):
+                if self.is_open:
+                    self.content.append(text)
+                else:
+                    raise IOError('fake file is not open for writing')
+            
+            def open(self):
+                self.is_open = True
+            
+            def close(self):
+                self.is_open = False
+        
+        # Test the fake file
+        ffile = FakeFile()
+        ffile.open()
+        ffile.write('should be there')
+        ffile.close()
+        assert ffile.content[0] == 'should be there'
+        with self.assertRaises(IOError):
+            ffile.write('should fail')
+
+        # Reset fake file
+        ffile = FakeFile()
+
+        with self.assertRaises(IOError):
+            flu(range(5)).side_effect(ffile.write).collect()
+        
+
+        gen_result = flu(range(5)).side_effect(ffile.write, before=ffile.open, after=ffile.close) \
+                                  .collect()
+        assert ffile.is_open == False
+        assert ffile.content == [0, 1, 2, 3, 4]
 
     def test_sort(self):
         gen = flu(range(3, 0, -1)).sort()
@@ -167,11 +213,16 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3)).zip(range(3))
         assert gen.collect() == [(0, 0), (1, 1), (2, 2)]
 
+        gen = flu(range(3)).zip(range(3), range(2))
+        assert gen.collect() == [(0, 0, 0), (1, 1, 1)]
+
     def test_zip_longest(self):
         gen = flu(range(3)).zip_longest(range(5))
         assert gen.collect() == [(0, 0), (1, 1), (2, 2), (None, 3), (None, 4)]
         gen = flu(range(3)).zip_longest(range(5), fillvalue='a')
         assert gen.collect() == [(0, 0), (1, 1), (2, 2), ('a', 3), ('a', 4)]
+        gen = flu(range(3)).zip_longest(range(5), range(4), fillvalue='a')
+        assert gen.collect() == [(0, 0, 0), (1, 1, 1), (2, 2, 2), ('a', 3, 3), ('a', 4, 'a')]
 
     def test_window(self):
         # Check default

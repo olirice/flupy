@@ -1,22 +1,16 @@
-Welcome to flupy's documentation!
-=================================
+.. include:: ../README.rst
 
-
-.. include:: ../README
-
-
-Contents:
-
+Contents
+========
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
 
+    api
 
+.. toctree::
+    :maxdepth: 1
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+    license
+    testing
+    versions
