@@ -33,7 +33,7 @@ CLI
 
 The flupy library, and python runtime, are also accessible from `flu` command line utility::
 
-    $ cat logs.txt | flu '_.filter(lambda x: x.startswith('ERROR'))
+    $ cat logs.txt | flu "_.filter(lambda x: x.startswith('ERROR'))"
 
 
 For more information about the `flu` command see :doc:`command line <./cli>`.
