@@ -12,7 +12,7 @@ flupy implements a fluent interface for chaining multiple method calls as a sing
 
 ### Requirements
 
-* Python 3.5+
+* Python 3.6+
 
 ### Installation
 
