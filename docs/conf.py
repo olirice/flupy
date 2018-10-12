@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# more-itertools documentation build configuration file, created by
-# sphinx-quickstart on Mon Jun 25 20:42:39 2012.
-#
 # This file is execfile()d with the current directory set to its containing dir.
 #
 # Note that not all possible configuration values are present in this

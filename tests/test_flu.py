@@ -159,34 +159,30 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(10)).take(5)
         assert gen.collect() == [0, 1, 2, 3, 4]
 
-    def test_takewhile(self):
-        gen = flu(cycle(range(10))).takewhile(lambda x: x < 4)
+    def test_take_while(self):
+        gen = flu(cycle(range(10))).take_while(lambda x: x < 4)
         assert gen.collect() == [0, 1, 2, 3]
 
-    def test_dropwhile(self):
-        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4)
+    def test_drop_while(self):
+        gen = flu([1,2,3,4,3,2,1]).drop_while(lambda x: x < 4)
         assert gen.collect() == [4, 3, 2, 1]
 
-    def test_groupby(self):
-        gen = flu([1, 1, 1, 2, 2, 2, 2, 3]).zip(range(100)).groupby(lambda x: x[0])
+    def test_group_by(self):
+        gen = flu([1, 1, 1, 2, 2, 2, 2, 3]).zip(range(100)).group_by(lambda x: x[0])
         g1, g2, g3 = gen.map(lambda x: (x[0], x[1].collect())).collect()
         # Standard usage
         assert g1 == (1, [(1, 0), (1, 1), (1, 2)])
         assert g2 == (2, [(2, 3), (2, 4), (2, 5), (2, 6)])
         assert g3 == (3, [(3, 7)])
         # No param usage
-        v1 = flu(range(10)).groupby().map(lambda x: (x[0], list(x[1])))
+        v1 = flu(range(10)).group_by().map(lambda x: (x[0], list(x[1])))
         v2 = flu(range(10)).map(lambda x: (x, [x]))
         assert v1.collect() == v2.collect()
         # Sort
-        gen = flu([1, 2, 1, 2]).groupby(lambda x: x, sort=False)
+        gen = flu([1, 2, 1, 2]).group_by(lambda x: x, sort=False)
         assert gen.count() == 4
-        gen = flu([1, 2, 1, 2]).groupby(lambda x: x, sort=True)
+        gen = flu([1, 2, 1, 2]).group_by(lambda x: x, sort=True)
         assert gen.count() == 2
-
-    def test_slice(self):
-        gen = flu([1,2,3,4,3,2,1]).dropwhile(lambda x: x < 4)
-        assert gen.collect() == [4, 3, 2, 1]
 
     def test_chunk(self):
         gen = flu(range(5)).chunk(2)
@@ -219,9 +215,9 @@ class TestFlu(unittest.TestCase):
     def test_zip_longest(self):
         gen = flu(range(3)).zip_longest(range(5))
         assert gen.collect() == [(0, 0), (1, 1), (2, 2), (None, 3), (None, 4)]
-        gen = flu(range(3)).zip_longest(range(5), fillvalue='a')
+        gen = flu(range(3)).zip_longest(range(5), fill_value='a')
         assert gen.collect() == [(0, 0), (1, 1), (2, 2), ('a', 3), ('a', 4)]
-        gen = flu(range(3)).zip_longest(range(5), range(4), fillvalue='a')
+        gen = flu(range(3)).zip_longest(range(5), range(4), fill_value='a')
         assert gen.collect() == [(0, 0, 0), (1, 1, 1), (2, 2, 2), ('a', 3, 3), ('a', 4, 'a')]
 
     def test_window(self):

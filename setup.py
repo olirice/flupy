@@ -59,6 +59,7 @@ setuptools.setup(
             ]
         },
     long_description=build_description(),
+    tests_require=['pytest', 'coverage'],
     license='MIT',
     classifiers=[
         'Development Status :: 4 - Beta',
