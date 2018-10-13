@@ -6,7 +6,7 @@ API Reference
 
 
 Container
-========
+=========
 
 `flu` is the container
 
@@ -36,7 +36,7 @@ Some method description texts
 
 
 Selecting
-========
+=========
 
 Some method description texts
 
@@ -51,7 +51,7 @@ Some method description texts
 .. automethod:: Fluent.unique
 
 Transforming
-========
+============
 
 Some method description texts
 
@@ -66,7 +66,7 @@ Some method description texts
 ----
 
 Side Effects
-========
+============
 
 Some method description texts
 
@@ -79,7 +79,7 @@ Some method description texts
 
 
 Summarizing
-========
+===========
 
 These tools yield groups of items from a source iterable.
 
@@ -99,7 +99,7 @@ These tools yield groups of items from a source iterable.
 
 
 Non-Constant Memory
-========
+===================
 
 These tools yield groups of items from a source iterable.
 

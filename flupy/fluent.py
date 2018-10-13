@@ -422,7 +422,7 @@ class Fluent:
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
         into non-iterable type or an optional user-defined base_type
 
-        Strings are treated as non-iterable for convenience. set *iterate_string*=True
+        Strings are treated as non-iterable for convenience. set iterate_string=True
         to change that behavior.
 
             >>> flu([[0, 1, 2], [3, 4, 5]]).flatten().collect()
