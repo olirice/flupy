@@ -1,6 +1,8 @@
 # flupy
 
 [![CircleCI](https://circleci.com/gh/olirice/flupy.svg?style=svg)](https://circleci.com/gh/olirice/flupy)
+[![Documentation Status](https://readthedocs.org/projects/flupy/badge/?version=latest)](https://flupy.readthedocs.io/en/latest/?badge=latest)
+                
 
 * Process big data in python using method chaining built on generators
 * Cross-platform CLI
