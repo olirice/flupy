@@ -1,5 +1,5 @@
 =================
-Design Influences
+Design Influances
 =================
 
 - more-itertools_

@@ -16,5 +16,5 @@ Contents
 
     license
     testing
-    design_influences
+    influances
     versions
