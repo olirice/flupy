@@ -6,6 +6,7 @@ Contents
 .. toctree::
     :maxdepth: 2
 
+    welcome
     api
     cli
 
@@ -15,4 +16,5 @@ Contents
 
     license
     testing
+    design_influences
     versions

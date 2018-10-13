@@ -202,16 +202,17 @@ class Fluent:
 
         When the iterable is pre-sorted by *key* setting *sort* to True will reduce the memory footprint to a constant
 
-                >>> flu.group_by([1, 'a', 'a', 1, 1]).collect()
-                [(1, <Fluent object>), ('a', <Fluent object>)]
+               >>> flu.group_by([1, 'a', 'a', 1, 1]).collect()
+               [(1, <Fluent object>), ('a', <Fluent object>)]
 
-                >>> flu.group_by([2, 3, 2, 3]).collect()
-                [(4, <Fluent object>), (9, <Fluent object>)]
+               >>> flu.group_by([2, 3, 2, 3]).collect()
+               [(4, <Fluent object>), (9, <Fluent object>)]
 
-           Or, if the iterable is pre-sorted
-                >>> flu.group_by([2, 2, 5, 5], sort=False).collect()
-                [(2, <Fluent object>), (5, <Fluent object>)]
-                """
+        Or, if the iterable is pre-sorted
+
+               >>> flu.group_by([2, 2, 5, 5], sort=False).collect()
+               [(2, <Fluent object>), (5, <Fluent object>)]
+               """
         gen = self.sort(key) if sort else self
         return Fluent(groupby(gen, key)).map(lambda x: (x[0], Fluent(x[1])))
 

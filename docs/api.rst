@@ -8,12 +8,6 @@ API Reference
 Container
 =========
 
-`flu` is the container
-
-----
-
-**Entry point**
-
 .. autoclass:: Fluent
 .. autoclass:: flu
 
@@ -23,26 +17,15 @@ Container
 Grouping
 ========
 
-Some method description texts
-
-----
-
-**Second heading**
-
 .. automethod:: Fluent.chunk
 .. automethod:: Fluent.group_by
 .. automethod:: Fluent.window
 .. automethod:: Fluent.flatten
 
+----
 
 Selecting
 =========
-
-Some method description texts
-
-----
-
-**Second heading**
 
 .. automethod:: Fluent.filter
 .. automethod:: Fluent.take
@@ -50,14 +33,10 @@ Some method description texts
 .. automethod:: Fluent.drop_while
 .. automethod:: Fluent.unique
 
-Transforming
-============
-
-Some method description texts
-
 ----
 
-**Second heading**
+Transforming
+============
 
 .. automethod:: Fluent.map
 .. automethod:: Fluent.map_item
@@ -68,24 +47,13 @@ Some method description texts
 Side Effects
 ============
 
-Some method description texts
-
-----
-
-**Second heading**
-
 .. automethod:: Fluent.rate_limit
 .. automethod:: Fluent.side_effect
 
+----
 
 Summarizing
 ===========
-
-These tools yield groups of items from a source iterable.
-
-----
-
-**Second heading**
 
 .. automethod:: Fluent.count
 .. automethod:: Fluent.sum
@@ -97,15 +65,10 @@ These tools yield groups of items from a source iterable.
 .. automethod:: Fluent.tail
 .. automethod:: Fluent.collect
 
+----
 
 Non-Constant Memory
 ===================
-
-These tools yield groups of items from a source iterable.
-
-----
-
-**Second heading**
 
 .. automethod:: Fluent.sort
 .. automethod:: Fluent.group_by

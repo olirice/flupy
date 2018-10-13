@@ -1,9 +1,15 @@
-=======
-Welcome
-=======
+================
+Welcome to Flupy
+================
 
 flupy is a lightweight library and CLI for implementing python data pipelines with a fluent_ interface.::
 
+
+Under the hood, flupy is built on generators. That means its pipelines evaluate lazily and use a constant amount of memory no matter how much data are being processed. This allows flupy to tackle Petabyte scale data manipulation as easily as it operates on a small list.
+
+API
+===
+::
 
     import json
     from flupy import flu
@@ -18,16 +24,6 @@ flupy is a lightweight library and CLI for implementing python data pipelines wi
     # 14
 
 
-Under the hood, flupy is built on generators. That means its pipelines evaluate lazily and use a constant amount of memory no matter how much data are being processed. This allows flupy to tackle Petabyte scale data manipulation as effortlessly as it operates on an empty list.
-
-Goals
-=====
-
-- A minimal and intuitive API + CLI
-- Lazy, memory efficient evaluation
-- Platform agnositc, dependency-free implementation
-
-
 CLI
 ===
 
@@ -37,7 +33,6 @@ The flupy library, and python runtime, are also accessible from `flu` command li
 
 
 For more information about the `flu` command see :doc:`command line <./cli>`.
-
 
 
 Getting Started
@@ -77,23 +72,3 @@ A real-world example: Which companies did our customers, who signed up after 200
     
     print(pipeline)
     # [('google.com', 1), ('ibm.com', 2)]
-
-
-
-
-
-Influencing Projects
-====================
-
-- more-itertools_
-- pyspark_
-- pydash_
-- sqlalchemy_
-- scala_
-
-.. _fluent: https://en.wikipedia.org/wiki/Fluent_interface
-.. _more-itertools: https://github.com/erikrose/more-itertools
-.. _pyspark: http://spark.apache.org/docs/2.2.0/api/python/pyspark.html
-.. _sqlalchemy: https://www.sqlalchemy.org/
-.. _pydash: https://pydash.readthedocs.io/en/latest/index.html
-.. _scala: https://www.scala-lang.org/

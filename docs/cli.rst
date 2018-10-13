@@ -7,9 +7,31 @@ The flupy CLI is a platform agnostic application that give full access to the fl
 
 .. automodule:: flupy
 
+Usage
+=====
 
-Basic Usage
-===========
+::
+
+	$ flu -h
+
+	usage: flu [-h] [-v] [-f FILE] [-i [IMPORT [IMPORT ...]]] command
+
+	flupy: a fluent interface for python
+
+	positional arguments:
+	  command               command to execute against input
+
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -v, --version         show program's version number and exit
+	  -f FILE, --file FILE  path to input file
+	  -i [IMPORT [IMPORT ...]], --import [IMPORT [IMPORT ...]]
+							modules to import
+							Syntax: <module>:<object>:<alias>
+
+
+Basic Examples
+==============
 
 When input data are provided to the `flu` command, an instance of the Fluent/flu object is preprepared with that input and stored in the the variable `_`.
 
@@ -48,8 +70,8 @@ Import syntax
 
 .. note:: for multiple imports pass `-i` multiple times
 
-Examples
---------
+Import Examples
+---------------
 **import os**::
 
     $ flu 'flu(os.environ)' -i os
@@ -65,28 +87,5 @@ Examples
 **import os as opsys**::
 
     $ flu 'flu(opsys.environ)' -i os::opsys
-
-
-Complete Usage
-==============
-
-::
-
-	$ flu -h
-
-	usage: flu [-h] [-v] [-f FILE] [-i [IMPORT [IMPORT ...]]] command
-
-	flupy: a fluent interface for python
-
-	positional arguments:
-	  command               command to execute against input
-
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -v, --version         show program's version number and exit
-	  -f FILE, --file FILE  path to input file
-	  -i [IMPORT [IMPORT ...]], --import [IMPORT [IMPORT ...]]
-							modules to import
-							Syntax: <module>:<object>:<alias>
 
 
