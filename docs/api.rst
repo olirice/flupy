@@ -110,5 +110,3 @@ These tools yield groups of items from a source iterable.
 .. automethod:: Fluent.sort
 .. automethod:: Fluent.group_by
 .. automethod:: Fluent.unique
-
-----

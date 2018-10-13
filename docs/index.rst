@@ -1,4 +1,4 @@
-.. include:: ../README.rst
+.. include:: ./welcome.rst
 
 Contents
 ========
@@ -6,7 +6,6 @@ Contents
 .. toctree::
     :maxdepth: 2
 
-    welcome 
     api
     cli
 

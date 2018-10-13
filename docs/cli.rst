@@ -30,7 +30,7 @@ Example: Show lines of a log file that are errors::
 
 No Input data
 -------------
-flupy does not require input data if it can be generated from within python e.g. with `range(10)`. When no input data are provided, iterable at the beginning of the flupy command must be wraped into a Fluent/flu instance::
+flupy does not require input data if it can be generated from within python e.g. with `range(10)`. When no input data are provided, iterable at the beginning of the flupy command must be wraped into a Fluent/flu instance.
 
 Example: Even integers less than 10::
 
