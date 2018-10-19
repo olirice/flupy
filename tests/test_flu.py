@@ -125,6 +125,7 @@ class TestFlu(unittest.TestCase):
                                   .collect()
         assert ffile.is_open == False
         assert ffile.content == [0, 1, 2, 3, 4]
+        assert gen_result == [0, 1, 2, 3, 4]
 
     def test_sort(self):
         gen = flu(range(3, 0, -1)).sort()

@@ -275,7 +275,8 @@ class Fluent:
                 before()
 
             for x in self:
-                yield func(x)
+                func(x)
+                yield x
 
         finally:
             if after is not None:
