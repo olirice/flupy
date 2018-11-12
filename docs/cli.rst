@@ -48,7 +48,7 @@ Reading from a file
 -------------------
 Example: Show lines of a log file that are errors::
 
-    $ flu -f logs.txt flu '_.filter(lambda x: x.starswith("ERROR"))'
+    $ flu -f logs.txt '_.filter(lambda x: x.starswith("ERROR"))'
 
 No Input data
 -------------
