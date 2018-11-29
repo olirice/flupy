@@ -71,37 +71,3 @@ optional arguments:
                                 'from os import environ' = '-i os:environ'
                                 'from os import environ as env' = '-i os:environ:env'
 ````
-#### Pipe Input
-```
-$ cat logs.txt | flu "_.filter(lambda x: 'ERROR:' in x).head()"
-```
-
-#### File Input
-```
-$ flu -f logs.txt "_.filter(lambda x: 'ERROR:' in x).head()"
-```
-
-#### No Input
-```
-$ flu "flu(range(100)).takewhile(lambda x: x < 20)"
-```
-
-#### Helper Functions
-```walk_files(path='.') = recursively walk files starting at *path*```
-
-```walk_dirs(path='.') = recursively walk directories starting at *path*```
-
-
-#### Examples:
-
-Path to all .txt files recursively, starting from current directly
-```
-flu 'walk_files().filter(lambda x: x.endswith(".txt"))'
-```
-
-First 100 prime numbers
-```
-flu 'flu(count(2)).filter(lambda z: flu(range(2, z-1)).filter(lambda x: z % x == 0).head(1) == []) \
-        .take(100)' -i itertools:count
-```
-
