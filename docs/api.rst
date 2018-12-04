@@ -59,6 +59,7 @@ Summarizing
 .. automethod:: Fluent.sum
 .. automethod:: Fluent.min
 .. automethod:: Fluent.max
+.. automethod:: Fluent.reduce
 .. automethod:: Fluent.first
 .. automethod:: Fluent.last
 .. automethod:: Fluent.head
