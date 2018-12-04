@@ -206,7 +206,7 @@ class Fluent:
                [(1, <Fluent object>), ('a', <Fluent object>)]
 
                >>> flu.group_by([2, 3, 2, 3]).collect()
-               [(4, <Fluent object>), (9, <Fluent object>)]
+               [24, <Fluent object>), (3, <Fluent object>)]
 
         Or, if the iterable is pre-sorted
 
