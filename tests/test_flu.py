@@ -22,6 +22,10 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3))
         assert gen.sum() == 3
 
+    def test_reduce(self):
+        gen = flu(range(5))
+        assert gen.reduce(lambda x, y: x+y) == 10
+
     def test_count(self):
         gen = flu(range(3))
         assert gen.count() == 3
@@ -92,19 +96,19 @@ class TestFlu(unittest.TestCase):
             def __init__(self):
                 self.is_open = False
                 self.content = []
-            
+
             def write(self, text):
                 if self.is_open:
                     self.content.append(text)
                 else:
                     raise IOError('fake file is not open for writing')
-            
+
             def open(self):
                 self.is_open = True
-            
+
             def close(self):
                 self.is_open = False
-        
+
         # Test the fake file
         ffile = FakeFile()
         ffile.open()
@@ -119,7 +123,7 @@ class TestFlu(unittest.TestCase):
 
         with self.assertRaises(IOError):
             flu(range(5)).side_effect(ffile.write).collect()
-        
+
 
         gen_result = flu(range(5)).side_effect(ffile.write, before=ffile.open, after=ffile.close) \
                                   .collect()

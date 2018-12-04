@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from functools import wraps
+from functools import wraps, reduce
 from itertools import dropwhile, groupby, islice, takewhile, zip_longest
 from typing import (Callable, Collection, Container, ContextManager, Hashable, Iterable, Optional,
                     Type, Any, Deque)
@@ -330,6 +330,15 @@ class Fluent:
         for val in self._iterable:
             if func(val, *args, **kwargs):
                 yield val
+
+    @self_to_flu
+    def reduce(self, func: Callable):
+        """Apply a function of two arguments cumulatively to the items of a sequence,
+        from left import to right, so as to reduce the sequence to a single value.
+
+            >>> flu(range(5)).reduce(lambda x, y: x+y)
+        """
+        return reduce(func, self)
 
     @as_flu
     @self_to_flu
