@@ -337,6 +337,7 @@ class Fluent:
         from left import to right, so as to reduce the sequence to a single value.
 
             >>> flu(range(5)).reduce(lambda x, y: x+y)
+            10
         """
         return reduce(func, self)
 
