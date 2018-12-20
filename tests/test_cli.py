@@ -1,8 +1,6 @@
 import sys
 import unittest
-from itertools import count, cycle
 
-from flupy import as_flu, flu
 from flupy.cli.cli import parse_args, execute_imports
 
 

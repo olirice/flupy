@@ -2,7 +2,7 @@ import sys
 import unittest
 from itertools import count, cycle
 
-from flupy import as_flu, flu
+from flupy import flu
 
 
 class TestFlu(unittest.TestCase):
@@ -169,7 +169,7 @@ class TestFlu(unittest.TestCase):
         assert gen.collect() == [0, 1, 2, 3]
 
     def test_drop_while(self):
-        gen = flu([1,2,3,4,3,2,1]).drop_while(lambda x: x < 4)
+        gen = flu([1, 2, 3, 4, 3, 2, 1]).drop_while(lambda x: x < 4)
         assert gen.collect() == [4, 3, 2, 1]
 
     def test_group_by(self):
@@ -277,13 +277,6 @@ class TestFlu(unittest.TestCase):
         gen = flu(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
         assert [x for x in gen] == [1, 2, (3, [4]), 'r', 'b', 's', 'd', 'a', 'b', 'c', (7,)]
 
-    def test_as_flu(self):
-
-        @as_flu
-        def myfunc():
-            return [1, 2, 3]
-        assert myfunc().take(1).collect() == [1]
-
-
+    
 if __name__ == '__main__':
     uniittest.main()

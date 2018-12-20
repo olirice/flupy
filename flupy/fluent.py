@@ -5,21 +5,12 @@ from itertools import dropwhile, groupby, islice, takewhile, zip_longest
 from typing import (Callable, Collection, Container, ContextManager, Hashable, Iterable, Optional,
                     Type, Any, Deque)
 
-__all__ = ["flu", "as_flu", "with_iter"]
+__all__ = ["flu", "with_iter"]
 
 
 class Empty: ...
 
 def identity(x): return x
-
-def as_flu(func: Callable) -> Callable:
-    """Decorates a function to make its output a Fluent instance"""
-
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return Fluent(func(*args, **kwargs))
-
-    return wrapper
 
 def self_to_flu(func: Callable) -> Callable:
     """Decorates class method to first argument to a Fluent"""
@@ -178,7 +169,6 @@ class Fluent:
     ### End Summary ###
 
     ### Non-Constant Memory ###
-    @as_flu
     @self_to_flu
     def sort(self, key: Optional[Callable[[Any], Any]] = None, reverse=False):
         """Sort iterable by *key* function if provided or identity otherwise
@@ -194,7 +184,7 @@ class Fluent:
                >>> flu.sort([3,-6,1], key=abs).collect()
                [1, 3, -6]
         """
-        return sorted(self, key=key, reverse=reverse)
+        return Fluent(sorted(self, key=key, reverse=reverse))
 
     @self_to_flu
     def group_by(self, key=identity, sort: bool = True):
@@ -216,7 +206,6 @@ class Fluent:
         gen = self.sort(key) if sort else self
         return Fluent(groupby(gen, key)).map(lambda x: (x[0], Fluent(x[1])))
 
-    @as_flu
     @self_to_flu
     def unique(self, key=lambda x: x):
         """Yield elements that are unique by a *key*.
@@ -227,18 +216,19 @@ class Fluent:
                 >>> flu.unique([2, -3, -2, 3], key=abs).collect()
                 [2, -3]
         """
-        seen = set()
-        for x in self:
-            x_hash = key(x)
-            if x_hash in seen:
-                continue
-            else:
-                seen.add(x_hash)
-                yield x
+        def _impl():
+            seen = set()
+            for x in self:
+                x_hash = key(x)
+                if x_hash in seen:
+                    continue
+                else:
+                    seen.add(x_hash)
+                    yield x
+        return Fluent(_impl())
     ### End Non-Constant Memory ###
 
     ### Side Effect ###
-    @as_flu
     @self_to_flu
     def rate_limit(self, per_second=100):
         """Restrict consumption of iterable to n item  *per_second*
@@ -249,14 +239,15 @@ class Fluent:
                 >>> print('Runtime', time.time() - start_time)
                 1.00126 # approximately 1 second for 3 items
         """
-        wait_time = 1.0 / per_second
-        for val in self:
-            start_time = time.time()
-            yield val
-            call_duration = time.time() - start_time
-            time.sleep(max(wait_time - call_duration, 0.0))
+        def _impl():
+            wait_time = 1.0 / per_second
+            for val in self:
+                start_time = time.time()
+                yield val
+                call_duration = time.time() - start_time
+                time.sleep(max(wait_time - call_duration, 0.0))
+        return Fluent(_impl())
 
-    @as_flu
     @self_to_flu
     def side_effect(self, func: Callable, before: Optional[Callable] = None, after: Optional[Callable] = None):
         """Invoke *func* for each item in the iterable before yielding the item.
@@ -270,20 +261,21 @@ class Fluent:
             Collected 1
             [0, 1]
         """
-        try:
-            if before is not None:
-                before()
+        def _impl():
+            try:
+                if before is not None:
+                    before()
 
-            for x in self:
-                func(x)
-                yield x
+                for x in self:
+                    func(x)
+                    yield x
 
-        finally:
-            if after is not None:
-                after()
+            finally:
+                if after is not None:
+                    after()
+        return Fluent(_impl())
     ### End Side Effect ###
 
-    @as_flu
     @self_to_flu
     def map(self, func: Callable, *args, **kwargs):
         """Apply *func* to each element of iterable
@@ -291,9 +283,10 @@ class Fluent:
             >>> flu(range(5)).map(lambda x: x*x).collect()
             [0, 1, 4, 9, 16]
         """
-
-        for val in self._iterable:
-            yield func(val, *args, **kwargs)
+        def _impl():
+            for val in self._iterable:
+                yield func(val, *args, **kwargs)
+        return Fluent(_impl())
 
     @self_to_flu
     def map_item(self, item: Hashable):
@@ -318,7 +311,6 @@ class Fluent:
         """
         return self.map(lambda x: getattr(x, attr))
 
-    @as_flu
     @self_to_flu
     def filter(self, func: Callable, *args, **kwargs):
         """Yield elements of iterable where *func* returns truthy
@@ -326,10 +318,11 @@ class Fluent:
             >>> flu(range(10)).filter(lambda x: x % 2 == 0).collect()
             [0, 2, 4, 6, 8]
         """
-
-        for val in self._iterable:
-            if func(val, *args, **kwargs):
-                yield val
+        def _impl():
+            for val in self._iterable:
+                if func(val, *args, **kwargs):
+                    yield val
+        return Fluent(_impl())
 
     @self_to_flu
     def reduce(self, func: Callable):
@@ -341,7 +334,6 @@ class Fluent:
         """
         return reduce(func, self)
 
-    @as_flu
     @self_to_flu
     def zip(self, *iterable: Iterable):
         """Yields tuples containing the i-th element from the i-th
@@ -350,9 +342,8 @@ class Fluent:
             >>> flu(range(5)).zip(range(3, 0, -1)).collect()
             [(0, 3), (1, 2), (2, 1)]
         """
-        return zip(self, *iterable)
+        return Fluent(zip(self, *iterable))
 
-    @as_flu
     @self_to_flu
     def zip_longest(self, *iterable: Iterable, fill_value=None):
         """Yields tuples containing the i-th element from the i-th
@@ -367,9 +358,8 @@ class Fluent:
             >>> flu(range(5)).zip_longest(range(3, 0, -1), fill_value='a').collect()
             [(0, 3), (1, 2), (2, 1), (3, 'a'), (4, 'a')]
         """
-        return zip_longest(self, *iterable, fillvalue=fill_value)
+        return Fluent(zip_longest(self, *iterable, fillvalue=fill_value))
 
-    @as_flu
     @self_to_flu
     def enumerate(self, start: int = 0):
         """Yields tuples from the chainable where the first element
@@ -378,9 +368,8 @@ class Fluent:
             >>> flu(range(5)).zip_longest(range(3, 0, -1)).collect()
             [(0, 3), (1, 2), (2, 1), (3, None), (4, None)]
         """
-        return enumerate(self, start=start)
+        return Fluent(enumerate(self, start=start))
 
-    @as_flu
     @self_to_flu
     def take(self, n: Optional[int] = None):
         """Yield first *n* items of the iterable
@@ -388,9 +377,8 @@ class Fluent:
             >>> flu(range(10)).take(2).collect()
             [0, 1]
         """
-        return islice(self._iterable, n)
+        return Fluent(islice(self._iterable, n))
 
-    @as_flu
     @self_to_flu
     def take_while(self, predicate: Callable):
         """Yield elements from the chainable so long as the predicate is true
@@ -398,9 +386,8 @@ class Fluent:
             >>> flu(range(10)).take_while(lambda x: x < 3).collect()
             [0, 1, 2]
         """
-        return takewhile(predicate, self._iterable)
+        return Fluent(takewhile(predicate, self._iterable))
 
-    @as_flu
     @self_to_flu
     def drop_while(self, predicate: Callable):
         """Drop elements from the chainable as long as the predicate is true;
@@ -409,9 +396,8 @@ class Fluent:
             >>> flu(range(10)).drop_while(lambda x: x < 3).collect()
             [4, 5, 6, 7, 8, 9]
         """
-        return dropwhile(predicate, self._iterable)
+        return Fluent(dropwhile(predicate, self._iterable))
 
-    @as_flu
     @self_to_flu
     def chunk(self, n: int):
         """Yield lists of elements from iterable in groups of *n*
@@ -421,14 +407,15 @@ class Fluent:
             >>> flu(range(10)).chunk(3).collect()
             [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
         """
-        while True:
-            out = list(self.take(n))
-            if out:
-                yield out
-            else:
-                return
+        def _impl():
+            while True:
+                out = list(self.take(n))
+                if out:
+                    yield out
+                else:
+                    return
+        return Fluent(_impl())
 
-    @as_flu
     @self_to_flu
     def flatten(self, depth: int = 1, base_type: Type = None, iterate_strings=False):
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
@@ -445,7 +432,6 @@ class Fluent:
 
             >>> flu([[0, [1, 2]], [[3, 4], 5]]).flatten(depth=2).collect()
             [0, 1, 2, 3, 4, 5]
-
 
             >>> flu([[0, [1, 2]], [[3, 4], 5]]).flatten(depth=2).collect()
             [0, 1, 2, 3, 4, 5]
@@ -474,9 +460,8 @@ class Fluent:
                     for val in walk(child, level + 1):
                         yield val
 
-        return walk(self, level=0)
+        return Fluent(walk(self, level=0))
 
-    @as_flu
     @self_to_flu
     def window(self, n: int, step: int = 1, fill_value: Any= None):
         """Yield a sliding window of width *n* over the given iterable.
@@ -498,36 +483,38 @@ class Fluent:
             >>> flu(range(9)).window(n=4, step=3, fill_value=-1).collect()
             [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
         """
-        if n < 0:
-            raise ValueError("n must be >= 0")
-        if n == 0:
-            yield tuple()
-            return
-        if step < 1:
-            raise ValueError("step must be >= 1")
+        def _impl():
+            if n < 0:
+                raise ValueError("n must be >= 0")
+            if n == 0:
+                yield tuple()
+                return
+            if step < 1:
+                raise ValueError("step must be >= 1")
 
-        window: Deque[Any] = deque([], n)
-        append = window.append
+            window: Deque[Any] = deque([], n)
+            append = window.append
 
-        # Initial deque fill
-        for _ in range(n):
-            append(next(self, fill_value))
-        yield tuple(window)
-
-        # Appending new items to the right causes old items to fall off the left
-        i = 0
-        for item in self:
-            append(item)
-            i = (i + 1) % step
-            if i % step == 0:
-                yield tuple(window)
-
-        # If there are items from the iterable in the window, pad with the given
-        # value and emit them.
-        if (i % step) and (step - i < n):
-            for _ in range(step - i):
-                append(fill_value)
+            # Initial deque fill
+            for _ in range(n):
+                append(next(self, fill_value))
             yield tuple(window)
+
+            # Appending new items to the right causes old items to fall off the left
+            i = 0
+            for item in self:
+                append(item)
+                i = (i + 1) % step
+                if i % step == 0:
+                    yield tuple(window)
+
+            # If there are items from the iterable in the window, pad with the given
+            # value and emit them.
+            if (i % step) and (step - i < n):
+                for _ in range(step - i):
+                    append(fill_value)
+                yield tuple(window)
+        return Fluent(_impl())
 
     def __iter__(self):
         return self
