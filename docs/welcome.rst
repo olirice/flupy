@@ -2,7 +2,7 @@
 Welcome to Flupy
 ================
 
-flupy is a lightweight library and CLI for implementing python data pipelines with a fluent_ interface.::
+flupy is a lightweight library and CLI for implementing python data pipelines with a fluent interface.
 
 
 Under the hood, flupy is built on generators. That means its pipelines evaluate lazily and use a constant amount of memory no matter how much data are being processed. This allows flupy to tackle Petabyte scale data manipulation as easily as it operates on a small list.
@@ -72,3 +72,4 @@ A real-world example: Which companies did our customers, who signed up after 200
     
     print(pipeline)
     # [('google.com', 1), ('ibm.com', 2)]
+
