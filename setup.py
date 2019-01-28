@@ -25,7 +25,7 @@ def read_package_variable(key, filename='__init__.py'):
         for line in module:
             parts = line.strip().split(' ', 2)
             if parts[:-1] == [key, '=']:
-                return parts[-1].strip("'")
+                return parts[-1].strip("'").strip('"')
     logging.warning("'%s' not found in '%s'", key, module_path)
     return None
 
