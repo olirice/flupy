@@ -36,7 +36,7 @@ Basic Examples
 When input data are provided to the `flu` command, an instance of the Fluent/flu object is preprepared with that input and stored in the the variable `_`.
 
 
-.. note:: for more information on writing flupy commands, see the :ref:`API Reference`
+.. note:: for more information on writing flupy commands, see API Reference
 
 Piping from another command (stdin)
 -----------------------------------
