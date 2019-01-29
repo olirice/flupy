@@ -2,23 +2,40 @@ import time
 from collections import deque
 from functools import wraps, reduce
 from itertools import dropwhile, groupby, islice, takewhile, zip_longest
-from typing import (Callable, Collection, Container, ContextManager, Hashable, Iterable, Optional,
-                    Type, Any, Deque)
+from typing import (
+    Callable,
+    Collection,
+    Container,
+    ContextManager,
+    Hashable,
+    Iterable,
+    Optional,
+    Type,
+    Any,
+    Deque,
+)
+from random import sample
 
 __all__ = ["flu", "with_iter"]
 
 
-class Empty: ...
+class Empty:
+    ...
 
-def identity(x): return x
+
+def identity(x):
+    return x
+
 
 def self_to_flu(func: Callable) -> Callable:
     """Decorates class method to first argument to a Fluent"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if args:
             args = [Fluent(args[0])] + list(args[1:])
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -42,7 +59,7 @@ class Fluent:
             try:
                 return next(islice(self._iterable, key, key + 1))
             except StopIteration:
-                raise IndexError('Fluent index out of range')
+                raise IndexError("Fluent index out of range")
         elif isinstance(key, slice):
             return Fluent(islice(self._iterable, key.start, key.stop, key.step))
         else:
@@ -118,7 +135,7 @@ class Fluent:
         for x in self:
             return x
         if isinstance(x, Empty):
-            raise IndexError('Empty iterator')
+            raise IndexError("Empty iterator")
         return default
 
     @self_to_flu
@@ -134,7 +151,7 @@ class Fluent:
         for x in self:
             pass
         if isinstance(x, Empty):
-            raise IndexError('Empty iterator')
+            raise IndexError("Empty iterator")
         return x
 
     @self_to_flu
@@ -187,6 +204,18 @@ class Fluent:
         return Fluent(sorted(self, key=key, reverse=reverse))
 
     @self_to_flu
+    def shuffle(self):
+        """Randomize the order of elements in the interable
+
+        Note: shuffle loads the entire iterable into memory
+
+               >>> flu.shuffle([3,6,1]).collect()
+               [6, 1, 3]
+        """
+        dat = self.collect()
+        return Fluent(sample(dat, len(dat)))
+
+    @self_to_flu
     def group_by(self, key=identity, sort: bool = True):
         """Yield consecutive keys and groups from the iterable. By default *key* is the identity function
 
@@ -216,6 +245,7 @@ class Fluent:
                 >>> flu.unique([2, -3, -2, 3], key=abs).collect()
                 [2, -3]
         """
+
         def _impl():
             seen = set()
             for x in self:
@@ -225,7 +255,9 @@ class Fluent:
                 else:
                     seen.add(x_hash)
                     yield x
+
         return Fluent(_impl())
+
     ### End Non-Constant Memory ###
 
     ### Side Effect ###
@@ -239,6 +271,7 @@ class Fluent:
                 >>> print('Runtime', time.time() - start_time)
                 1.00126 # approximately 1 second for 3 items
         """
+
         def _impl():
             wait_time = 1.0 / per_second
             for val in self:
@@ -246,10 +279,16 @@ class Fluent:
                 yield val
                 call_duration = time.time() - start_time
                 time.sleep(max(wait_time - call_duration, 0.0))
+
         return Fluent(_impl())
 
     @self_to_flu
-    def side_effect(self, func: Callable, before: Optional[Callable] = None, after: Optional[Callable] = None):
+    def side_effect(
+        self,
+        func: Callable,
+        before: Optional[Callable] = None,
+        after: Optional[Callable] = None,
+    ):
         """Invoke *func* for each item in the iterable before yielding the item.
         *func* takes a single argument and the output is discarded
         *before* and *after* are optional functions that take no parameters and are executed once before iteration begins
@@ -261,6 +300,7 @@ class Fluent:
             Collected 1
             [0, 1]
         """
+
         def _impl():
             try:
                 if before is not None:
@@ -273,7 +313,9 @@ class Fluent:
             finally:
                 if after is not None:
                     after()
+
         return Fluent(_impl())
+
     ### End Side Effect ###
 
     @self_to_flu
@@ -283,9 +325,11 @@ class Fluent:
             >>> flu(range(5)).map(lambda x: x*x).collect()
             [0, 1, 4, 9, 16]
         """
+
         def _impl():
             for val in self._iterable:
                 yield func(val, *args, **kwargs)
+
         return Fluent(_impl())
 
     @self_to_flu
@@ -318,10 +362,12 @@ class Fluent:
             >>> flu(range(10)).filter(lambda x: x % 2 == 0).collect()
             [0, 2, 4, 6, 8]
         """
+
         def _impl():
             for val in self._iterable:
                 if func(val, *args, **kwargs):
                     yield val
+
         return Fluent(_impl())
 
     @self_to_flu
@@ -407,6 +453,7 @@ class Fluent:
             >>> flu(range(10)).chunk(3).collect()
             [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
         """
+
         def _impl():
             while True:
                 out = list(self.take(n))
@@ -414,6 +461,7 @@ class Fluent:
                     yield out
                 else:
                     return
+
         return Fluent(_impl())
 
     @self_to_flu
@@ -442,6 +490,7 @@ class Fluent:
             >>> flu([[2, 0], 'abc', 3, [4]]).flatten(iterate_strings=True).collect()
             [2, 0, 'a', 'b', 'c', 3, 4]
         """
+
         def walk(node, level):
             if (
                 ((depth is not None) and (level > depth))
@@ -463,7 +512,7 @@ class Fluent:
         return Fluent(walk(self, level=0))
 
     @self_to_flu
-    def window(self, n: int, step: int = 1, fill_value: Any= None):
+    def window(self, n: int, step: int = 1, fill_value: Any = None):
         """Yield a sliding window of width *n* over the given iterable.
 
         Each window will advance in increments of *step*:
@@ -483,6 +532,7 @@ class Fluent:
             >>> flu(range(9)).window(n=4, step=3, fill_value=-1).collect()
             [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
         """
+
         def _impl():
             if n < 0:
                 raise ValueError("n must be >= 0")
@@ -514,6 +564,7 @@ class Fluent:
                 for _ in range(step - i):
                     append(fill_value)
                 yield tuple(window)
+
         return Fluent(_impl())
 
     def __iter__(self):
@@ -524,6 +575,7 @@ class Fluent:
 
 
 flu = Fluent
+
 
 def with_iter(context_manager: ContextManager):
     with context_manager as cm:

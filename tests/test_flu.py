@@ -135,6 +135,13 @@ class TestFlu(unittest.TestCase):
         gen = flu(range(3, 0, -1)).sort()
         assert gen.collect() == [1, 2, 3]
 
+    def test_shuffle(self):
+        original_order = list(range(10000))
+        new_order = flu(original_order).shuffle().collect()
+        assert new_order != original_order
+        assert len(new_order) == len(original_order)
+        assert sum(new_order) == sum(original_order)
+
     def test_map(self):
         gen = flu(range(3)).map(lambda x: x+2)
         assert gen.collect() == [2, 3, 4]

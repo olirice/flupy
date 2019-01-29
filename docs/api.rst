@@ -41,6 +41,7 @@ Transforming
 .. automethod:: Fluent.map
 .. automethod:: Fluent.map_item
 .. automethod:: Fluent.map_attr
+.. automethod:: Fluent.reduce
 
 ----
 
@@ -72,5 +73,6 @@ Non-Constant Memory
 ===================
 
 .. automethod:: Fluent.sort
+.. automethod:: Fluent.shuffle
 .. automethod:: Fluent.group_by
 .. automethod:: Fluent.unique
