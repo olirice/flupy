@@ -49,7 +49,7 @@ for item in pipeline:
 ```
 
 ### CLI
-flupy has a highly compatible command line interface that brings lazy piplines to your shell. Inputs to the `flu` command are automatically populated into a `Fluent` context named `_`.
+The flupy command line interface brings the same syntax for lazy piplines to your shell. Inputs to the `flu` command are auto-populated into a `Fluent` context named `_`.
 ````
 $ flu -h
 usage: flu [-h] [-f FILE] [-i [IMPORT [IMPORT ...]]] command
