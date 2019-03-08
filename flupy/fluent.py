@@ -1,20 +1,10 @@
 import time
 from collections import deque
-from functools import wraps, reduce
+from functools import reduce, wraps
 from itertools import dropwhile, groupby, islice, takewhile, zip_longest
-from typing import (
-    Callable,
-    Collection,
-    Container,
-    ContextManager,
-    Hashable,
-    Iterable,
-    Optional,
-    Type,
-    Any,
-    Deque,
-)
 from random import sample
+from typing import (Any, Callable, Collection, Container, ContextManager, Deque, Hashable, Iterable,
+                    Optional, Type)
 
 __all__ = ["flu", "with_iter"]
 

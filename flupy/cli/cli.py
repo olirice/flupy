@@ -2,10 +2,9 @@ import argparse
 import importlib
 import sys
 from signal import SIG_DFL, SIGPIPE, signal
-
 from typing import List
 
-from flupy import flu, with_iter, __version__
+from flupy import __version__, flu
 from flupy.cli.utils import walk_dirs, walk_files
 
 
