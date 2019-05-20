@@ -284,6 +284,22 @@ class TestFlu(unittest.TestCase):
         gen = flu(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
         assert [x for x in gen] == [1, 2, (3, [4]), 'r', 'b', 's', 'd', 'a', 'b', 'c', (7,)]
 
+    def test_tee(self):
+        # Default unpacking
+        gen1, gen2 = flu(range(100)).tee()
+        assert gen1.sum() == gen2.sum()
+
+        # adjusting *n* paramter
+        gen1, gen2, gen3 = flu(range(100)).tee(3)
+        assert gen1.sum() == gen3.sum()
+
+        # No sync progress
+        gen1, gen2 = flu(range(100)).tee()
+        assert next(gen1) == next(gen2)
+
+        # No break chaining
+        assert flu(range(5)).tee().map(sum).sum() == 20
+
     
 if __name__ == '__main__':
     uniittest.main()

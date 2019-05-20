@@ -1,10 +1,20 @@
 import time
 from collections import deque
 from functools import reduce, wraps
-from itertools import dropwhile, groupby, islice, takewhile, zip_longest
+from itertools import dropwhile, groupby, islice, takewhile, zip_longest, tee
 from random import sample
-from typing import (Any, Callable, Collection, Container, ContextManager, Deque, Hashable, Iterable,
-                    Optional, Type)
+from typing import (
+    Any,
+    Callable,
+    Collection,
+    Container,
+    ContextManager,
+    Deque,
+    Hashable,
+    Iterable,
+    Optional,
+    Type,
+)
 
 __all__ = ["flu", "with_iter"]
 
@@ -562,6 +572,22 @@ class Fluent:
 
     def __next__(self):
         return next(self._iterable)
+
+    @self_to_flu
+    def tee(self, n: int = 2):
+        """Return n independent iterators from a single iterable
+
+        once tee() has made a split, the original iterable should not be used
+        anywhere else; otherwise, the iterable could get advanced without the
+        tee objects being informed
+
+            >>> copy1, copy2 = flu(range(5)).tee()
+            >>> copy1.sum()
+            10
+            >>> copy2.collect()
+            [0, 1, 2, 3, 4]
+        """
+        return Fluent(tee(self, n)).map(Fluent)
 
 
 flu = Fluent
