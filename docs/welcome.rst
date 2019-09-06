@@ -51,7 +51,7 @@ Python 3.6+
 Example
 =======
 
-A real-world example: Which companies did our customers, who signed up after 2008, come from?::
+Since 2008, what domains are our customers comming from?::
 
 
     from flupy import flu
@@ -66,7 +66,7 @@ A real-world example: Which companies did our customers, who signed up after 200
     pipeline = flu(customers).filter(lambda x: x['signup_year'] > 2008) \
                              .map_item('email') \
                              .map(lambda x: x.partition('@')[2]) \
-                             .group_by() \
+                             .group_by() \ # defaults to identity
                              .map(lambda x: (x[0], x[1].count())) \
                              .collect()
     
