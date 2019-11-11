@@ -196,6 +196,20 @@ class TestFlu(unittest.TestCase):
         gen = flu([1, 2, 1, 2]).group_by(lambda x: x, sort=True)
         assert gen.count() == 2
 
+        # Identity Function
+        points = [
+                {'x': 1, 'y': 0},
+                {'x': 4, 'y': 3},
+                {'x': 1, 'y': 5}
+        ]
+        key_func = lambda u: u['x']
+        gen = flu.group_by(points, key=key_func, sort=True).collect()
+        assert len(gen) == 2
+        assert gen[0][0] == 1
+        assert gen[1][0] == 4
+        assert len(gen[0][1].collect()) == 2
+        assert len(gen[1][1].collect()) == 1
+
     def test_chunk(self):
         gen = flu(range(5)).chunk(2)
         assert gen.collect() == [[0, 1], [2, 3], [4]]

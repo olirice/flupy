@@ -217,23 +217,34 @@ class Fluent:
 
     @self_to_flu
     def group_by(self, key=identity, sort: bool = True):
-        """Yield consecutive keys and groups from the iterable. By default *key* is the identity function
+        """Yield consecutive keys and groups from the iterable
 
-        When the iterable is pre-sorted by *key* setting *sort* to True will reduce the memory footprint to a constant
+        *key* is a function to compute a key value used in grouping and sorting for each element. *key* defaults to an identity function which returns the unchaged element
 
-               >>> flu.group_by([1, 'a', 'a', 1, 1]).collect()
-               [(1, <Fluent object>), ('a', <Fluent object>)]
+        When the iterable is pre-sorted according to *key*, setting *sort* to False will prevent loading the dataset into memory and improve performance
 
-               >>> flu.group_by([2, 3, 2, 3]).collect()
-               [24, <Fluent object>), (3, <Fluent object>)]
+               >>> flu.group_by([2, 4, 2, 4]).collect()
+               [2, <Fluent object>), (4, <Fluent object>)]
 
         Or, if the iterable is pre-sorted
 
                >>> flu.group_by([2, 2, 5, 5], sort=False).collect()
                [(2, <Fluent object>), (5, <Fluent object>)]
+
+        Using a key function
+               >>>  points = [
+                        {'x': 1, 'y': 0},
+                        {'x': 4, 'y': 3},
+                        {'x': 1, 'y': 5}
+                    ]
+               >>> key_func = lambda u: u['x']
+               >>> flu.group_by(points, key=key_func, sort=True).collect()
+               [(1, <Fluent object>), (4, <Fluent object>)]
                """
         gen = self.sort(key) if sort else self
-        return Fluent(groupby(gen, key)).map(lambda x: (x[0], Fluent(x[1])))
+        return Fluent(groupby(gen, key)).map(
+            lambda x: (x[0], Fluent([y for y in x[1]]))
+        )
 
     @self_to_flu
     def unique(self, key=lambda x: x):
