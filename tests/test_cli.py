@@ -25,4 +25,4 @@ class TestCLI(unittest.TestCase):
         assert 'json' in sys.modules
 
 if __name__ == '__main__':
-    uniittest.main()
+    unittest.main()
