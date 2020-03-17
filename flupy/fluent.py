@@ -14,6 +14,7 @@ from typing import (
     Iterable,
     Optional,
     Type,
+    Set,
 )
 
 __all__ = ["flu", "with_iter"]
@@ -32,9 +33,8 @@ def self_to_flu(func: Callable) -> Callable:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        if args:
-            args = [Fluent(args[0])] + list(args[1:])
-        return func(*args, **kwargs)
+        wrapped_args = [Fluent(args[0])] + list(args[1:]) if args else []
+        return func(*wrapped_args, **kwargs)
 
     return wrapper
 
@@ -94,7 +94,7 @@ class Fluent:
         return sum(self)
 
     @self_to_flu
-    def count(self):
+    def count(self) -> int:
         """Count of elements in the iterable
 
             >>> flu.count(['a','b','c'])
@@ -258,7 +258,7 @@ class Fluent:
         """
 
         def _impl():
-            seen = set()
+            seen: Set[Any] = set()
             for x in self:
                 x_hash = key(x)
                 if x_hash in seen:

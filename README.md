@@ -1,6 +1,6 @@
 # flupy
 
-[![CircleCI](https://circleci.com/gh/olirice/flupy.svg?style=svg)](https://circleci.com/gh/olirice/flupy)
+[![Tests](https://github.com/olirice/flupy/workflows/Tests/badge.svg)](https://github.com/olirice/flupy/actions)
 [![Documentation Status](https://readthedocs.org/projects/flupy/badge/?version=latest)](https://flupy.readthedocs.io/en/latest/?badge=latest)
 
 
