@@ -1,7 +1,7 @@
 import time
 from collections import deque
 from functools import reduce, wraps
-from itertools import dropwhile, groupby, islice, takewhile, zip_longest, tee
+from itertools import dropwhile, groupby, islice, takewhile, tee, zip_longest
 from random import sample
 from typing import (
     Any,
@@ -43,10 +43,10 @@ class Fluent:
     """A fluent interface to lazy generator functions
 
    	>>> from flupy import flu
-        >>> flu(range(100)).map(lambda x: x**2) \ 
-                           .filter(lambda x: x % 3 == 0) \ 
-                           .chunk(3) \ 
-                           .take(2) \ 
+        >>> flu(range(100)).map(lambda x: x**2) \
+                           .filter(lambda x: x % 3 == 0) \
+                           .chunk(3) \
+                           .take(2) \
                            .collect()
         [[0, 9, 36], [81, 144, 225]]
     """

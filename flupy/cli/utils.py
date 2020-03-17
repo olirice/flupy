@@ -2,11 +2,11 @@
 import os
 from typing import Iterable
 
-from flupy import flu
-
 
 def walk_files(*pathes: str, abspath=True) -> Iterable[str]:
     """Yield files recursively starting from each location in *pathes"""
+    from flupy import flu
+
     if pathes == ():
         pathes = (".",)
 
@@ -25,6 +25,7 @@ def walk_files(*pathes: str, abspath=True) -> Iterable[str]:
 
 def walk_dirs(path: str = ".") -> Iterable[str]:
     """Yield files recursively starting from *path"""
+    from flupy import flu
 
     def _impl():
         for d, _, _ in os.walk(path):
