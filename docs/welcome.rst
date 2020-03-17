@@ -19,7 +19,7 @@ API
     error_count = flu(logs).map(lambda x: json.loads(x)) \
                            .filter(lambda x: x['level'] == 'ERROR')
                            .count()
-    
+
     print(error_count)
     # 14
 
@@ -44,7 +44,7 @@ Python 3.6+
 
 **Installation**
 ::
-    
+
     $ pip install flupy
 
 
@@ -69,7 +69,7 @@ Since 2008, what domains are our customers comming from?::
                              .group_by() \ # defaults to identity
                              .map(lambda x: (x[0], x[1].count())) \
                              .collect()
-    
+
     print(pipeline)
     # [('google.com', 1), ('ibm.com', 2)]
 

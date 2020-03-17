@@ -5,41 +5,45 @@ from signal import SIG_DFL, SIGPIPE, signal
 from typing import List
 
 from flupy import __version__, flu
-from flupy.cli.utils import walk_dirs, walk_files
 
 
 def read_file(filename):
     with open(filename, "r") as f:
         yield from f
 
+
 def parse_args(args: List[str]):
     """Parse input arguments"""
     parser = argparse.ArgumentParser(
-            description="flupy: a fluent interface for python",
-            formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + __version__)
+        description="flupy: a fluent interface for python",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument(
+        "-v", "--version", action="version", version="%(prog)s " + __version__
+    )
     parser.add_argument("command", help="command to execute against input")
     parser.add_argument("-f", "--file", help="path to input file")
     parser.add_argument(
-            "-i",
-            "--import",
-            nargs="*",
-            default=[],
-            help="modules to import\n" \
-                 "Syntax: <module>:<object>:<alias>\n" \
-                 "Examples:\n" \
-                 "\t'import os' = '-i os'\n" \
-                 "\t'import os as op_sys' = '-i os::op_sys'\n" \
-                 "\t'from os import environ' = '-i os:environ'\n" \
-                 "\t'from os import environ as env' = '-i os:environ:env'\n"
-                 )
+        "-i",
+        "--import",
+        nargs="*",
+        default=[],
+        help="modules to import\n"
+        "Syntax: <module>:<object>:<alias>\n"
+        "Examples:\n"
+        "\t'import os' = '-i os'\n"
+        "\t'import os as op_sys' = '-i os::op_sys'\n"
+        "\t'from os import environ' = '-i os:environ'\n"
+        "\t'from os import environ as env' = '-i os:environ:env'\n",
+    )
     return parser.parse_args(args)
+
 
 def execute_imports(imps: List[str]):
     """Execute global imports"""
     for imp_stx in imps:
-        module, _, obj_alias = imp_stx.partition(':')
-        obj, _, alias = obj_alias.partition(':')
+        module, _, obj_alias = imp_stx.partition(":")
+        obj, _, alias = obj_alias.partition(":")
         if not obj:
             globals()[alias or module] = importlib.import_module(module)
         else:
@@ -52,7 +56,7 @@ def main():
 
     _command = args.command
     _file = args.file
-    _import = getattr(args, 'import')
+    _import = getattr(args, "import")
 
     execute_imports(_import)
 

@@ -61,7 +61,7 @@ Example: Even integers less than 10::
 Import System
 =============
 
-Passing `-i` or `--import` to the cli allows you to import standard and third party libraries installed in the same environment. 
+Passing `-i` or `--import` to the cli allows you to import standard and third party libraries installed in the same environment.
 
 Import syntax
 
