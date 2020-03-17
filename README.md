@@ -11,7 +11,6 @@
 https://flupy.readthedocs.io/en/latest/
 
 
-
 ## Overview
 flupy implements a fluent interface for chaining multiple method calls as a single python expression. All flupy methods return generators and are evaluated lazily in depth-first order. This allows flupy expressions to transform arbitrary size data in extremely limited memory.
 
