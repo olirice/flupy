@@ -18,9 +18,9 @@ Grouping
 ========
 
 .. automethod:: Fluent.chunk
+.. automethod:: Fluent.flatten
 .. automethod:: Fluent.group_by
 .. automethod:: Fluent.window
-.. automethod:: Fluent.flatten
 
 ----
 
@@ -38,10 +38,13 @@ Selecting
 Transforming
 ============
 
+.. automethod:: Fluent.enumerate
 .. automethod:: Fluent.map
-.. automethod:: Fluent.map_item
 .. automethod:: Fluent.map_attr
+.. automethod:: Fluent.map_item
 .. automethod:: Fluent.reduce
+.. automethod:: Fluent.zip
+.. automethod:: Fluent.zip_longest
 
 ----
 
@@ -72,7 +75,8 @@ Summarizing
 Non-Constant Memory
 ===================
 
-.. automethod:: Fluent.sort
-.. automethod:: Fluent.shuffle
 .. automethod:: Fluent.group_by
+.. automethod:: Fluent.shuffle
+.. automethod:: Fluent.sort
+.. automethod:: Fluent.tee
 .. automethod:: Fluent.unique
