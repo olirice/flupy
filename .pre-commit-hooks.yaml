@@ -1,8 +1,6 @@
 -   id: flupy
     name: flupy
-    entry: flu
+    entry: flu_precommit
     language: python
-    'types': [python]
+    types: [python]
     args: []
-    require_serial: false
-    additional_dependencies: []

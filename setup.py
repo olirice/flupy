@@ -54,7 +54,7 @@ setuptools.setup(
     author="Oliver Rice",
     author_email="oliver@oliverrice.com",
     packages=setuptools.find_packages(),
-    entry_points={"console_scripts": ["flu = flupy.cli.cli:main"]},
+    entry_points={"console_scripts": ["flu = flupy.cli.cli:main", "flu_precommit = flupy.cli.cli:precommit"]},
     long_description=build_description(),
     tests_require=["pytest", "coverage"],
     license="MIT",
