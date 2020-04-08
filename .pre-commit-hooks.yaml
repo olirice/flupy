@@ -3,4 +3,5 @@
     entry: flu_precommit
     language: python
     types: [python]
+    require_serial: false
     args: []
