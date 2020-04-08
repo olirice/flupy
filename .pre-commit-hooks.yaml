@@ -3,6 +3,6 @@
     entry: flu
     language: python
     'types': [python]
-    args: ["--ignore-missing-imports", "--scripts-are-modules"]
+    args: []
     require_serial: false
     additional_dependencies: []
