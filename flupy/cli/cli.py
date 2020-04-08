@@ -93,8 +93,8 @@ def precommit():
             description="flupy: a fluent interface for python",
             formatter_class=argparse.RawTextHelpFormatter,
         )
-        parser.add_argument("files", type=argparse.FileType('r'), nargs='+', help="file pathes")
-        parser.add_argument("command", help="command to execute against input")
+        parser.add_argument("files", type=str, nargs='+', help="file pathes")
+        parser.add_argument("--command", help="command to execute against input")
         parser.add_argument("-i", "--import", nargs="*", default=[])
         return parser.parse_args(args)
 
@@ -108,7 +108,8 @@ def precommit():
     execute_imports(_import)
 
     if _files:
-        _ = flu(_files)
+        from pathlib import Path
+        _ = flu(_files).map(Path).filter(lambda x: x.is_file())
     else:
         # Do not raise exception for Broken Pipe
         signal(SIGPIPE, SIG_DFL)
