@@ -1,0 +1,8 @@
+-   id: flupy
+    name: flupy
+    entry: flu
+    language: python
+    'types': [python]
+    args: ["--ignore-missing-imports", "--scripts-are-modules"]
+    require_serial: false
+    additional_dependencies: []
