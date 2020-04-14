@@ -417,7 +417,7 @@ class Fluent(Generic[T]):
     @overload
     def zip(self, __iter1: Iterable[Any], __iter2: Iterable[Any], __iter3: Iterable[Any], __iter4: Iterable[Any], *iterable: Iterable[Any]) -> 'Fluent[Tuple[T, ...]]': ...
 
-    #@self_to_flu
+    @self_to_flu
     def zip(self, *iterable: Iterable[Any]):
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable
