@@ -4,7 +4,7 @@ import sys
 from signal import SIG_DFL, SIGPIPE, signal
 from typing import List
 
-from flupy import __version__, flu, with_iter
+from flupy import __version__, flu
 
 
 def read_file(filename):
@@ -15,12 +15,9 @@ def read_file(filename):
 def parse_args(args: List[str]):
     """Parse input arguments"""
     parser = argparse.ArgumentParser(
-        description="flupy: a fluent interface for python",
-        formatter_class=argparse.RawTextHelpFormatter,
+        description="flupy: a fluent interface for python", formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument(
-        "-v", "--version", action="version", version="%(prog)s " + __version__
-    )
+    parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("command", help="command to execute against input")
     parser.add_argument("-f", "--file", help="path to input file")
     parser.add_argument(
@@ -79,8 +76,6 @@ def main():
         sys.stdout.write(str(pipeline) + "\n")
 
 
-
-
 def precommit():
     """Secondary entrypoing for pre-commit hook to handle multiple files
     as positional arguments
@@ -90,10 +85,9 @@ def precommit():
 
     def precommit_parse_args(args: List[str]):
         parser = argparse.ArgumentParser(
-            description="flupy: a fluent interface for python",
-            formatter_class=argparse.RawTextHelpFormatter,
+            description="flupy: a fluent interface for python", formatter_class=argparse.RawTextHelpFormatter
         )
-        parser.add_argument("files", type=str, nargs='+', help="file pathes")
+        parser.add_argument("files", type=str, nargs="+", help="file pathes")
         parser.add_argument("--command", help="command to execute against input")
         parser.add_argument("-i", "--import", nargs="*", default=[])
         return parser.parse_args(args)
@@ -109,6 +103,7 @@ def precommit():
 
     if _files:
         from pathlib import Path
+
         _ = flu(_files).map(Path).filter(lambda x: x.is_file())
     else:
         # Do not raise exception for Broken Pipe

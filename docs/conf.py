@@ -10,6 +10,7 @@
 
 import os
 import sys
+from typing import Dict
 
 import sphinx_rtd_theme
 
@@ -48,7 +49,7 @@ copyright = "2020, Oliver Rice"
 # built documents.
 #
 # The short X.Y version.
-version = "1.0.11"
+version = "1.0.12"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -174,7 +175,7 @@ htmlhelp_basename = "flupydoc"
 
 # -- Options for LaTeX output --------------------------------------------------
 
-latex_elements = {
+latex_elements: Dict[str, str] = {
     # The paper size ('letterpaper' or 'a4paper').
     #'papersize': 'letterpaper',
     # The font size ('10pt', '11pt' or '12pt').
@@ -185,9 +186,7 @@ latex_elements = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-    ("index", "flupy.tex", u"flupy Documentation", u"Oliver Rice", "manual")
-]
+latex_documents = [("index", "flupy.tex", u"flupy Documentation", u"Oliver Rice", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

@@ -133,11 +133,7 @@ def test_side_effect():
     with pytest.raises(IOError):
         flu(range(5)).side_effect(ffile.write).collect()
 
-    gen_result = (
-        flu(range(5))
-        .side_effect(ffile.write, before=ffile.open, after=ffile.close)
-        .collect()
-    )
+    gen_result = flu(range(5)).side_effect(ffile.write, before=ffile.open, after=ffile.close).collect()
     assert ffile.is_open == False
     assert ffile.content == [0, 1, 2, 3, 4]
     assert gen_result == [0, 1, 2, 3, 4]
@@ -268,13 +264,7 @@ def test_zip_longest():
     gen = flu(range(3)).zip_longest(range(5), fill_value="a")
     assert gen.collect() == [(0, 0), (1, 1), (2, 2), ("a", 3), ("a", 4)]
     gen = flu(range(3)).zip_longest(range(5), range(4), fill_value="a")
-    assert gen.collect() == [
-        (0, 0, 0),
-        (1, 1, 1),
-        (2, 2, 2),
-        ("a", 3, 3),
-        ("a", 4, "a"),
-    ]
+    assert gen.collect() == [(0, 0, 0), (1, 1, 1), (2, 2, 2), ("a", 3, 3), ("a", 4, "a")]
 
 
 def test_window():
@@ -292,13 +282,7 @@ def test_window():
 
 
 def test_flu():
-    gen = (
-        flu(count())
-        .map(lambda x: x ** 2)
-        .filter(lambda x: x % 517 == 0)
-        .chunk(5)
-        .take(3)
-    )
+    gen = flu(count()).map(lambda x: x ** 2).filter(lambda x: x % 517 == 0).chunk(5).take(3)
     assert next(gen) == [0, 267289, 1069156, 2405601, 4276624]
 
 
