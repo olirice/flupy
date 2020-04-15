@@ -1,18 +1,30 @@
 # flupy
 
-[![Tests](https://github.com/olirice/flupy/workflows/Tests/badge.svg)](https://github.com/olirice/flupy/actions)
-[![Documentation Status](https://readthedocs.org/projects/flupy/badge/?version=latest)](https://flupy.readthedocs.io/en/latest/?badge=latest)
+<p>
 
+<a href="https://github.com/olirice/flupy/actions"><img src="https://github.com/olirice/flupy/workflows/Tests/badge.svg" alt="Tests" height="18"></a>
+<a href="https://flupy.readthedocs.io/en/latest/?badge=latest"><img src="https://readthedocs.org/projects/flupy/badge/?version=latest" alt="Tests" height="18"></a>
+</p>
 
-* Process big data in python using method chaining built on generators
-* Cross-platform CLI
+<p>
+    <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.6+-blue.svg" alt="Python version" height="18"></a>
+  <a href="https://badge.fury.io/py/flupy"><img src="https://badge.fury.io/py/flupy.svg" alt="PyPI version" height="18"></a>
+    <a href="https://github.com/olirice/flupy/blob/master/LICENSE"><img src="https://img.shields.io/pypi/l/markdown-subtemplate.svg" alt="License" height="18"></a>
+    <a href="https://pypi.org/project/flupy/"><img src="https://img.shields.io/pypi/dm/flupy.svg" alt="Download count" height="18"></a>
+</p>
 
-## Documentation
-https://flupy.readthedocs.io/en/latest/
+---
 
+**Documentation**: <a href="https://flupy.readthedocs.io/en/latest/" target="_blank">https://flupy.readthedocs.io/en/latest/</a>
+
+**Source Code**: <a href="https://github.com/olirice/flupy" target="_blank">https://github.com/olirice/flupy</a>
+
+---
 
 ## Overview
-flupy implements a fluent interface for chaining multiple method calls as a single python expression. All flupy methods return generators and are evaluated lazily in depth-first order. This allows flupy expressions to transform arbitrary size data in extremely limited memory.
+Flupy implements a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) for operating on python iterables. All flupy methods return generators and are evaluated lazily. This allows expressions to transform arbitrary size data in extremely limited memory.
+
+You can think of flupy as a light weight, 0 dependency, pure python alternative to the excellent [Apache Spark](https://spark.apache.org/) project.
 
 ## Setup
 
