@@ -30,7 +30,6 @@ T = TypeVar("T")
 _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 _T3 = TypeVar("_T3")
-_T4 = TypeVar("_T4")
 
 
 class Empty:
@@ -417,7 +416,6 @@ class Fluent(Generic[T]):
     @overload
     def zip(self, __iter1: Iterable[Any], __iter2: Iterable[Any], __iter3: Iterable[Any], __iter4: Iterable[Any], *iterable: Iterable[Any]) -> 'Fluent[Tuple[T, ...]]': ...
 
-    @self_to_flu
     def zip(self, *iterable: Iterable[Any]):
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable
@@ -425,7 +423,9 @@ class Fluent(Generic[T]):
             >>> flu(range(5)).zip(range(3, 0, -1)).collect()
             [(0, 3), (1, 2), (2, 1)]
         """
-        tup_iter = zip(self._iterator, *iterable)
+        # @self_to_flu is not compatible with @overload
+        # make sure any usage of self supports arbitrary iterables
+        tup_iter = zip(iter(self), *iterable)
         return Fluent(tup_iter)
 
     @self_to_flu

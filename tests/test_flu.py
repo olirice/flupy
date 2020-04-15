@@ -258,8 +258,8 @@ def test_zip():
     gen = flu(range(3)).zip(range(3))
     assert gen.collect() == [(0, 0), (1, 1), (2, 2)]
 
-    gen = flu(range(3)).zip(range(3), range(2))
-    assert gen.collect() == [(0, 0, 0), (1, 1, 1)]
+    gen2 = flu(range(3)).zip(range(3), range(2))
+    assert gen2.collect() == [(0, 0, 0), (1, 1, 1)]
 
 
 def test_zip_longest():
