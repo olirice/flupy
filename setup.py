@@ -53,7 +53,7 @@ setuptools.setup(
     url="https://github.com/olirice/flupy",
     author="Oliver Rice",
     author_email="oliver@oliverrice.com",
-    packages=setuptools.find_packages(exclude=("tests",)),
+    packages=setuptools.find_packages(exclude=["tests.*", "tests"]),
     entry_points={"console_scripts": ["flu = flupy.cli.cli:main", "flu_precommit = flupy.cli.cli:precommit"]},
     long_description=build_description(),
     tests_require=["pytest", "coverage"],
