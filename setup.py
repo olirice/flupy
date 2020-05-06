@@ -54,6 +54,7 @@ setuptools.setup(
     author="Oliver Rice",
     author_email="oliver@oliverrice.com",
     packages=setuptools.find_packages(exclude=("tests",)),
+    include_package_data=True,
     entry_points={"console_scripts": ["flu = flupy.cli.cli:main", "flu_precommit = flupy.cli.cli:precommit"]},
     long_description=build_description(),
     tests_require=["pytest", "coverage"],
@@ -68,7 +69,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    include_package_data=True,
     package_data={"flupy": ["Makefile"]},
     extras_require={"dev": DEV_REQUIRES},
 )
