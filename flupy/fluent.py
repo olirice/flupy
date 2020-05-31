@@ -158,8 +158,6 @@ class Fluent(Generic[T]):
                'some default'
         """
         x = default
-        for x in self:
-            pass
         if isinstance(x, Empty):
             raise IndexError("Empty iterator")
         return x
@@ -189,7 +187,7 @@ class Fluent(Generic[T]):
                >>> flu.tail(range(15), n=2)
                [18, 19]
         """
-        for val in self.window(n, fill_value=Empty()):
+        for _ in self.window(n, fill_value=Empty()):
             pass
         return container_type([x for x in val if not isinstance(x, Empty)])
 
@@ -549,8 +547,7 @@ class Fluent(Generic[T]):
                 return
             else:
                 for child in tree:
-                    for val in walk(child, level + 1):
-                        yield val
+                    yield from walk(child, level + 1)
 
         return Fluent(walk(self, level=0))
 
@@ -638,5 +635,4 @@ flu = Fluent
 
 def with_iter(context_manager: ContextManager):
     with context_manager as cm:
-        for rec in cm:
-            yield rec
+        yield from cm

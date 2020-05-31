@@ -70,9 +70,7 @@ def main():
         for r in pipeline:
             sys.stdout.write(str(r) + "\n")
 
-    elif pipeline is None:
-        pass
-    else:
+    elif pipeline is not None:
         sys.stdout.write(str(pipeline) + "\n")
 
 
