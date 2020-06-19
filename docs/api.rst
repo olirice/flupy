@@ -64,6 +64,7 @@ Summarizing
 .. automethod:: Fluent.min
 .. automethod:: Fluent.max
 .. automethod:: Fluent.reduce
+.. automethod:: Fluent.fold_left
 .. automethod:: Fluent.first
 .. automethod:: Fluent.last
 .. automethod:: Fluent.head

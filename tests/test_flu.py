@@ -29,6 +29,11 @@ def test_reduce():
     assert gen.reduce(lambda x, y: x + y) == 10
 
 
+def test_fold_left():
+    assert flu(range(5)).fold_left(lambda x, y: x + y, 0) == 10
+    assert flu(range(5)).fold_left(lambda x, y: x + str(y), '') == '01234'
+
+
 def test_count():
     gen = flu(range(3))
     assert gen.count() == 3
