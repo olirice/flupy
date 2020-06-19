@@ -30,6 +30,8 @@ _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 _T3 = TypeVar("_T3")
 
+S = TypeVar("S")
+
 
 class Empty:
     ...
@@ -388,13 +390,24 @@ class Fluent(Generic[T]):
 
     @self_to_flu
     def reduce(self, func: Callable[[T, T], T]) -> T:
-        """Apply a function of two arguments cumulatively to the items of a sequence,
-        from left import to right, so as to reduce the sequence to a single value.
+        """Apply a function of two arguments cumulatively to the items of the iterable,
+        from left to right, so as to reduce the sequence to a single value
 
-            >>> flu(range(5)).reduce(lambda x, y: x+y)
+            >>> flu(range(5)).reduce(lambda x, y: x + y)
             10
         """
         return reduce(func, self)
+
+    @self_to_flu
+    def fold_left(self, func: Callable[[S, T], S], initial: S) -> S:
+        """Apply a function of two arguments cumulatively to the items of the iterable,
+        from left to right, starting with *initial*, so as to fold the sequence to
+        a single value
+
+            >>> flu(range(5)).fold_left(lambda x, y: x + str(y), "")
+            "01234"
+        """
+        return reduce(func, self, initial)
 
     @overload
     def zip(self, __iter1: Iterable[_T1]) -> "Fluent[Tuple[T, _T1]]":
