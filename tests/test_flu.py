@@ -31,7 +31,7 @@ def test_reduce():
 
 def test_fold_left():
     assert flu(range(5)).fold_left(lambda x, y: x + y, 0) == 10
-    assert flu(range(5)).fold_left(lambda x, y: x + str(y), '') == '01234'
+    assert flu(range(5)).fold_left(lambda x, y: x + str(y), "") == "01234"
 
 
 def test_count():
