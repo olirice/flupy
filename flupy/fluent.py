@@ -56,11 +56,14 @@ class Fluent(Generic[T]):
     """A fluent interface to lazy generator functions
 
    	>>> from flupy import flu
-        >>> flu(range(100)).map(lambda x: x**2) \
-                           .filter(lambda x: x % 3 == 0) \
-                           .chunk(3) \
-                           .take(2) \
-                           .collect()
+        >>> (
+                flu(range(100))
+                .map(lambda x: x**2)
+                .filter(lambda x: x % 3 == 0)
+                .chunk(3)
+                .take(2)
+                .collect()
+            )
         [[0, 9, 36], [81, 144, 225]]
     """
 
