@@ -1,9 +1,12 @@
 # pylint: disable=invalid-name
 import os
-from typing import Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from flupy.fluent import Fluent
 
 
-def walk_files(*pathes: str, abspath=True) -> Iterable[str]:
+def walk_files(*pathes: str, abspath=True) -> "Fluent[str]":
     """Yield files recursively starting from each location in *pathes"""
     from flupy import flu
 
@@ -23,7 +26,7 @@ def walk_files(*pathes: str, abspath=True) -> Iterable[str]:
     return flu(_impl())
 
 
-def walk_dirs(path: str = ".") -> Iterable[str]:
+def walk_dirs(path: str = ".") -> "Fluent[str]":
     """Yield files recursively starting from *path"""
     from flupy import flu
 
