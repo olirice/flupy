@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import sys
+from pathlib import Path
 from signal import SIG_DFL, SIGPIPE, signal
 from typing import List
 
@@ -15,7 +16,7 @@ def read_file(filename):
 def parse_args(args: List[str]):
     """Parse input arguments"""
     parser = argparse.ArgumentParser(
-        description="flupy: a fluent interface for python", formatter_class=argparse.RawTextHelpFormatter
+        description="flupy: a fluent interface for python collections", formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("command", help="command to execute against input")
@@ -37,7 +38,7 @@ def parse_args(args: List[str]):
 
 
 def execute_imports(imps: List[str]):
-    """Execute global imports"""
+    """Execute CLI scoped imports"""
     for imp_stx in imps:
         module, _, obj_alias = imp_stx.partition(":")
         obj, _, alias = obj_alias.partition(":")
@@ -49,6 +50,7 @@ def execute_imports(imps: List[str]):
 
 
 def main():
+    """CLI Entrypoint"""
     args = parse_args(sys.argv[1:])
 
     _command = args.command
@@ -102,7 +104,6 @@ def precommit():
     execute_imports(_import)
 
     if _files:
-        from pathlib import Path
 
         _ = flu(_files).map(Path).filter(lambda x: x.is_file())
     else:

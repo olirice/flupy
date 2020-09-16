@@ -16,9 +16,12 @@ API
 
     logs = open('logs.jl', 'r')
 
-    error_count = flu(logs).map(lambda x: json.loads(x)) \
-                           .filter(lambda x: x['level'] == 'ERROR')
-                           .count()
+    error_count = (
+        flu(logs)
+        .map(lambda x: json.loads(x))
+        .filter(lambda x: x['level'] == 'ERROR')
+        .count()
+    )
 
     print(error_count)
     # 14
@@ -63,12 +66,15 @@ Since 2008, what domains are our customers comming from?::
         {'name': 'Jack', 'signup_year': 2007, 'email': 'jane@apple.com'},
     ]
 
-    pipeline = flu(customers).filter(lambda x: x['signup_year'] > 2008) \
-                             .map_item('email') \
-                             .map(lambda x: x.partition('@')[2]) \
-                             .group_by() \ # defaults to identity
-                             .map(lambda x: (x[0], x[1].count())) \
-                             .collect()
+    pipeline = (
+        flu(customers)
+        .filter(lambda x: x['signup_year'] > 2008)
+        .map_item('email')
+        .map(lambda x: x.partition('@')[2])
+        .group_by() # defaults to identity
+        .map(lambda x: (x[0], x[1].count()))
+        .collect()
+    )
 
     print(pipeline)
     # [('google.com', 1), ('ibm.com', 2)]

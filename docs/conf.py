@@ -49,7 +49,7 @@ copyright = "2020, Oliver Rice"
 # built documents.
 #
 # The short X.Y version.
-version = "1.0.12"
+version = "1.1.0"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -231,7 +231,7 @@ texinfo_documents = [
         u"flupy Documentation",
         u"Oliver Rice",
         "flupy",
-        "One line description of project.",
+        "A fluent interface to python collections.",
         "Miscellaneous",
     )
 ]
