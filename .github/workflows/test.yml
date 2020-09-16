@@ -19,9 +19,9 @@ jobs:
 
     - name: run tests
       run: |
-		pytest --cov=nebulo src/test --cov-report=xml
+        pytest --cov=nebulo src/test --cov-report=xml
 
-	- name: upload coverage to Codecov
+    - name: upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
