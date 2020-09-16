@@ -14,7 +14,7 @@ repos:
     - id: mixed-line-ending
       args: ['--fix=lf']
 
--   repo: git@github.com:humitos/mirrors-autoflake.git
+-   repo: https://github.com/humitos/mirrors-autoflake.git
     rev: v1.3
     hooks:
     -   id: autoflake
