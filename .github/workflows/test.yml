@@ -1,4 +1,4 @@
-name: Tests
+name: tests
 
 on: [push]
 
@@ -8,15 +8,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Python Setup
+    - name: python setup
       uses: actions/setup-python@v1
       with:
         python-version: 3.6
-    - name: Install Flupy
+    - name: install flupy
       run: |
         python -m pip install --upgrade pip
         pip install -e ".[dev]"
 
-    - name: Run Tests
+    - name: run tests
       run: |
-        pytest
+		pytest --cov=nebulo src/test --cov-report=xml
+
+	- name: upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true<Paste>
