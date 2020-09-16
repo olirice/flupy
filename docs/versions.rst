@@ -9,3 +9,9 @@ Version History
 
 * New Capabilities:
     * Everything
+
+
+1.1.0
+-----
+
+* Remove support for calling instance methods on uninitialized flu class passing an interable as the *self* argument

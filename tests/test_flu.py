@@ -222,7 +222,7 @@ def test_group_by():
     # Identity Function
     points = [{"x": 1, "y": 0}, {"x": 4, "y": 3}, {"x": 1, "y": 5}]
     key_func = lambda u: u["x"]
-    gen = flu.group_by(points, key=key_func, sort=True).collect()
+    gen = flu(points).group_by(key=key_func, sort=True).collect()
     assert len(gen) == 2
     assert gen[0][0] == 1
     assert gen[1][0] == 4
