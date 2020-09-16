@@ -88,7 +88,7 @@ class Fluent(Generic[T]):
     def sum(self):
         """Sum of elements in the iterable
 
-        >>> flu[1,2,3]).sum()
+        >>> flu([1,2,3]).sum()
         6
 
         """
@@ -97,7 +97,7 @@ class Fluent(Generic[T]):
     def count(self) -> int:
         """Count of elements in the iterable
 
-        >>> flu['a','b','c']).count()
+        >>> flu(['a','b','c']).count()
         3
         """
         return sum(1 for _ in self)
