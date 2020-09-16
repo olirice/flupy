@@ -17,6 +17,10 @@ def test___getitem__():
     assert flu(range(3))[1:].collect() == [1, 2]
     assert flu(range(35))[1:2].collect() == [1]
     assert flu(range(35))[1:3].collect() == [1, 2]
+    with pytest.raises(IndexError):
+        flu([1])[4]
+    with pytest.raises(KeyError):
+        flu([1])["not an index"]
 
 
 def test_sum():
@@ -285,15 +289,18 @@ def test_window():
     gen = flu(range(5)).window(n=3, step=3, fill_value="i")
     assert gen.collect() == [(0, 1, 2), (3, 4, "i")]
 
+    assert flu(range(4)).window(n=0).collect() == [tuple()]
+
+    with pytest.raises(ValueError):
+        flu(range(5)).window(n=-1).collect()
+
+    with pytest.raises(ValueError):
+        flu(range(5)).window(3, step=0).collect()
+
 
 def test_flu():
     gen = flu(count()).map(lambda x: x ** 2).filter(lambda x: x % 517 == 0).chunk(5).take(3)
     assert next(gen) == [0, 267289, 1069156, 2405601, 4276624]
-
-
-def test_lazy():
-    # TODO(or)
-    pass
 
 
 def test_flatten():
