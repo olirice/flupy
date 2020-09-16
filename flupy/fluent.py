@@ -22,7 +22,7 @@ from typing import (
     overload,
 )
 
-__all__ = ["flu", "with_iter"]
+__all__ = ["flu"]
 
 T = TypeVar("T")
 _T1 = TypeVar("_T1")
