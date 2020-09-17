@@ -8,7 +8,6 @@ API Reference
 Container
 =========
 
-.. autoclass:: Fluent
 .. autoclass:: flu
 
 ----
@@ -17,67 +16,67 @@ Container
 Grouping
 ========
 
-.. automethod:: Fluent.chunk
-.. automethod:: Fluent.flatten
-.. automethod:: Fluent.group_by
-.. automethod:: Fluent.window
+.. automethod:: flu.chunk
+.. automethod:: flu.flatten
+.. automethod:: flu.group_by
+.. automethod:: flu.window
 
 ----
 
 Selecting
 =========
 
-.. automethod:: Fluent.filter
-.. automethod:: Fluent.take
-.. automethod:: Fluent.take_while
-.. automethod:: Fluent.drop_while
-.. automethod:: Fluent.unique
+.. automethod:: flu.filter
+.. automethod:: flu.take
+.. automethod:: flu.take_while
+.. automethod:: flu.drop_while
+.. automethod:: flu.unique
 
 ----
 
 Transforming
 ============
 
-.. automethod:: Fluent.enumerate
-.. automethod:: Fluent.map
-.. automethod:: Fluent.map_attr
-.. automethod:: Fluent.map_item
-.. automethod:: Fluent.reduce
-.. automethod:: Fluent.zip
-.. automethod:: Fluent.zip_longest
+.. automethod:: flu.enumerate
+.. automethod:: flu.map
+.. automethod:: flu.map_attr
+.. automethod:: flu.map_item
+.. automethod:: flu.reduce
+.. automethod:: flu.zip
+.. automethod:: flu.zip_longest
 
 ----
 
 Side Effects
 ============
 
-.. automethod:: Fluent.rate_limit
-.. automethod:: Fluent.side_effect
+.. automethod:: flu.rate_limit
+.. automethod:: flu.side_effect
 
 ----
 
 Summarizing
 ===========
 
-.. automethod:: Fluent.count
-.. automethod:: Fluent.sum
-.. automethod:: Fluent.min
-.. automethod:: Fluent.max
-.. automethod:: Fluent.reduce
-.. automethod:: Fluent.fold_left
-.. automethod:: Fluent.first
-.. automethod:: Fluent.last
-.. automethod:: Fluent.head
-.. automethod:: Fluent.tail
-.. automethod:: Fluent.collect
+.. automethod:: flu.count
+.. automethod:: flu.sum
+.. automethod:: flu.min
+.. automethod:: flu.max
+.. automethod:: flu.reduce
+.. automethod:: flu.fold_left
+.. automethod:: flu.first
+.. automethod:: flu.last
+.. automethod:: flu.head
+.. automethod:: flu.tail
+.. automethod:: flu.collect
 
 ----
 
 Non-Constant Memory
 ===================
 
-.. automethod:: Fluent.group_by
-.. automethod:: Fluent.shuffle
-.. automethod:: Fluent.sort
-.. automethod:: Fluent.tee
-.. automethod:: Fluent.unique
+.. automethod:: flu.group_by
+.. automethod:: flu.shuffle
+.. automethod:: flu.sort
+.. automethod:: flu.tee
+.. automethod:: flu.unique

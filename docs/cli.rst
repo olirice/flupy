@@ -33,7 +33,7 @@ Usage
 Basic Examples
 ==============
 
-When input data are provided to the `flu` command, an instance of the Fluent/flu object is preprepared with that input and stored in the the variable `_`.
+When input data are provided to the `flu` command, an instance of the flu object is preprepared with that input and stored in the the variable `_`.
 
 
 .. note:: for more information on writing flupy commands, see API Reference
@@ -52,7 +52,7 @@ Example: Show lines of a log file that are errors::
 
 No Input data
 -------------
-flupy does not require input data if it can be generated from within python e.g. with `range(10)`. When no input data are provided, iterable at the beginning of the flupy command must be wraped into a Fluent/flu instance.
+flupy does not require input data if it can be generated from within python e.g. with `range(10)`. When no input data are provided, iterable at the beginning of the flupy command must be wraped into a flu instance.
 
 Example: Even integers less than 10::
 
