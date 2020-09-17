@@ -46,10 +46,13 @@ from itertools import count
 from flupy import flu
 
 # Processing an infinite sequence in constant memory
-pipeline = flu(count()).map(lambda x: x**2) \
-                       .filter(lambda x: x % 517 == 0) \
-                       .chunk(5) \
-                       .take(3)
+pipeline = (
+    flu(count())
+    .map(lambda x: x**2)
+    .filter(lambda x: x % 517 == 0)
+    .chunk(5)
+    .take(3)
+)
 
 for item in pipeline:
   print(item)
