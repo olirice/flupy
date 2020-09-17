@@ -41,7 +41,6 @@ Transforming
 .. automethod:: flu.map
 .. automethod:: flu.map_attr
 .. automethod:: flu.map_item
-.. automethod:: flu.reduce
 .. automethod:: flu.zip
 .. automethod:: flu.zip_longest
 
