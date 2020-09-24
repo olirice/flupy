@@ -1,10 +1,10 @@
 # pylint: disable=invalid-name
 import os
 
-from flupy.fluent import flu
+from flupy.fluent import Fluent, flu
 
 
-def walk_files(*pathes: str, abspath=True) -> "flu[str]":
+def walk_files(*pathes: str, abspath=True) -> "Fluent[str]":
     """Yield files recursively starting from each location in *pathes"""
 
     if pathes == ():
@@ -23,7 +23,7 @@ def walk_files(*pathes: str, abspath=True) -> "flu[str]":
     return flu(_impl())
 
 
-def walk_dirs(path: str = ".") -> "flu[str]":
+def walk_dirs(path: str = ".") -> "Fluent[str]":
     """Yield files recursively starting from *path"""
 
     def _impl():
