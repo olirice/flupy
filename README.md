@@ -5,6 +5,9 @@
 <a href="https://github.com/olirice/flupy/actions"><img src="https://github.com/olirice/flupy/workflows/Tests/badge.svg" alt="Tests" height="18"></a>
 <a href="https://flupy.readthedocs.io/en/latest/?badge=latest"><img src="https://readthedocs.org/projects/flupy/badge/?version=latest" alt="Tests" height="18"></a>
 <a href="https://codecov.io/gh/olirice/flupy"><img src="https://codecov.io/gh/olirice/flupy/branch/master/graph/badge.svg" height="18"></a>
+<a href="https://github.com/psf/black">
+        <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Codestyle Black" height="18">
+    </a>
 </p>
 
 <p>
