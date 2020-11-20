@@ -674,7 +674,6 @@ class Fluent(Generic[T]):
         return Fluent((Fluent(x) for x in tee(self, n)))
 
 
-# def flu(iterable: Iterable[T]) -> Fluent[T]:
 class flu(Fluent):
     """A fluent interface to lazy generator functions
 
