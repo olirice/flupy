@@ -1,6 +1,6 @@
 # pylint: disable=invalid-name
 import time
-from collections import deque
+from collections import defaultdict, deque
 from functools import reduce
 from itertools import dropwhile, groupby, islice, takewhile, tee, zip_longest
 from random import sample
@@ -196,6 +196,72 @@ class Fluent(Generic[T]):
                [1, 3, -6]
         """
         return Fluent(sorted(self, key=key, reverse=reverse))
+
+    def join_left(
+        self,
+        other: Iterable[_T1],
+        key: Callable[[T], Hashable] = identity,
+        other_key: Callable[[_T1], Hashable] = identity,
+    ) -> "Fluent[Tuple[T, Union[_T1, None]]]":
+        """Join the iterable with another iterable using equality between *key* applied to self and *other_key* applied to *other* to identify matching entries
+
+        When no matching entry is found in *other*, entries in the iterable are paired with None
+
+        Note: join_left loads *other* into memory
+
+               >>> flu(range(6)).join_left(range(0, 6, 2)).collect()
+               [(0, 0), (1, None), (2, 2), (3, None), (4, 4), (5, None)]
+        """
+
+        def _impl():
+
+            other_lookup = defaultdict(list)
+
+            for entry_other in other:
+                other_lookup[other_key(entry_other)].append(entry_other)
+
+            for entry in self:
+                matches: Optional[List[_T1]] = other_lookup.get(key(entry))
+
+                if matches:
+                    for match in matches:
+                        yield (entry, match)
+                else:
+                    yield (entry, None)
+
+        return Fluent(_impl())
+
+    def join_inner(
+        self,
+        other: Iterable[_T1],
+        key: Callable[[T], Hashable] = identity,
+        other_key: Callable[[_T1], Hashable] = identity,
+    ) -> "Fluent[Tuple[T, _T1]]":
+        """Join the iterable with another iterable using equality between *key* applied to self and *other_key* applied to *other* to identify matching entries
+
+        When no matching entry is found in *other*, entries in the iterable are filtered from the results
+
+        Note: join_inner loads *other* into memory
+
+               >>> flu(range(6)).join_inner(range(0, 6, 2)).collect()
+               [(0, 0), (2, 2), (4, 4)]
+
+        """
+
+        def _impl():
+
+            other_lookup = defaultdict(list)
+
+            for entry_other in other:
+                other_lookup[other_key(entry_other)].append(entry_other)
+
+            for entry in self:
+                matches: List[_T1] = other_lookup[key(entry)]
+
+                for match in matches:
+                    yield (entry, match)
+
+        return Fluent(_impl())
 
     def shuffle(self) -> "Fluent[T]":
         """Randomize the order of elements in the interable

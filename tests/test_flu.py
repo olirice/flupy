@@ -346,3 +346,15 @@ def test_tee():
 
     # No break chaining
     assert flu(range(5)).tee().map(sum).sum() == 20
+
+
+def test_join_left():
+    # Default unpacking
+    res = flu(range(6)).join_left(range(0, 6, 2)).collect()
+    assert res == [(0, 0), (1, None), (2, 2), (3, None), (4, 4), (5, None)]
+
+
+def test_join_inner():
+    # Default unpacking
+    res = flu(range(6)).join_inner(range(0, 6, 2)).collect()
+    assert res == [(0, 0), (2, 2), (4, 4)]

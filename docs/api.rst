@@ -38,6 +38,8 @@ Transforming
 ============
 
 .. automethod:: flu.enumerate
+.. automethod:: flu.join_left
+.. automethod:: flu.join_inner
 .. automethod:: flu.map
 .. automethod:: flu.map_attr
 .. automethod:: flu.map_item
@@ -75,6 +77,8 @@ Non-Constant Memory
 ===================
 
 .. automethod:: flu.group_by
+.. automethod:: flu.join_left
+.. automethod:: flu.join_inner
 .. automethod:: flu.shuffle
 .. automethod:: flu.sort
 .. automethod:: flu.tee
