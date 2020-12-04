@@ -25,7 +25,7 @@ jobs:
 
     - name: install flupy with mypyc
       env:
-          MYPYC_COMPILE=1
+          MYPYC_COMPILE: 1
       run: |
           python setup.py install
 
