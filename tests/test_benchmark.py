@@ -15,13 +15,13 @@ def test_collect(benchmark):
         flu(range(3)).collect()
 
 
-def test___getitem___(benchmark):
+def test___getitem__(benchmark):
     @benchmark
     def work():
         flu(range(350))[1:3].collect()
 
 
-def test_sum_(benchmark):
+def test_sum(benchmark):
     @benchmark
     def work():
         gen = flu(range(1000)).sum()
