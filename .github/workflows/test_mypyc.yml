@@ -29,6 +29,10 @@ jobs:
       run: |
           python setup.py install
 
+    - name: install test dependencies
+      run: |
+          pip install pytest pytest-cov
+
     - name: run tests
       run: |
         pytest tests/test_flu.py
