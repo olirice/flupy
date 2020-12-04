@@ -19,7 +19,7 @@ def test___getitem__():
     assert flu(range(35))[1:3].collect() == [1, 2]
     with pytest.raises(IndexError):
         flu([1])[4]
-    with pytest.raises(KeyError):
+    with pytest.raises((KeyError, TypeError)):
         flu([1])["not an index"]
 
 
