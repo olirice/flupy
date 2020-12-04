@@ -2,19 +2,22 @@
 import time
 from collections import defaultdict, deque
 from functools import reduce
-from itertools import dropwhile, groupby, islice, takewhile, tee, zip_longest
+from itertools import dropwhile, islice, takewhile, tee, zip_longest
 from random import sample
 from typing import (
     Any,
     Callable,
+    Collection,
     ContextManager,
     Deque,
+    Generator,
     Generic,
     Hashable,
     Iterable,
     Iterator,
     List,
     Optional,
+    Sequence,
     Set,
     Tuple,
     Type,
@@ -23,6 +26,8 @@ from typing import (
     overload,
 )
 
+from typing_extensions import Protocol
+
 __all__ = ["flu"]
 
 T = TypeVar("T")
@@ -30,18 +35,47 @@ _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 _T3 = TypeVar("_T3")
 
+C = TypeVar(
+    "C",
+)  # bound=)  # container type
 S = TypeVar("S")
 
 
 class Empty:
-    ...
+    pass
 
 
-def identity(x):
+def identity(x: T) -> T:
     return x
 
 
-class Fluent(Generic[T]):
+class SupportsLessThan(Protocol):
+    def __lt__(self, __other: Any) -> bool:
+        ...
+
+
+SupportsLessThanT = TypeVar("SupportsLessThanT", bound=SupportsLessThan)
+
+
+class SupportsIndexing(Protocol):
+    def __getitem__(self, __other: Hashable) -> Any:
+        ...
+
+
+SupportsIndexingT = TypeVar("SupportsIndexingT", bound=SupportsIndexing)
+
+SupportsLessThanT = TypeVar("SupportsLessThanT", bound=SupportsLessThan)
+
+
+class SupportsIterableInitializer(Protocol):
+    def __init__(self, __iterable: Iterable[T]) -> None:
+        ...
+
+
+SupportsIterableInitializerT = TypeVar("SupportsIterableInitializerT", bound=SupportsIterableInitializer)
+
+
+class Fluent(Generic[T], SupportsIterableInitializer):
     """A fluent interface to lazy generator functions
 
     >>> from flupy import flu
@@ -60,7 +94,15 @@ class Fluent(Generic[T]):
         iterator = iter(iterable)
         self._iterator: Iterator[T] = iterator
 
-    def __getitem__(self, key):
+    @overload
+    def __getitem__(self, index: int) -> T:
+        pass
+
+    @overload
+    def __getitem__(self, index: slice) -> "Fluent[T]":
+        pass
+
+    def __getitem__(self, key: Union[int, slice]) -> Union[T, "Fluent[T]"]:
         if isinstance(key, int) and key >= 0:
             try:
                 return next(islice(self._iterator, key, key + 1))
@@ -71,8 +113,21 @@ class Fluent(Generic[T]):
         else:
             raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
 
+    def __len__(self) -> int:
+        copy, _ = self.tee()
+        return copy.count()
+
+    def __contains__(self, x: object) -> bool:
+        copy, _ = self.tee()
+        for elem in copy:
+            if elem == copy:
+                return True
+        return False
+
     ### Summary ###
-    def collect(self, n: int = None, container_type=list):
+    def collect(
+        self, n: int = None, container_type: Type[SupportsIterableInitializerT] = list
+    ) -> SupportsIterableInitializerT:
         """Collect items from iterable into a container
 
         >>> flu(range(4).collect()
@@ -103,7 +158,7 @@ class Fluent(Generic[T]):
         """
         return sum(1 for _ in self)
 
-    def min(self) -> T:
+    def min(self: "Fluent[SupportsLessThanT]") -> SupportsLessThanT:
         """Smallest element in the interable
 
         >>> flu([1, 3, 0, 2]).min()
@@ -111,7 +166,7 @@ class Fluent(Generic[T]):
         """
         return min(self)
 
-    def max(self) -> T:
+    def max(self: "Fluent[SupportsLessThanT]") -> SupportsLessThanT:
         """Largest element in the interable
 
         >>> flu([0, 3, 2, 1]).max()
@@ -119,7 +174,7 @@ class Fluent(Generic[T]):
         """
         return max(self)
 
-    def first(self, default=Empty()) -> T:
+    def first(self, default: Any = Empty()) -> T:
         """Return the first item of the iterable. Raise IndexError if empty or default if provided.
 
                >>> flu([0, 1, 2, 3]).first()
@@ -136,7 +191,7 @@ class Fluent(Generic[T]):
             raise IndexError("Empty iterator")
         return default
 
-    def last(self, default=Empty()) -> T:
+    def last(self, default: Any = Empty()) -> T:
         """Return the last item of the iterble. Raise IndexError if empty or default if provided.
 
         >>> flu([0, 1, 2, 3]).last()
@@ -181,21 +236,21 @@ class Fluent(Generic[T]):
     ### End Summary ###
 
     ### Non-Constant Memory ###
-    def sort(self, key: Optional[Callable[[Any], Any]] = None, reverse=False) -> "Fluent[T]":
-        """Sort iterable by *key* function if provided or identity otherwise
-
-        Note: sorting loads the entire iterable into memory
-
-               >>> flu([3,6,1]).sort().collect()
-               [1, 3, 6]
-
-               >>> flu([3,6,1]).sort(reverse=True).collect()
-               [6, 3, 1]
-
-               >>> flu([3,-6,1]).sort(key=abs).collect()
-               [1, 3, -6]
-        """
-        return Fluent(sorted(self, key=key, reverse=reverse))
+    #    def sort(self, key: Optional[Callable[[Any], Any]] = None, reverse=False) -> "Fluent[T]":
+    #        """Sort iterable by *key* function if provided or identity otherwise
+    #
+    #        Note: sorting loads the entire iterable into memory
+    #
+    #               >>> flu([3,6,1]).sort().collect()
+    #               [1, 3, 6]
+    #
+    #               >>> flu([3,6,1]).sort(reverse=True).collect()
+    #               [6, 3, 1]
+    #
+    #               >>> flu([3,-6,1]).sort(key=abs).collect()
+    #               [1, 3, -6]
+    #        """
+    #        return Fluent(sorted(self, key=key, reverse=reverse))
 
     def join_left(
         self,
@@ -213,7 +268,7 @@ class Fluent(Generic[T]):
                [(0, 0), (1, None), (2, 2), (3, None), (4, 4), (5, None)]
         """
 
-        def _impl():
+        def _impl() -> Generator[Tuple[T, Union[_T1, None]], None, None]:
 
             other_lookup = defaultdict(list)
 
@@ -248,7 +303,7 @@ class Fluent(Generic[T]):
 
         """
 
-        def _impl():
+        def _impl() -> Generator[Tuple[T, _T1], None, None]:
 
             other_lookup = defaultdict(list)
 
@@ -271,10 +326,10 @@ class Fluent(Generic[T]):
                >>> flu([3,6,1]).shuffle().collect()
                [6, 1, 3]
         """
-        dat = self.collect()
+        dat: List[T] = self.collect(container_type=list)
         return Fluent(sample(dat, len(dat)))
 
-    def group_by(self, key=identity, sort: bool = True):
+        #    def group_by(self, key=identity, sort: bool = True):
         """Yield consecutive keys and groups from the iterable
 
         *key* is a function to compute a key value used in grouping and sorting for each element. *key* defaults to an identity function which returns the unchaged element
@@ -299,10 +354,11 @@ class Fluent(Generic[T]):
                >>> flu(points).group_by(key=key_func, sort=True).collect()
                [(1, <flu object>), (4, <flu object>)]
         """
-        gen = self.sort(key) if sort else self
-        return Fluent(groupby(gen, key)).map(lambda x: (x[0], flu([y for y in x[1]])))
 
-    def unique(self, key=lambda x: x) -> "Fluent[T]":
+    #        gen = self.sort(key) if sort else self
+    #        return Fluent(groupby(gen, key)).map(lambda x: (x[0], flu([y for y in x[1]])))
+
+    def unique(self, key: Callable[[T], Hashable] = identity) -> "Fluent[T]":
         """Yield elements that are unique by a *key*.
 
         >>> flu([2, 3, 2, 3]).unique().collect()
@@ -312,7 +368,7 @@ class Fluent(Generic[T]):
         [2, -3]
         """
 
-        def _impl():
+        def _impl() -> Generator[T, None, None]:
             seen: Set[Any] = set()
             for x in self:
                 x_hash = key(x)
@@ -327,7 +383,7 @@ class Fluent(Generic[T]):
     ### End Non-Constant Memory ###
 
     ### Side Effect ###
-    def rate_limit(self, per_second=100) -> "Fluent[T]":
+    def rate_limit(self, per_second: Union[int, float] = 100) -> "Fluent[T]":
         """Restrict consumption of iterable to n item  *per_second*
 
         >>> import time
@@ -337,7 +393,7 @@ class Fluent(Generic[T]):
         1.00126 # approximately 1 second for 3 items
         """
 
-        def _impl():
+        def _impl() -> Generator[T, None, None]:
             wait_time = 1.0 / per_second
             for val in self:
                 start_time = time.time()
@@ -348,7 +404,10 @@ class Fluent(Generic[T]):
         return Fluent(_impl())
 
     def side_effect(
-        self, func: Callable, before: Optional[Callable] = None, after: Optional[Callable] = None
+        self,
+        func: Callable[[T], Any],
+        before: Optional[Callable[[], Any]] = None,
+        after: Optional[Callable[[], Any]] = None,
     ) -> "Fluent[T]":
         """Invoke *func* for each item in the iterable before yielding the item.
         *func* takes a single argument and the output is discarded
@@ -362,7 +421,7 @@ class Fluent(Generic[T]):
             [0, 1]
         """
 
-        def _impl():
+        def _impl() -> Generator[T, None, None]:
             try:
                 if before is not None:
                     before()
@@ -379,20 +438,20 @@ class Fluent(Generic[T]):
 
     ### End Side Effect ###
 
-    def map(self, func: Callable, *args, **kwargs) -> "Fluent[T]":
+    def map(self, func: Callable[[T], _T1], *args, **kwargs) -> "Fluent[_T1]":
         """Apply *func* to each element of iterable
 
         >>> flu(range(5)).map(lambda x: x*x).collect()
         [0, 1, 4, 9, 16]
         """
 
-        def _impl():
+        def _impl() -> Generator[_T1, None, None]:
             for val in self._iterator:
                 yield func(val, *args, **kwargs)
 
         return Fluent(_impl())
 
-    def map_item(self, item: Hashable) -> "Fluent[Any]":
+    def map_item(self: "Fluent[SupportsIndexingT]", item: Hashable) -> "Fluent[SupportsIndexingT]":
         """Extracts *item* from every element of the iterable
 
         >>> flu([(2, 4), (2, 5)]).map_item(1).collect()
@@ -401,7 +460,12 @@ class Fluent(Generic[T]):
         >>> flu([{'mykey': 8}, {'mykey': 5}]).map_item('mykey').collect()
         [8, 5]
         """
-        return self.map(lambda x: x[item])
+
+        def _impl() -> Generator[SupportsIndexingT, None, None]:
+            for x in self:
+                yield x[item]
+
+        return Fluent(_impl())
 
     def map_attr(self, attr: str) -> "Fluent[Any]":
         """Extracts the attribute *attr* from each element of the iterable
@@ -420,7 +484,7 @@ class Fluent(Generic[T]):
         [0, 2, 4, 6, 8]
         """
 
-        def _impl():
+        def _impl() -> Generator[T, None, None]:
             for val in self._iterator:
                 if func(val, *args, **kwargs):
                     yield val
@@ -471,7 +535,14 @@ class Fluent(Generic[T]):
     ) -> "Fluent[Tuple[T, ...]]":
         ...
 
-    def zip(self, *iterable: Iterable[Any]):
+    def zip(
+        self, *iterable: Iterable[Any]
+    ) -> Union[
+        "Fluent[Tuple[T, ...]]",
+        "Fluent[Tuple[T, _T1]]",
+        "Fluent[Tuple[T, _T1, _T2]]",
+        "Fluent[Tuple[T, _T1, _T2, _T3]]",
+    ]:
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable
 
@@ -483,7 +554,7 @@ class Fluent(Generic[T]):
         tup_iter = zip(iter(self), *iterable)
         return Fluent(tup_iter)
 
-    def zip_longest(self, *iterable: Iterable, fill_value=None):
+    def zip_longest(self, *iterable: Iterable[_T1], fill_value: Any = None) -> "Fluent[Tuple[T, ...]]":
         """Yields tuples containing the i-th element from the i-th
         argument in the chainable, and the iterable
         Iteration continues until the longest iterable is exhaused.
@@ -515,7 +586,7 @@ class Fluent(Generic[T]):
         """
         return Fluent(islice(self._iterator, n))
 
-    def take_while(self, predicate: Callable) -> "Fluent[T]":
+    def take_while(self, predicate: Callable[[T], bool]) -> "Fluent[T]":
         """Yield elements from the chainable so long as the predicate is true
 
         >>> flu(range(10)).take_while(lambda x: x < 3).collect()
@@ -523,7 +594,7 @@ class Fluent(Generic[T]):
         """
         return Fluent(takewhile(predicate, self._iterator))
 
-    def drop_while(self, predicate: Callable) -> "Fluent[T]":
+    def drop_while(self, predicate: Callable[[T], bool]) -> "Fluent[T]":
         """Drop elements from the chainable as long as the predicate is true;
         afterwards, return every element
 
@@ -541,7 +612,7 @@ class Fluent(Generic[T]):
             [[0, 1, 2], [3, 4, 5], [6, 7, 8], [9]]
         """
 
-        def _impl():
+        def _impl() -> Generator[List[T], None, None]:
             while True:
                 out = list(self.take(n))
                 if out:
@@ -551,7 +622,7 @@ class Fluent(Generic[T]):
 
         return Fluent(_impl())
 
-    def flatten(self, depth: int = 1, base_type: Type = None, iterate_strings=False) -> "Fluent[Any]":
+    def flatten(self, depth: int = 1, base_type: Type[object] = None, iterate_strings: bool = False) -> "Fluent[Any]":
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
         into non-iterable type or an optional user-defined base_type
 
@@ -577,7 +648,8 @@ class Fluent(Generic[T]):
             [2, 0, 'a', 'b', 'c', 3, 4]
         """
 
-        def walk(node, level):
+        # TODO(OR): Reimplement with strong types
+        def walk(node: Any, level: int) -> Generator[T, None, None]:
             if (
                 ((depth is not None) and (level > depth))
                 or (isinstance(node, str) and not iterate_strings)
@@ -618,7 +690,7 @@ class Fluent(Generic[T]):
             [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
         """
 
-        def _impl():
+        def _impl() -> Generator[Tuple[T, ...], None, None]:
             if n < 0:
                 raise ValueError("n must be >= 0")
             if n == 0:
@@ -674,7 +746,7 @@ class Fluent(Generic[T]):
         return Fluent((Fluent(x) for x in tee(self, n)))
 
 
-class flu(Fluent):
+class flu(Fluent[T]):
     """A fluent interface to lazy generator functions
 
     >>> from flupy import flu
