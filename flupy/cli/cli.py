@@ -2,17 +2,18 @@ import argparse
 import importlib
 import sys
 from signal import SIG_DFL, SIGPIPE, signal
-from typing import List, Optional
+from typing import Generator, List, Optional
 
 from flupy import __version__, flu
 
 
-def read_file(filename):
-    with open(filename, "r") as f:
+def read_file(path: str) -> Generator[str, None, None]:
+    """Yield lines from a file given its path"""
+    with open(path, "r") as f:
         yield from f
 
 
-def parse_args(args: List[str]):
+def parse_args(args: List[str]) -> argparse.Namespace:
     """Parse input arguments"""
     parser = argparse.ArgumentParser(
         description="flupy: a fluent interface for python collections", formatter_class=argparse.RawTextHelpFormatter
@@ -36,7 +37,7 @@ def parse_args(args: List[str]):
     return parser.parse_args(args)
 
 
-def execute_imports(imps: List[str]):
+def execute_imports(imps: List[str]) -> None:
     """Execute CLI scoped imports"""
     for imp_stx in imps:
         module, _, obj_alias = imp_stx.partition(":")
@@ -48,7 +49,7 @@ def execute_imports(imps: List[str]):
             globals()[alias or obj] = getattr(_garb, obj)
 
 
-def main(argv: Optional[List[str]] = None):
+def main(argv: Optional[List[str]] = None) -> None:
     """CLI Entrypoint"""
     args = parse_args(argv[1:] if argv is not None else sys.argv[1:])
 
