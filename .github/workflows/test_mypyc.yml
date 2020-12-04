@@ -18,7 +18,7 @@ jobs:
     - name: install mypy
       run: |
           cd ..
-          git clone https://github.com/python/mypy.git
+          git clone --recurse-submodules https://github.com/python/mypy.git
           cd mypy
           pip install -U pip
           pip install -e .
