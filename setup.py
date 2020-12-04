@@ -44,7 +44,15 @@ def build_description():
 check_python_version()
 
 
-DEV_REQUIRES = ["pytest", "pytest-cov", "pre-commit", "pylint", "black", "mypy"]
+DEV_REQUIRES = [
+    "pytest",
+    "pytest-cov",
+    "pytest-benchmark",
+    "pre-commit",
+    "pylint",
+    "black",
+    "mypy",
+]
 
 
 ext_modules = []
