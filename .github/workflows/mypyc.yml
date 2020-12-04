@@ -43,7 +43,7 @@ jobs:
 
     - name: uninstall compiled version
       run: |
-        pip uninstall flupy
+        pip uninstall flupy -y
         rm -rf build
 
     - name: install flupy[interpreted]
