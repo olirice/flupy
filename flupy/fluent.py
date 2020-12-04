@@ -30,10 +30,6 @@ from typing import (
 
 from typing_extensions import Protocol
 
-if TYPE_CHECKING:
-    from _typeshed import SupportsLessThan  # pylint: disable=import-error
-
-
 __all__ = ["flu"]
 
 
@@ -56,6 +52,14 @@ class SupportsGetItem(Protocol[T_co]):
         ...
 
 
+class SupportsLessThan(Protocol):
+    def __lt__(self, __other: Any) -> bool:
+        ...
+
+
+SupportsLessThanT = TypeVar("SupportsLessThanT", bound="SupportsLessThan")
+
+
 class Empty:
     pass
 
@@ -65,9 +69,6 @@ def identity(x: T) -> T:
 
 
 CallableTakesIterable = Callable[[Iterable[T]], Any]
-
-
-SupportsLessThanT = TypeVar("SupportsLessThanT", bound="SupportsLessThan")
 
 
 class Fluent(Generic[T]):
@@ -220,7 +221,9 @@ class Fluent(Generic[T]):
 
     ### Non-Constant Memory ###
     def sort(
-        self: "Fluent[SupportsLessThanT]", key: Optional[Callable[[Any], Any]] = None, reverse: bool = False
+        self: "Fluent[SupportsLessThanT]",
+        key: Optional[Callable[[Any], Any]] = None,
+        reverse: bool = False,
     ) -> "Fluent[SupportsLessThanT]":
         """Sort iterable by *key* function if provided or identity otherwise
 
