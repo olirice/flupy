@@ -1,4 +1,4 @@
-name: tests
+name: test_mypyc
 
 on: [push]
 
@@ -16,7 +16,7 @@ jobs:
         python-version: 3.9
 
     - name: install mypy
-      run:
+      run: |
           cd ..
           git clone https://github.com/python/mypy.git
           cd mypy
