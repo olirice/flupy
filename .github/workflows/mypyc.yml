@@ -1,0 +1,61 @@
+name: mypyc
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - uses: actions/checkout@v1
+
+    - name: python setup 3.9
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: install mypy
+      run: |
+          cd ..
+          git clone --recurse-submodules https://github.com/python/mypy.git
+          cd mypy
+          pip install -U pip
+          pip install -e .
+
+    - name: install flupy[mypyc]
+      env:
+          MYPYC_COMPILE: 1
+      run: |
+          python setup.py install
+
+    - name: install test dependencies
+      run: |
+          pip install pytest pytest-cov pytest-benchmark
+
+    - name: run tests
+      run: |
+        pytest tests/test_flu.py
+
+    - name: produce benchmarks for flupy[mypc]
+      run: |
+        pytest --benchmark-save=mypyc tests/test_benchmark.py
+
+    - name: uninstall compiled version
+      run: |
+        pip uninstall flupy
+        rm -rf build
+
+    - name: install flupy[interpreted]
+      env:
+          MYPYC_COMPILE: ''
+      run: |
+          pip install .
+
+    - name: produce benchmarks for flupy[interpreted]
+      run: |
+        pytest --benchmark-save=interp tests/test_benchmark.py
+
+    - name: show benchmarks
+      run: |
+        pytest-benchmark compare 0001 0002 | flu "_.sort().unique()"
