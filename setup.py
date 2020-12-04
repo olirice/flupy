@@ -46,6 +46,21 @@ check_python_version()
 
 DEV_REQUIRES = ["pytest", "pytest-cov", "pre-commit", "pylint", "black", "mypy"]
 
+
+ext_modules = []
+
+if os.environ.get("MYPYC_COMPILE", False):
+    from mypyc.build import mypycify
+
+    ext_modules = mypycify(
+        [
+            "flupy/fluent.py",
+            "flupy/cli/cli.py",
+            "flupy/cli/utils.py",
+        ],
+        opt_level="3",
+    )
+
 setuptools.setup(
     name=read_package_variable("__project__"),
     version=read_package_variable("__version__"),
@@ -53,9 +68,15 @@ setuptools.setup(
     url="https://github.com/olirice/flupy",
     author="Oliver Rice",
     author_email="oliver@oliverrice.com",
+    ext_modules=ext_modules,
     packages=setuptools.find_packages(exclude=("tests",)),
     include_package_data=True,
-    entry_points={"console_scripts": ["flu = flupy.cli.cli:main", "flu_precommit = flupy.cli.cli:precommit"]},
+    entry_points={
+        "console_scripts": [
+            "flu = flupy.cli.cli:main",
+            "flu_precommit = flupy.cli.cli:precommit",
+        ]
+    },
     long_description=build_description(),
     tests_require=["pytest", "coverage"],
     license="MIT",
