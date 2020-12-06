@@ -64,8 +64,6 @@ if os.environ.get("MYPYC_COMPILE", False):
         [
             "flupy/fluent.py",
             "flupy/cli/utils.py",
-            "flupy/experimental/__init__.py",
-            "flupy/experimental/builtin.py",
         ],
         opt_level="3",
     )
