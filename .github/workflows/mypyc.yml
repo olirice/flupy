@@ -35,11 +35,11 @@ jobs:
 
     - name: run tests
       run: |
-        pytest tests/test_flu.py
+        pytest
 
     - name: produce benchmarks for flupy[mypc]
       run: |
-        pytest --benchmark-save=mypyc tests/test_benchmark.py
+        pytest --benchmark-save=mypyc benchmark/test_benchmark.py
 
     - name: uninstall compiled version
       run: |
@@ -54,7 +54,7 @@ jobs:
 
     - name: produce benchmarks for flupy[interpreted]
       run: |
-        pytest --benchmark-save=interp tests/test_benchmark.py
+        pytest --benchmark-save=interp benchmark/test_benchmark.py
 
     - name: show benchmarks
       run: |

@@ -1,6 +1,16 @@
-from itertools import cycle
-
 from flupy import flu
+
+
+def test_integration(benchmark):
+    @benchmark
+    def work():
+        (flu(range(100000)).chunk(100).chunk(2).map_item(0).count())
+
+
+def test_max(benchmark):
+    @benchmark
+    def work():
+        flu(range(300000)).max()
 
 
 def test_initialize(benchmark):
@@ -73,12 +83,6 @@ def test_tail(benchmark):
     @benchmark
     def work():
         gen = flu(range(30000)).tail(n=10)
-
-
-def test_max(benchmark):
-    @benchmark
-    def work():
-        gen = flu(range(3000)).max() == 2
 
 
 def test_unique(benchmark):
