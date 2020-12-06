@@ -1,3 +1,5 @@
+from itertools import cycle
+
 from flupy import flu
 
 
