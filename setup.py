@@ -20,7 +20,7 @@ def check_python_version():
 
 def read_package_variable(key, filename="__init__.py"):
     """Read the value of a variable from the package without importing."""
-    module_path = os.path.join(PACKAGE_NAME, filename)
+    module_path = os.path.join('src', PACKAGE_NAME, filename)
     with open(module_path) as module:
         for line in module:
             parts = line.strip().split(" ", 2)
@@ -62,8 +62,8 @@ if os.environ.get("MYPYC_COMPILE", False):
 
     ext_modules = mypycify(
         [
-            "flupy/fluent.py",
-            "flupy/cli/utils.py",
+            "src/flupy/fluent.py",
+            "src/flupy/cli/utils.py",
         ],
         opt_level="3",
     )
@@ -76,8 +76,9 @@ setuptools.setup(
     author="Oliver Rice",
     author_email="oliver@oliverrice.com",
     ext_modules=ext_modules,
-    packages=setuptools.find_packages(exclude=("tests",)),
-    include_package_data=True,
+    packages=setuptools.find_packages('src', exclude=("src/tests",)),
+    package_dir={'': 'src'},
+    #include_package_data=True,
     entry_points={
         "console_scripts": [
             "flu = flupy.cli.cli:main",
@@ -97,6 +98,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    package_data={"flupy": ["Makefile"]},
+    #package_data={"flupy": ["Makefile"]},
     extras_require={"dev": DEV_REQUIRES},
 )
