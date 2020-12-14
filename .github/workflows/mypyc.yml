@@ -35,7 +35,7 @@ jobs:
 
     - name: run tests
       run: |
-        pytest
+        pytest src/tests/test_flu.py --cov-report=xml
 
     - name: produce benchmarks for flupy[mypc]
       run: |
