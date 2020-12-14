@@ -26,7 +26,7 @@ jobs:
 
     - name: run tests
       run: |
-        pytest --cov=flupy tests --cov-report=xml
+        pytest --cov=src/flupy tests --cov-report=xml
 
     - name: upload coverage to codecov
       uses: codecov/codecov-action@v1
