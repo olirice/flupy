@@ -99,6 +99,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    # package_data={"flupy": ["Makefile"]},
+    install_requires=["typing_extensions"],
     extras_require={"dev": DEV_REQUIRES},
 )
