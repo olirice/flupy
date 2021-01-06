@@ -4,7 +4,7 @@ import sys
 from signal import SIG_DFL, SIGPIPE, signal
 from typing import Any, Dict, Generator, List, Optional
 
-from flupy import __version__, flu
+from flupy import __version__, flu, walk_dirs, walk_files
 
 
 def read_file(path: str) -> Generator[str, None, None]:
@@ -16,7 +16,8 @@ def read_file(path: str) -> Generator[str, None, None]:
 def parse_args(args: List[str]) -> argparse.Namespace:
     """Parse input arguments"""
     parser = argparse.ArgumentParser(
-        description="flupy: a fluent interface for python collections", formatter_class=argparse.RawTextHelpFormatter
+        description="flupy: a fluent interface for python collections",
+        formatter_class=argparse.RawTextHelpFormatter,
     )
     parser.add_argument("-v", "--version", action="version", version="%(prog)s " + __version__)
     parser.add_argument("command", help="command to execute against input")
@@ -69,7 +70,14 @@ def main(argv: Optional[List[str]] = None) -> None:
         signal(SIGPIPE, SIG_DFL)
         _ = flu(sys.stdin).map(str.rstrip)
 
-    pipeline = eval(_command, import_dict, {"flu": flu, "_": _})
+    locals_dict = {
+        "flu": flu,
+        "_": _,
+        "walk_files": walk_files,
+        "walk_dirs": walk_dirs,
+    }
+
+    pipeline = eval(_command, import_dict, locals_dict)
 
     if hasattr(pipeline, "__iter__") and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:

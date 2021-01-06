@@ -79,6 +79,20 @@ def test_non_iterable_non_none_pipeline(capsys):
     assert stdout == "hello_world"
 
 
+def test_cli_walk_files(capsys):
+    main(["flu", "walk_files().head(2)"])
+    result = capsys.readouterr()
+    stdout = result.out.strip("\n").split("\n")
+    assert len(stdout) == 2
+
+
+def test_cli_walk_dirs(capsys):
+    main(["flu", "walk_dirs().head(2)"])
+    result = capsys.readouterr()
+    stdout = result.out.strip("\n").split("\n")
+    assert len(stdout) == 2
+
+
 def test_from_file(capsys):
     with NamedTemporaryFile("w+") as f:
         f.write("hello")
