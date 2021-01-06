@@ -64,6 +64,7 @@ if os.environ.get("MYPYC_COMPILE", False):
         [
             "src/flupy/fluent.py",
             "src/flupy/cli/utils.py",
+            "src/flupy/cli/cli.py",
         ],
         opt_level="3",
     )

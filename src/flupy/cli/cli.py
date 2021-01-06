@@ -66,7 +66,7 @@ def main(argv: Optional[List[str]] = None) -> None:
         signal(SIGPIPE, SIG_DFL)
         _ = flu(sys.stdin).map(str.rstrip)
 
-    pipeline = eval(_command)
+    pipeline = eval(_command, globals())
 
     if hasattr(pipeline, "__iter__") and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:
