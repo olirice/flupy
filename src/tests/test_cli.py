@@ -1,9 +1,8 @@
-import sys
 from tempfile import NamedTemporaryFile
 
 import pytest
 
-from flupy.cli.cli import execute_imports, main, parse_args
+from flupy.cli.cli import build_import_dict, main, parse_args
 
 
 def test_parse_args():
@@ -18,11 +17,28 @@ def test_parse_args():
     assert "os:environ:env" in getattr(args, "import")
     assert args.command == "_"
 
-    with pytest.raises(NameError):
-        json  # type: ignore
+    import_dict = build_import_dict(["json"])
+    assert "json" in import_dict
 
-    execute_imports(["json"])
-    assert "json" in sys.modules
+
+def test_build_import_dict():
+    import json
+
+    import_dict = build_import_dict(["json"])
+    assert "json" in import_dict
+    assert import_dict["json"] == json
+
+    import_dict = build_import_dict(["json:dumps"])
+    assert "dumps" in import_dict
+    assert import_dict["dumps"] == json.dumps
+
+    import_dict = build_import_dict(["json:dumps:ds"])
+    assert "ds" in import_dict
+    assert import_dict["ds"] == json.dumps
+
+    import_dict = build_import_dict(["json::j"])
+    assert "j" in import_dict
+    assert import_dict["j"] == json
 
 
 def test_show_help(capsys):

@@ -2,7 +2,7 @@ import argparse
 import importlib
 import sys
 from signal import SIG_DFL, SIGPIPE, signal
-from typing import Generator, List, Optional
+from typing import Any, Dict, Generator, List, Optional
 
 from flupy import __version__, flu
 
@@ -37,16 +37,19 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def execute_imports(imps: List[str]) -> None:
+def build_import_dict(imps: List[str]) -> Dict[str, Any]:
     """Execute CLI scoped imports"""
+    import_dict = {}
     for imp_stx in imps:
         module, _, obj_alias = imp_stx.partition(":")
         obj, _, alias = obj_alias.partition(":")
+
         if not obj:
-            globals()[alias or module] = importlib.import_module(module)
+            import_dict[alias or module] = importlib.import_module(module)
         else:
             _garb = importlib.import_module(module)
-            globals()[alias or obj] = getattr(_garb, obj)
+            import_dict[alias or obj] = getattr(_garb, obj)
+    return import_dict
 
 
 def main(argv: Optional[List[str]] = None) -> None:
@@ -57,7 +60,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     _file = args.file
     _import = getattr(args, "import")
 
-    execute_imports(_import)
+    import_dict = build_import_dict(_import)
 
     if _file:
         _ = flu(read_file(_file)).map(str.rstrip)
@@ -66,7 +69,7 @@ def main(argv: Optional[List[str]] = None) -> None:
         signal(SIGPIPE, SIG_DFL)
         _ = flu(sys.stdin).map(str.rstrip)
 
-    pipeline = eval(_command, globals())
+    pipeline = eval(_command, import_dict, {"flu": flu, "_": _})
 
     if hasattr(pipeline, "__iter__") and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:
