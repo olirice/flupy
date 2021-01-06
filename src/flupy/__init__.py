@@ -3,6 +3,6 @@ from flupy.fluent import flu
 
 __project__ = "flupy"
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 
 __all__ = ["flu", "walk_files", "walk_dirs"]
