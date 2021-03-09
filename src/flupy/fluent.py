@@ -182,7 +182,7 @@ class Fluent(Generic[T]):
         >>> flu([]).last(default='some_default')
         'some default'
         """
-        x = default
+        x: Union[Empty, T] = default
         for x in self:
             pass
         if isinstance(x, Empty):
@@ -212,7 +212,7 @@ class Fluent(Generic[T]):
         >>> flu(range(15)).tail(n=2)
         [18, 19]
         """
-        val: Union[Empty, Tuple[Any, ...]] = Empty()
+        val: Union[List[Empty], Tuple[Any, ...]] = [Empty()]
         for val in self.window(n, fill_value=Empty()):
             pass
         return container_type([x for x in val if not isinstance(x, Empty)])
