@@ -18,6 +18,7 @@ Grouping
 
 .. automethod:: flu.chunk
 .. automethod:: flu.flatten
+.. automethod:: flu.denormalize
 .. automethod:: flu.group_by
 .. automethod:: flu.window
 
