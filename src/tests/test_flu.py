@@ -331,6 +331,31 @@ def test_flatten():
     assert [x for x in gen] == [1, 2, (3, [4]), "r", "b", "s", "d", "a", "b", "c", (7,)]
 
 
+def test_denormalize():
+    content = [
+        ["abc", [1, 2, 3]],
+    ]
+    assert flu(content).denormalize().collect() == [("abc", 1), ("abc", 2), ("abc", 3)]
+    assert (flu(content).denormalize(iterate_strings=True).collect()) == [
+        ("a", 1),
+        ("a", 2),
+        ("a", 3),
+        ("b", 1),
+        ("b", 2),
+        ("b", 3),
+        ("c", 1),
+        ("c", 2),
+        ("c", 3),
+    ]
+
+    assert (flu([[[1], [1, 2], None]]).denormalize().collect()) == [
+        (1, 1, None),
+        (1, 2, None),
+    ]
+
+    assert (flu([[[1], [1, 2], []]]).denormalize().collect()) == []
+
+
 def test_tee():
     # Default unpacking
     gen1, gen2 = flu(range(100)).tee()

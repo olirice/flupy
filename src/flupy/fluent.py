@@ -1,8 +1,9 @@
 # pylint: disable=invalid-name
 import time
 from collections import defaultdict, deque
+from collections.abc import Iterable as IterableType
 from functools import reduce
-from itertools import dropwhile, groupby, islice, takewhile, tee, zip_longest
+from itertools import dropwhile, groupby, islice, product, takewhile, tee, zip_longest
 from random import sample
 from typing import (
     TYPE_CHECKING,
@@ -49,6 +50,11 @@ class SupportsEquality(Protocol):
 
 class SupportsGetItem(Protocol[T_co]):
     def __getitem__(self, __k: Hashable) -> T:
+        ...
+
+
+class SupportsIteration(Protocol[T_co]):
+    def __iter__(self) -> Iterator[T]:
         ...
 
 
@@ -664,6 +670,57 @@ class Fluent(Generic[T]):
                         yield val
 
         return Fluent(walk(self, level=0))
+
+    def denormalize(self: "Fluent[SupportsIteration[Any]]", iterate_strings: bool = False) -> "Fluent[Tuple[Any, ...]]":
+        """Denormalize iterable components of each record
+
+        >>> flu([("abc", [1, 2, 3])]).denormalize().collect()
+        [("abc", 1), ("abc", 2), ("abc", 3)]
+
+        >>> flu([("abc", [1, 2, 3])]).denormalize(iterate_strings=True).collect()
+        [
+            ("a", 1),
+            ("a", 2),
+            ("a", 3),
+            ("b", 1),
+            ("b", 2),
+            ("b", 3),
+            ("c", 1),
+            ("c", 2),
+            ("c", 3),
+        ]
+
+
+        >>> flu([("abc", [])]).denormalize().collect()
+        []
+        """
+
+        def _impl() -> Generator[Tuple[Any, ...], None, None]:
+            for record in self:
+                iter_elements: List[Iterable[Any]] = []
+                element: Any
+                for element in record:
+
+                    # Check for string and string iteration is allowed
+                    if isinstance(element, str) and iterate_strings:
+                        iter_elements.append(element)
+
+                    # Check for string and string iteration is not allowed
+                    elif isinstance(element, str):
+                        iter_elements.append([element])
+
+                    # Check for iterable
+                    elif isinstance(element, IterableType):
+                        iter_elements.append(element)
+
+                    # Check for non-iterable
+                    else:
+                        iter_elements.append([element])
+
+                for row in product(*iter_elements):
+                    yield row
+
+        return Fluent(_impl())
 
     def window(self, n: int, step: int = 1, fill_value: Any = None) -> "Fluent[Tuple[Any, ...]]":
         """Yield a sliding window of width *n* over the given iterable.
