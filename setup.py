@@ -79,6 +79,9 @@ setuptools.setup(
     ext_modules=ext_modules,
     packages=setuptools.find_packages("src", exclude=("src/tests",)),
     package_dir={"": "src"},
+    package_data={
+        "": ["py.typed"]
+    },  # Allows to be analyzed by mypy when installed https://mypy.readthedocs.io/en/stable/installed_packages.html#installed-packages
     # include_package_data=True,
     entry_points={
         "console_scripts": [
