@@ -74,7 +74,7 @@ def identity(x: T) -> T:
     return x
 
 
-CallableTakesIterable = Callable[[Iterable[T]], Any]
+CallableTakesIterable = Callable[[Iterable[T]], Collection]
 
 
 class Fluent(Generic[T]):
@@ -116,7 +116,7 @@ class Fluent(Generic[T]):
             raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
 
     ### Summary ###
-    def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Any:
+    def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Collect items from iterable into a container
 
         >>> flu(range(4).collect()
@@ -195,7 +195,7 @@ class Fluent(Generic[T]):
             raise IndexError("Empty iterator")
         return x
 
-    def head(self, n: int = 10, container_type: CallableTakesIterable[T] = list) -> Any:
+    def head(self, n: int = 10, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Returns up to the first *n* elements from the iterable.
 
         >>> flu(range(20)).head()
@@ -209,7 +209,7 @@ class Fluent(Generic[T]):
         """
         return self.take(n).collect(container_type=container_type)
 
-    def tail(self, n: int = 10, container_type: CallableTakesIterable[T] = list) -> Any:
+    def tail(self, n: int = 10, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Return up to the last *n* elements from the iterable
 
         >>> flu(range(20)).tail()
@@ -320,7 +320,7 @@ class Fluent(Generic[T]):
                >>> flu([3,6,1]).shuffle().collect()
                [6, 1, 3]
         """
-        dat: List[T] = self.collect(container_type=list)
+        dat: List[T] = list(self.collect())
         return Fluent(sample(dat, len(dat)))
 
     def group_by(
@@ -434,7 +434,7 @@ class Fluent(Generic[T]):
 
     ### End Side Effect ###
 
-    def map(self, func: Callable[..., _T1], *args: Any, **kwargs: Any) -> "Fluent[_T1]":
+    def map(self, func: Callable[[T], _T1], *args: Any, **kwargs: Any) -> "Fluent[_T1]":
         """Apply *func* to each element of iterable
 
         >>> flu(range(5)).map(lambda x: x*x).collect()
@@ -443,7 +443,8 @@ class Fluent(Generic[T]):
 
         def _impl() -> Generator[_T1, None, None]:
             for val in self._iterator:
-                yield func(val, *args, **kwargs)
+                # Not possible to type Callabe[[T, args, kwargs], _T1]
+                yield func(val, *args, **kwargs)  # type: ignore
 
         return Fluent(_impl())
 
