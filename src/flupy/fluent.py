@@ -39,8 +39,9 @@ T_co = TypeVar("T_co", covariant=True)
 _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 _T3 = TypeVar("_T3")
-
 S = TypeVar("S")
+
+CallableTakesIterable = Callable[[Iterable[T]], Collection[T]]
 
 
 class SupportsEquality(Protocol):
@@ -74,21 +75,18 @@ def identity(x: T) -> T:
     return x
 
 
-CallableTakesIterable = Callable[[Iterable[T]], Collection]
-
-
 class Fluent(Generic[T]):
     """A fluent interface to lazy generator functions
 
     >>> from flupy import flu
     >>> (
-            flu(range(100))
-            .map(lambda x: x**2)
-            .filter(lambda x: x % 3 == 0)
-            .chunk(3)
-            .take(2)
-            .collect()
-        )
+        flu(range(100))
+        .map(lambda x: x**2)
+        .filter(lambda x: x % 3 == 0)
+        .chunk(3)
+        .take(2)
+        .collect()
+    )
     [[0, 9, 36], [81, 144, 225]]
     """
 
@@ -119,7 +117,7 @@ class Fluent(Generic[T]):
     def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Collect items from iterable into a container
 
-        >>> flu(range(4).collect()
+        >>> flu(range(4)).collect()
         [0, 1, 2, 3]
 
         >>> flu(range(4)).collect(container_type=set)
@@ -166,12 +164,10 @@ class Fluent(Generic[T]):
     def first(self, default: Any = Empty()) -> T:
         """Return the first item of the iterable. Raise IndexError if empty or default if provided.
 
-               >>> flu([0, 1, 2, 3]).first()
-               0
-               >>> flu([]).first(default='some_default')
-               'some default'
-
-        when *default* is not provided and the iterable is empty, raise IndexError
+        >>> flu([0, 1, 2, 3]).first()
+        0
+        >>> flu([]).first(default="some_default")
+        'some_default'
         """
         x = default
         for x in self:
@@ -186,7 +182,7 @@ class Fluent(Generic[T]):
         >>> flu([0, 1, 2, 3]).last()
         3
         >>> flu([]).last(default='some_default')
-        'some default'
+        'some_default'
         """
         x: Union[Empty, T] = default
         for x in self:
@@ -216,7 +212,7 @@ class Fluent(Generic[T]):
         [10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
         >>> flu(range(15)).tail(n=2)
-        [18, 19]
+        [13, 14]
         """
         val: Union[List[Empty], Tuple[Any, ...]] = [Empty()]
         for val in self.window(n, fill_value=Empty()):
@@ -332,23 +328,24 @@ class Fluent(Generic[T]):
 
         When the iterable is pre-sorted according to *key*, setting *sort* to False will prevent loading the dataset into memory and improve performance
 
-               >>> flu([2, 4, 2, 4]).group_by().collect()
-               [2, <flu object>), (4, <flu object>)]
+        >>> flu([2, 4, 2, 4]).group_by().collect()
+        [2, <flu object>), (4, <flu object>)]
 
         Or, if the iterable is pre-sorted
 
-               >>> flu([2, 2, 5, 5]).group_by(sort=False).collect()
-               [(2, <flu object>), (5, <flu object>)]
+        >>> flu([2, 2, 5, 5]).group_by(sort=False).collect()
+        [(2, <flu object>), (5, <flu object>)]
 
         Using a key function
-               >>>  points = [
-                        {'x': 1, 'y': 0},
-                        {'x': 4, 'y': 3},
-                        {'x': 1, 'y': 5}
-                    ]
-               >>> key_func = lambda u: u['x']
-               >>> flu(points).group_by(key=key_func, sort=True).collect()
-               [(1, <flu object>), (4, <flu object>)]
+
+        >>> points = [
+            {'x': 1, 'y': 0},
+            {'x': 4, 'y': 3},
+            {'x': 1, 'y': 5}
+        ]
+        >>> key_func = lambda u: u['x']
+        >>> flu(points).group_by(key=key_func, sort=True).collect()
+        [(1, <flu object>), (4, <flu object>)]
         """
 
         gen = self.sort(key) if sort else self
@@ -385,7 +382,7 @@ class Fluent(Generic[T]):
         >>> import time
         >>> start_time = time.time()
         >>> flu(range(3)).rate_limit(3).collect()
-        >>> print('Runtime', time.time() - start_time)
+        >>> print('Runtime', int(time.time() - start_time)
         1.00126 # approximately 1 second for 3 items
         """
 
@@ -502,8 +499,8 @@ class Fluent(Generic[T]):
         from left to right, starting with *initial*, so as to fold the sequence to
         a single value
 
-            >>> flu(range(5)).fold_left(lambda x, y: x + str(y), "")
-            "01234"
+        >>> flu(range(5)).fold_left(lambda x, y: x + str(y), "")
+        '01234'
         """
         return reduce(func, self, initial)
 
@@ -596,7 +593,7 @@ class Fluent(Generic[T]):
         afterwards, return every element
 
             >>> flu(range(10)).drop_while(lambda x: x < 3).collect()
-            [4, 5, 6, 7, 8, 9]
+            [3, 4, 5, 6, 7, 8, 9]
         """
         return Fluent(dropwhile(predicate, self._iterator))
 
@@ -676,21 +673,10 @@ class Fluent(Generic[T]):
         """Denormalize iterable components of each record
 
         >>> flu([("abc", [1, 2, 3])]).denormalize().collect()
-        [("abc", 1), ("abc", 2), ("abc", 3)]
+        [('abc', 1), ('abc', 2), ('abc', 3)]
 
-        >>> flu([("abc", [1, 2, 3])]).denormalize(iterate_strings=True).collect()
-        [
-            ("a", 1),
-            ("a", 2),
-            ("a", 3),
-            ("b", 1),
-            ("b", 2),
-            ("b", 3),
-            ("c", 1),
-            ("c", 2),
-            ("c", 3),
-        ]
-
+        >>> flu([("abc", [1, 2])]).denormalize(iterate_strings=True).collect()
+        [('a', 1), ('a', 2), ('b', 1), ('b', 2), ('c', 1), ('c', 2)]
 
         >>> flu([("abc", [])]).denormalize().collect()
         []
@@ -731,17 +717,17 @@ class Fluent(Generic[T]):
         If the length of the iterable does not evenly divide by the *step*
         the final output is padded with *fill_value*
 
-            >>> flu(range(5)).window(3).collect()
-            [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+        >>> flu(range(5)).window(3).collect()
+        [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
 
-            >>> flu(range(5)).window(n=3, step=2).collect()
-            [(0, 1, 2), (1, 2, 3), (2, 3, 4)]
+        >>> flu(range(5)).window(n=3, step=2).collect()
+        [(0, 1, 2), (2, 3, 4)]
 
-            >>> flu(range(9)).window(n=4, step=3).collect()
-            [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, None)]
+        >>> flu(range(9)).window(n=4, step=3).collect()
+        [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, None)]
 
-            >>> flu(range(9)).window(n=4, step=3, fill_value=-1).collect()
-            [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
+        >>> flu(range(9)).window(n=4, step=3, fill_value=-1).collect()
+        [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
         """
 
         def _impl() -> Generator[Tuple[Any, ...], None, None]:
