@@ -42,6 +42,8 @@ _T3 = TypeVar("_T3")
 S = TypeVar("S")
 
 CallableTakesIterable = Callable[[Iterable[T]], Collection[T]]
+ListTakesIterT = Callable[[Iterable[T]], List[T]]
+SetTakesIterT = Callable[[Iterable[T]], Set[T]]
 
 
 class SupportsEquality(Protocol):
@@ -114,7 +116,22 @@ class Fluent(Generic[T]):
             raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
 
     ### Summary ###
-    def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
+
+    @overload
+    def collect(self, container_type: ListTakesIterT[T] = list, n: int = ...) -> List[T]:
+        ...
+
+    @overload
+    def collect(self, container_type: SetTakesIterT[T], n: int = ...) -> Set[T]:
+        ...
+
+    @overload
+    def collect(self, container_type: CallableTakesIterable[T], n: int = ...) -> Collection[T]:
+        # If type is not list or set, mypy can only infer return type as Collection instead of the narrower type
+        # See https://github.com/olirice/flupy/issues/18
+        ...
+
+    def collect(self, container_type: CallableTakesIterable[T] = list, n: int = None) -> Collection[T]:
         """Collect items from iterable into a container
 
         >>> flu(range(4)).collect()
