@@ -324,7 +324,7 @@ class Fluent(Generic[T]):
         >>> flu([3,6,1]).shuffle().to_list()
         [6, 1, 3]
         """
-        dat: List[T] = list(self.to_list())
+        dat: List[T] = self.to_list()
         return Fluent(sample(dat, len(dat)))
 
     def group_by(
