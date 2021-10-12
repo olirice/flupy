@@ -70,6 +70,7 @@ Summarizing
 .. automethod:: flu.last
 .. automethod:: flu.head
 .. automethod:: flu.tail
+.. automethod:: flu.to_list
 .. automethod:: flu.collect
 
 ----
