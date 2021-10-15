@@ -14,7 +14,7 @@ MINIMUM_PYTHON_VERSION = "3.6"
 
 def check_python_version():
     """Exit when the Python version is too low."""
-    if sys.version < MINIMUM_PYTHON_VERSION:
+    if not any([f"3.{x}" in sys.version for x in range(6, 30)]):
         sys.exit("Python {0}+ is required.".format(MINIMUM_PYTHON_VERSION))
 
 
@@ -102,6 +102,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     install_requires=["typing_extensions"],
     extras_require={"dev": DEV_REQUIRES},
