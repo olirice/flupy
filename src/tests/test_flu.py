@@ -12,6 +12,10 @@ def test_collect():
     assert flu(range(3)).collect(n=2) == [0, 1]
 
 
+def test_to_list():
+    assert flu(range(3)).to_list() == [0, 1, 2]
+
+
 def test___getitem__():
     assert flu(range(3))[1] == 1
     assert flu(range(3))[1:].collect() == [1, 2]
