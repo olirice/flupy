@@ -46,22 +46,22 @@ CallableTakesIterable = Callable[[Iterable[T]], Collection[T]]
 
 class SupportsEquality(Protocol):
     def __eq__(self, __other: object) -> bool:
-        ...
+        pass
 
 
 class SupportsGetItem(Protocol[T_co]):
     def __getitem__(self, __k: Hashable) -> T:
-        ...
+        pass
 
 
 class SupportsIteration(Protocol[T_co]):
     def __iter__(self) -> Iterator[T]:
-        ...
+        pass
 
 
 class SupportsLessThan(Protocol):
     def __lt__(self, __other: Any) -> bool:
-        ...
+        pass
 
 
 SupportsLessThanT = TypeVar("SupportsLessThanT", bound="SupportsLessThan")
