@@ -29,6 +29,7 @@ from typing import (
     overload,
 )
 
+
 from typing_extensions import Protocol
 
 __all__ = ["flu"]
