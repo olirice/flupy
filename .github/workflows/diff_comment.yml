@@ -1,11 +1,31 @@
 on:
-  # Trigger the workflow on push or pull request
   pull_request:
     branches:
       - master
       - develop
 
 jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+    - name: python setup
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: install flupy
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: run tests
+      run: |
+        pytest --cov=src/flupy src/tests --cov-report=term &> coverage.txt
+
+
   comment:
     runs-on: ubuntu-latest
     steps:
@@ -17,5 +37,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
+              body: cat ./coverage.xml 
             })
