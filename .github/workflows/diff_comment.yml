@@ -1,7 +1,10 @@
 name: local coverage
 
 on:
-  push 
+  push:
+    branches:
+      - master
+      - develop
   pull_request:
     branches:
       - master
