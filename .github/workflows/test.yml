@@ -28,15 +28,6 @@ jobs:
       run: |
         pytest --cov=src/flupy src/tests --cov-report=term &> coverage.txt
 
-    - name: upload coverage to codecov
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
-
     - name: ping
       uses: actions/github-script@v5
       with:
