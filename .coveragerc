@@ -5,4 +5,4 @@ exclude_lines =
     raise AssertionError
     raise NotImplementedError
     @overload
-    ...
+    pass
