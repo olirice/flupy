@@ -1,3 +1,5 @@
+name: local coverage
+
 on:
   push 
   pull_request:
