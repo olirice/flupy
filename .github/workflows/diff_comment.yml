@@ -1,0 +1,41 @@
+name: local coverage
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+    - name: python setup
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.9
+
+    - name: install flupy
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: run tests
+      run: |
+        pytest --cov=src/flupy src/tests --cov-report=xml
+
+    - name: diff coverage report
+      run: |
+        pip install diff_cover
+        diff-cover --compare-branch=master coverage.xml --markdown-report report.md 
+
+    - uses: actions/github-script@v5
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: cat ./coverage.xml 
+          })
+      env: "$( cat coverage.txt )"

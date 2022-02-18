@@ -114,6 +114,12 @@ class Fluent(Generic[T]):
         else:
             raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
 
+    def uncovered(self):
+        """asdf"""
+        x = 2
+        y = "a"
+        return 42
+
     ### Summary ###
     def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Collect items from iterable into a container
