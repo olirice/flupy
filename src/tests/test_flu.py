@@ -303,7 +303,7 @@ def test_window():
 
 
 def test_flu():
-    gen = flu(count()).map(lambda x: x ** 2).filter(lambda x: x % 517 == 0).chunk(5).take(3)
+    gen = flu(count()).map(lambda x: x**2).filter(lambda x: x % 517 == 0).chunk(5).take(3)
     assert next(gen) == [0, 267289, 1069156, 2405601, 4276624]
 
 
