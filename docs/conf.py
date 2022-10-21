@@ -187,7 +187,7 @@ latex_elements: Dict[str, str] = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [("index", "flupy.tex", u"flupy Documentation", u"Oliver Rice", "manual")]
+latex_documents = [("index", "flupy.tex", "flupy Documentation", "Oliver Rice", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -214,7 +214,7 @@ latex_documents = [("index", "flupy.tex", u"flupy Documentation", u"Oliver Rice"
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "flupy", u"flupy Documentation", [u"Oliver Rice"], 1)]
+man_pages = [("index", "flupy", "flupy Documentation", ["Oliver Rice"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -229,8 +229,8 @@ texinfo_documents = [
     (
         "index",
         "flupy",
-        u"flupy Documentation",
-        u"Oliver Rice",
+        "flupy Documentation",
+        "Oliver Rice",
         "flupy",
         "A fluent interface to python collections.",
         "Miscellaneous",
