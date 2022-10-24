@@ -15,6 +15,5 @@ Contents
     :maxdepth: 1
 
     license
-    testing
     influances
     versions
