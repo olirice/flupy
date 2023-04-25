@@ -6,12 +6,9 @@ from functools import reduce
 from itertools import dropwhile, groupby, islice, product, takewhile, tee, zip_longest
 from random import sample
 from typing import (
-    TYPE_CHECKING,
     Any,
     Callable,
     Collection,
-    Container,
-    ContextManager,
     Deque,
     Generator,
     Generic,
@@ -20,7 +17,6 @@ from typing import (
     Iterator,
     List,
     Optional,
-    Sequence,
     Set,
     Tuple,
     Type,
@@ -546,7 +542,7 @@ class Fluent(Generic[T]):
         "Fluent[Tuple[T, _T1, _T2, _T3]]",
     ]:
         """Yields tuples containing the i-th element from the i-th
-        argument in the chainable, and the iterable
+        argument in the instance, and the iterable
 
         >>> flu(range(5)).zip(range(3, 0, -1)).to_list()
         [(0, 3), (1, 2), (2, 1)]
@@ -558,7 +554,7 @@ class Fluent(Generic[T]):
 
     def zip_longest(self, *iterable: Iterable[_T1], fill_value: Any = None) -> "Fluent[Tuple[T, ...]]":
         """Yields tuples containing the i-th element from the i-th
-        argument in the chainable, and the iterable
+        argument in the instance, and the iterable
         Iteration continues until the longest iterable is exhaused.
         If iterables are uneven in length, missing values are filled in with fill value
 
@@ -572,11 +568,11 @@ class Fluent(Generic[T]):
         return Fluent(zip_longest(self, *iterable, fillvalue=fill_value))
 
     def enumerate(self, start: int = 0) -> "Fluent[Tuple[int, T]]":
-        """Yields tuples from the chainable where the first element
+        """Yields tuples from the instance where the first element
         is a count from initial value *start*.
 
-        >>> flu(range(5)).zip_longest(range(3, 0, -1)).to_list()
-        [(0, 3), (1, 2), (2, 1), (3, None), (4, None)]
+        >>> flu([3,4,5]).enumerate().to_list()
+        [(0, 3), (1, 4), (2, 5)]
         """
         return Fluent(enumerate(self, start=start))
 
