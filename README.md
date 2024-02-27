@@ -7,7 +7,6 @@
 <a href="https://github.com/psf/black">
         <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Codestyle Black" height="18">
     </a>
-<a href="https://github.com/olirice/flupy/actions"><img src="https://github.com/olirice/flupy/workflows/mypyc/badge.svg" alt="mypyc" height="18"></a>
 </p>
 
 <p>
