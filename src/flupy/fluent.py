@@ -475,6 +475,12 @@ class Fluent(Generic[T]):
         """
         return self.map(lambda x: getattr(x, attr))
 
+    @overload
+    def filter(self, func: Callable[[T], bool], *args: Any, **kwargs: Any) -> "Fluent[T]": ...
+
+    @overload
+    def filter(self, func: Callable[..., bool], *args: Any, **kwargs: Any) -> "Fluent[T]": ...
+    
     def filter(self, func: Callable[..., bool], *args: Any, **kwargs: Any) -> "Fluent[T]":
         """Yield elements of iterable where *func* returns truthy
 
