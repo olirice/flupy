@@ -104,6 +104,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    install_requires=["typing_extensions"],
+    install_requires=["typing_extensions>=4"],
     extras_require={"dev": DEV_REQUIRES},
 )

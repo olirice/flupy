@@ -25,7 +25,7 @@ from typing import (
     overload,
 )
 
-from typing_extensions import Protocol, ParamSpec, Concatenate
+from typing_extensions import Concatenate, ParamSpec, Protocol
 
 __all__ = ["flu"]
 
@@ -141,7 +141,7 @@ class Fluent(Generic[T]):
         6
 
         """
-        return sum(self)
+        return sum(self)  # type: ignore
 
     def count(self) -> int:
         """Count of elements in the iterable
@@ -450,7 +450,7 @@ class Fluent(Generic[T]):
 
         return Fluent(_impl())
 
-    def map_item(self: "Fluent[SupportsGetItem[T]]", item: Hashable) -> "Fluent[SupportsGetItem[T]]":
+    def map_item(self: "Fluent[SupportsGetItem[T]]", item: Hashable) -> "Fluent[T]":
         """Extracts *item* from every element of the iterable
 
         >>> flu([(2, 4), (2, 5)]).map_item(1).to_list()
@@ -460,7 +460,7 @@ class Fluent(Generic[T]):
         [8, 5]
         """
 
-        def _impl() -> Generator[SupportsGetItem[T], None, None]:
+        def _impl() -> Generator[T, None, None]:
             for x in self:
                 yield x[item]
 
