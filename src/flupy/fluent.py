@@ -25,17 +25,19 @@ from typing import (
     overload,
 )
 
-from typing_extensions import Protocol
+from typing_extensions import Protocol, ParamSpec, Concatenate
 
 __all__ = ["flu"]
 
 
 T = TypeVar("T")
 T_co = TypeVar("T_co", covariant=True)
+T_contra = TypeVar("T_contra", contravariant=True)
 _T1 = TypeVar("_T1")
 _T2 = TypeVar("_T2")
 _T3 = TypeVar("_T3")
 S = TypeVar("S")
+P = ParamSpec("P")
 
 CallableTakesIterable = Callable[[Iterable[T]], Collection[T]]
 
@@ -46,7 +48,7 @@ class SupportsEquality(Protocol):
 
 
 class SupportsGetItem(Protocol[T_co]):
-    def __getitem__(self, __k: Hashable) -> T:
+    def __getitem__(self, __k: Hashable) -> T_co:
         pass
 
 
@@ -110,7 +112,7 @@ class Fluent(Generic[T]):
             raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
 
     ### Summary ###
-    def collect(self, n: int = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
+    def collect(self, n: Optional[int] = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
         """Collect items from iterable into a container
 
         >>> flu(range(4)).collect()
@@ -435,7 +437,7 @@ class Fluent(Generic[T]):
 
     ### End Side Effect ###
 
-    def map(self, func: Callable[[T], _T1], *args: Any, **kwargs: Any) -> "Fluent[_T1]":
+    def map(self, func: Callable[Concatenate[T, P], _T1], *args: Any, **kwargs: Any) -> "Fluent[_T1]":
         """Apply *func* to each element of iterable
 
         >>> flu(range(5)).map(lambda x: x*x).to_list()
@@ -444,8 +446,7 @@ class Fluent(Generic[T]):
 
         def _impl() -> Generator[_T1, None, None]:
             for val in self._iterator:
-                # Not possible to type Callabe[[T, args, kwargs], _T1]
-                yield func(val, *args, **kwargs)  # type: ignore
+                yield func(val, *args, **kwargs)
 
         return Fluent(_impl())
 
@@ -475,7 +476,7 @@ class Fluent(Generic[T]):
         """
         return self.map(lambda x: getattr(x, attr))
 
-    def filter(self, func: Callable[..., bool], *args: Any, **kwargs: Any) -> "Fluent[T]":
+    def filter(self, func: Callable[Concatenate[T, P], bool], *args: Any, **kwargs: Any) -> "Fluent[T]":
         """Yield elements of iterable where *func* returns truthy
 
         >>> flu(range(10)).filter(lambda x: x % 2 == 0).to_list()
@@ -624,7 +625,7 @@ class Fluent(Generic[T]):
     def flatten(
         self,
         depth: int = 1,
-        base_type: Type[object] = None,
+        base_type: Optional[Type[object]] = None,
         iterate_strings: bool = False,
     ) -> "Fluent[Any]":
         """Recursively flatten nested iterables (e.g., a list of lists of tuples)
