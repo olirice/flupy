@@ -9,7 +9,7 @@ import sys
 import setuptools
 
 PACKAGE_NAME = "flupy"
-MINIMUM_PYTHON_VERSION = (3, 6, 0, "", 0)
+MINIMUM_PYTHON_VERSION = (3, 8, 0, "", 0)
 
 
 def check_python_version():
