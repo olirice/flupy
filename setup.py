@@ -9,7 +9,7 @@ import sys
 import setuptools
 
 PACKAGE_NAME = "flupy"
-MINIMUM_PYTHON_VERSION = (3, 6, 0, "", 0)
+MINIMUM_PYTHON_VERSION = (3, 7, 0, "", 0)
 
 
 def check_python_version():
@@ -104,6 +104,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    install_requires=["typing_extensions"],
+    install_requires=["typing_extensions>=4"],
     extras_require={"dev": DEV_REQUIRES},
 )
