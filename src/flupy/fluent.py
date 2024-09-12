@@ -109,7 +109,7 @@ class Fluent(Generic[T]):
         elif isinstance(key, slice):
             return flu(islice(self._iterator, key.start, key.stop, key.step))
         else:
-            raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
+            raise TypeError(f"Indices must be non-negative integers or slices, not {type(key).__name__}")
 
     ### Summary ###
     def collect(self, n: Optional[int] = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
@@ -168,7 +168,7 @@ class Fluent(Generic[T]):
         return max(self)
 
     def first(self, default: Any = Empty()) -> T:
-        """Return the first item of the iterable. Raise IndexError if empty or default if provided.
+        """Return the first item of the iterable. Raise IndexError if empty, or return default if provided.
 
         >>> flu([0, 1, 2, 3]).first()
         0
@@ -530,7 +530,7 @@ class Fluent(Generic[T]):
         __iter2: Iterable[Any],
         __iter3: Iterable[Any],
         __iter4: Iterable[Any],
-        *iterable: Iterable[Any]
+        *iterable: Iterable[Any],
     ) -> "Fluent[Tuple[T, ...]]":
         ...
 
