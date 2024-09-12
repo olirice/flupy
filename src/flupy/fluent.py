@@ -109,7 +109,7 @@ class Fluent(Generic[T]):
         elif isinstance(key, slice):
             return flu(islice(self._iterator, key.start, key.stop, key.step))
         else:
-            raise KeyError("Key must be non-negative integer or slice, not {}".format(key))
+            raise TypeError(f"Indices must be non-negative integers or slices, not {type(key).__name__}")
 
     ### Summary ###
     def collect(self, n: Optional[int] = None, container_type: CallableTakesIterable[T] = list) -> Collection[T]:
@@ -168,19 +168,19 @@ class Fluent(Generic[T]):
         return max(self)
 
     def first(self, default: Any = Empty()) -> T:
-        """Return the first item of the iterable. Raise IndexError if empty or default if provided.
+        """Return the first item of the iterable. Raise IndexError if empty, or return default if provided.
 
         >>> flu([0, 1, 2, 3]).first()
         0
         >>> flu([]).first(default="some_default")
         'some_default'
         """
-        x = default
+        x: Union[Empty, T] = default
         for x in self:
             return x
         if isinstance(x, Empty):
             raise IndexError("Empty iterator")
-        return default
+        return x
 
     def last(self, default: Any = Empty()) -> T:
         """Return the last item of the iterble. Raise IndexError if empty or default if provided.
@@ -335,7 +335,7 @@ class Fluent(Generic[T]):
         When the iterable is pre-sorted according to *key*, setting *sort* to False will prevent loading the dataset into memory and improve performance
 
         >>> flu([2, 4, 2, 4]).group_by().to_list()
-        [2, <flu object>), (4, <flu object>)]
+        [(2, <flu object>), (4, <flu object>)]
 
         Or, if the iterable is pre-sorted
 
@@ -530,7 +530,7 @@ class Fluent(Generic[T]):
         __iter2: Iterable[Any],
         __iter3: Iterable[Any],
         __iter4: Iterable[Any],
-        *iterable: Iterable[Any]
+        *iterable: Iterable[Any],
     ) -> "Fluent[Tuple[T, ...]]":
         ...
 
