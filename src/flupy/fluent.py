@@ -175,12 +175,12 @@ class Fluent(Generic[T]):
         >>> flu([]).first(default="some_default")
         'some_default'
         """
-        x = default
+        x: Union[Empty, T] = default
         for x in self:
             return x
         if isinstance(x, Empty):
             raise IndexError("Empty iterator")
-        return default
+        return x
 
     def last(self, default: Any = Empty()) -> T:
         """Return the last item of the iterble. Raise IndexError if empty or default if provided.
