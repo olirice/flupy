@@ -335,7 +335,7 @@ class Fluent(Generic[T]):
         When the iterable is pre-sorted according to *key*, setting *sort* to False will prevent loading the dataset into memory and improve performance
 
         >>> flu([2, 4, 2, 4]).group_by().to_list()
-        [2, <flu object>), (4, <flu object>)]
+        [(2, <flu object>), (4, <flu object>)]
 
         Or, if the iterable is pre-sorted
 
