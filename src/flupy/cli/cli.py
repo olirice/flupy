@@ -1,7 +1,6 @@
 import argparse
 import importlib
 import sys
-from signal import SIG_DFL, SIGPIPE, signal
 from typing import Any, Dict, Generator, List, Optional
 
 from flupy import __version__, flu, walk_dirs, walk_files
@@ -66,8 +65,6 @@ def main(argv: Optional[List[str]] = None) -> None:
     if _file:
         _ = flu(read_file(_file)).map(str.rstrip)
     else:
-        # Do not raise exception for Broken Pipe
-        signal(SIGPIPE, SIG_DFL)
         _ = flu(sys.stdin).map(str.rstrip)
 
     locals_dict = {
