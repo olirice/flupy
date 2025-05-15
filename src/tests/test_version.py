@@ -1,6 +1,7 @@
 """
 Tests for version information.
 """
+
 import re
 
 import flupy
