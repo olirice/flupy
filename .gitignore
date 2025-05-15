@@ -9,6 +9,7 @@ __pycache__
 .python-version
 
 .benchmarks
+poetry.lock
 
 pip-wheel-metadata/
 

@@ -1,5 +1,48 @@
+[tool.poetry]
+name = "flupy"
+version = "1.2.2"
+description = "Fluent data processing in Python - a chainable stream processing library for expressive data manipulation using method chaining"
+authors = ["Oliver Rice <oliver@oliverrice.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/olirice/flupy"
+packages = [{include = "flupy", from = "src"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+typing_extensions = ">=4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-cov = "*"
+pytest-benchmark = "*"
+pre-commit = "*"
+pylint = "*"
+black = "*"
+mypy = "*"
+
+[tool.poetry.scripts]
+flu = "flupy.cli.cli:main"
+flu_precommit = "flupy.cli.cli:precommit"
+
+[build-system]
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
-line-length=120
+line-length = 120
 exclude = '''
 /(
     \.git
@@ -13,3 +56,28 @@ exclude = '''
   | dist
 )/
 '''
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+strict_optional = true
+follow_imports = "skip"
+warn_redundant_casts = true
+warn_unused_ignores = false
+check_untyped_defs = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=src/flupy src/tests"
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "@overload",
+    "pass",
+]

@@ -510,18 +510,15 @@ class Fluent(Generic[T]):
         return reduce(func, self, initial)
 
     @overload
-    def zip(self, __iter1: Iterable[_T1]) -> "Fluent[Tuple[T, _T1]]":
-        ...
+    def zip(self, __iter1: Iterable[_T1]) -> "Fluent[Tuple[T, _T1]]": ...
 
     @overload
-    def zip(self, __iter1: Iterable[_T1], __iter2: Iterable[_T2]) -> "Fluent[Tuple[T, _T1, _T2]]":
-        ...
+    def zip(self, __iter1: Iterable[_T1], __iter2: Iterable[_T2]) -> "Fluent[Tuple[T, _T1, _T2]]": ...
 
     @overload
     def zip(
         self, __iter1: Iterable[_T1], __iter2: Iterable[_T2], __iter3: Iterable[_T3]
-    ) -> "Fluent[Tuple[T, _T1, _T2, _T3]]":
-        ...
+    ) -> "Fluent[Tuple[T, _T1, _T2, _T3]]": ...
 
     @overload
     def zip(
@@ -531,12 +528,9 @@ class Fluent(Generic[T]):
         __iter3: Iterable[Any],
         __iter4: Iterable[Any],
         *iterable: Iterable[Any],
-    ) -> "Fluent[Tuple[T, ...]]":
-        ...
+    ) -> "Fluent[Tuple[T, ...]]": ...
 
-    def zip(
-        self, *iterable: Iterable[Any]
-    ) -> Union[
+    def zip(self, *iterable: Iterable[Any]) -> Union[
         "Fluent[Tuple[T, ...]]",
         "Fluent[Tuple[T, _T1]]",
         "Fluent[Tuple[T, _T1, _T2]]",
