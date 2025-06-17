@@ -68,6 +68,7 @@ def main(argv: Optional[List[str]] = None) -> None:
         try:
             # Restore the default SIGPIPE handler
             from signal import SIG_DFL, SIGPIPE, signal
+
             signal(SIGPIPE, SIG_DFL)
         except ImportError:
             # SIGPIPE not available on platform (e.g. Windows), nothing to do
