@@ -10,6 +10,7 @@ from typing import (
     Callable,
     Collection,
     Deque,
+    Dict,
     Generator,
     Generic,
     Hashable,
@@ -311,6 +312,56 @@ class Fluent(Generic[T]):
 
                 for match in matches:
                     yield (entry, match)
+
+        return Fluent(_impl())
+
+    def join_full(
+        self,
+        other: Iterable[_T1],
+        key: Callable[[T], Hashable] = identity,
+        other_key: Callable[[_T1], Hashable] = identity,
+    ) -> "Fluent[Tuple[Union[T, None], Union[_T1, None]]]":
+        """Join the iterable with another iterable using equality between *key* applied to self and *other_key* applied to *other* to identify matching entries
+
+        Returns all entries from both iterables. When no matching entry is found, entries are paired with None
+
+        Note: join_full loads both *self* and *other* into memory
+
+        >>> flu(range(4)).join_full(range(2, 6)).to_list()
+        [(0, None), (1, None), (2, 2), (3, 3), (None, 4), (None, 5)]
+        """
+
+        def _impl() -> Generator[Tuple[Union[T, None], Union[_T1, None]], None, None]:
+
+            # Build lookup for other
+            other_lookup: Dict[Hashable, List[_T1]] = defaultdict(list)
+            other_keys_seen: Set[Hashable] = set()
+
+            for entry_other in other:
+                other_key_val = other_key(entry_other)
+                other_lookup[other_key_val].append(entry_other)
+                other_keys_seen.add(other_key_val)
+
+            # Track which keys from other have been matched
+            matched_other_keys: Set[Hashable] = set()
+
+            # Process all entries from self
+            for entry in self:
+                entry_key = key(entry)
+                matches: Optional[List[_T1]] = other_lookup.get(entry_key)
+
+                if matches:
+                    matched_other_keys.add(entry_key)
+                    for match in matches:
+                        yield (entry, match)
+                else:
+                    yield (entry, None)
+
+            # Yield unmatched entries from other
+            unmatched_keys = other_keys_seen - matched_other_keys
+            for unmatched_key in unmatched_keys:
+                for entry_other in other_lookup[unmatched_key]:
+                    yield (None, entry_other)
 
         return Fluent(_impl())
 

@@ -68,3 +68,6 @@ venv/*
 
 # Eclipse
 .settings
+
+# LLMs
+CLAUDE.md
