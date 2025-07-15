@@ -387,3 +387,43 @@ def test_join_inner():
     # Default unpacking
     res = flu(range(6)).join_inner(range(0, 6, 2)).collect()
     assert res == [(0, 0), (2, 2), (4, 4)]
+
+
+def test_join_full():
+    # Basic full join
+    res = flu(range(4)).join_full(range(2, 6)).collect()
+    assert res == [(0, None), (1, None), (2, 2), (3, 3), (None, 4), (None, 5)]
+
+    # Full join with custom keys
+    left = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
+    right = [{"id": 2, "value": 100}, {"id": 3, "value": 200}]
+    res = flu(left).join_full(right, key=lambda x: x["id"], other_key=lambda x: x["id"]).collect()
+    assert res == [
+        ({"id": 1, "name": "Alice"}, None),
+        ({"id": 2, "name": "Bob"}, {"id": 2, "value": 100}),
+        (None, {"id": 3, "value": 200}),
+    ]
+
+    # Full join with empty left
+    res = flu([]).join_full(range(3)).collect()
+    assert res == [(None, 0), (None, 1), (None, 2)]
+
+    # Full join with empty right
+    res = flu(range(3)).join_full([]).collect()
+    assert res == [(0, None), (1, None), (2, None)]
+
+    # Full join with both empty
+    res = flu([]).join_full([]).collect()
+    assert res == []
+
+    # Full join with duplicates
+    res = flu([1, 2, 2, 3]).join_full([2, 2, 4]).collect()
+    expected = [(1, None), (2, 2), (2, 2), (2, 2), (2, 2), (3, None), (None, 4)]  # 2x2 cartesian product
+    # Sort with custom key to handle None values
+    sort_key = lambda x: (
+        x[0] is None,
+        x[0] if x[0] is not None else -1,
+        x[1] is None,
+        x[1] if x[1] is not None else -1,
+    )
+    assert sorted(res, key=sort_key) == sorted(expected, key=sort_key)
