@@ -32,6 +32,8 @@ pre-commit = "*"
 pylint = "*"
 black = "*"
 mypy = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 
 [tool.poetry.scripts]
 flu = "flupy.cli.cli:main"
