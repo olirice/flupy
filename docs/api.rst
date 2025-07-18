@@ -41,9 +41,11 @@ Transforming
 .. automethod:: flu.enumerate
 .. automethod:: flu.join_left
 .. automethod:: flu.join_inner
+.. automethod:: flu.join_full
 .. automethod:: flu.map
 .. automethod:: flu.map_attr
 .. automethod:: flu.map_item
+.. automethod:: flu.tee
 .. automethod:: flu.zip
 .. automethod:: flu.zip_longest
 
@@ -81,6 +83,7 @@ Non-Constant Memory
 .. automethod:: flu.group_by
 .. automethod:: flu.join_left
 .. automethod:: flu.join_inner
+.. automethod:: flu.join_full
 .. automethod:: flu.shuffle
 .. automethod:: flu.sort
 .. automethod:: flu.tee
