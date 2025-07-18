@@ -9,15 +9,15 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
+  jobs:
+    post_create_environment:
+      # Install poetry
+      - pip install poetry
+    post_install:
+      # Install dependencies with Poetry
+      # VIRTUAL_ENV needs to be set manually for Poetry to work correctly
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with dev
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
   configuration: docs/conf.py
-
-# Python environment
-python:
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - dev
