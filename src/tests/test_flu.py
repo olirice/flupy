@@ -548,24 +548,13 @@ def test_join_full():
 
 def test_pipeline_with_empty_intermediate():
     """Pipeline that produces empty intermediate results."""
-    result = (
-        flu(range(10))
-        .filter(lambda x: x > 100)  # filters everything
-        .map(lambda x: x * 2)
-        .collect()
-    )
+    result = flu(range(10)).filter(lambda x: x > 100).map(lambda x: x * 2).collect()  # filters everything
     assert result == []
 
 
 def test_chained_transformations():
     """Multiple chained transformations."""
-    result = (
-        flu(range(20))
-        .filter(lambda x: x % 2 == 0)
-        .map(lambda x: x * 2)
-        .take(5)
-        .collect()
-    )
+    result = flu(range(20)).filter(lambda x: x % 2 == 0).map(lambda x: x * 2).take(5).collect()
     assert result == [0, 4, 8, 12, 16]
 
 
