@@ -10,6 +10,8 @@ def test_collect():
     assert flu(range(3)).collect() == [0, 1, 2]
     assert flu(range(3)).collect(container_type=tuple) == (0, 1, 2)
     assert flu(range(3)).collect(n=2) == [0, 1]
+    # Edge case: n=0 returns empty
+    assert flu(range(10)).collect(n=0) == []
 
 
 def test_to_list():
@@ -25,31 +27,58 @@ def test___getitem__():
         flu([1])[4]
     with pytest.raises((KeyError, TypeError)):
         flu([1])["not an index"]
+    # Edge cases: negative index raises TypeError
+    with pytest.raises(TypeError, match="non-negative"):
+        flu([1, 2, 3])[-1]
+    # Slice with step
+    assert flu(range(10))[::2].collect() == [0, 2, 4, 6, 8]
+    # Slice start:stop
+    assert flu(range(10))[2:5].collect() == [2, 3, 4]
+    # Empty slice
+    assert flu(range(10))[5:5].collect() == []
+    # Slice beyond length
+    assert flu(range(3))[0:100].collect() == [0, 1, 2]
+    # Float index raises TypeError
+    with pytest.raises(TypeError):
+        flu([1, 2, 3])[1.5]
 
 
 def test_sum():
     gen = flu(range(3))
     assert gen.sum() == 3
+    # Edge case: empty iterator returns 0
+    assert flu([]).sum() == 0
 
 
 def test_reduce():
     gen = flu(range(5))
     assert gen.reduce(lambda x, y: x + y) == 10
+    # Edge case: empty iterator raises TypeError
+    with pytest.raises(TypeError, match="reduce.*empty"):
+        flu([]).reduce(lambda x, y: x + y)
 
 
 def test_fold_left():
     assert flu(range(5)).fold_left(lambda x, y: x + y, 0) == 10
     assert flu(range(5)).fold_left(lambda x, y: x + str(y), "") == "01234"
+    # Edge case: empty iterator returns initial value
+    assert flu([]).fold_left(lambda x, y: x + y, 0) == 0
+    assert flu([]).fold_left(lambda x, y: x + y, "start") == "start"
 
 
 def test_count():
     gen = flu(range(3))
     assert gen.count() == 3
+    # Edge case: empty iterator returns 0
+    assert flu([]).count() == 0
 
 
 def test_min():
     gen = flu(range(3))
     assert gen.min() == 0
+    # Edge case: empty iterator raises ValueError
+    with pytest.raises(ValueError, match="min.*empty"):
+        flu([]).min()
 
 
 def test_first():
@@ -79,6 +108,8 @@ def test_head():
     assert gen.head(n=3, container_type=set) == set([0, 1, 2])
     gen = flu(range(3))
     assert gen.head(n=50) == [0, 1, 2]
+    # Edge case: n=0 returns empty
+    assert flu(range(10)).head(n=0) == []
 
 
 def test_tail():
@@ -88,11 +119,16 @@ def test_tail():
     assert gen.tail(n=3, container_type=set) == set([27, 28, 29])
     gen = flu(range(3))
     assert gen.tail(n=50) == [0, 1, 2]
+    # Edge case: n=0 returns empty
+    assert flu(range(10)).tail(n=0) == []
 
 
 def test_max():
     gen = flu(range(3))
     assert gen.max() == 2
+    # Edge case: empty iterator raises ValueError
+    with pytest.raises(ValueError, match="max.*empty"):
+        flu([]).max()
 
 
 def test_unique():
@@ -111,6 +147,8 @@ def test_unique():
     assert gen.collect() == [a, b, c]
     gen = flu([a, b, c]).unique(lambda x: x.keyf)
     assert gen.collect() == [a, c]
+    # Edge case: empty iterator returns empty
+    assert flu([]).unique().collect() == []
 
 
 def test_side_effect():
@@ -151,10 +189,39 @@ def test_side_effect():
     assert ffile.content == [0, 1, 2, 3, 4]
     assert gen_result == [0, 1, 2, 3, 4]
 
+    # Edge case: exception in func propagates
+    def failing_func(x):
+        if x == 2:
+            raise ValueError("intentional")
+
+    with pytest.raises(ValueError, match="intentional"):
+        flu([1, 2, 3]).side_effect(failing_func).collect()
+
+    # Edge case: after is called even on exception
+    after_called = []
+
+    def after():
+        after_called.append(True)
+
+    with pytest.raises(ValueError):
+        flu([1, 2, 3]).side_effect(failing_func, after=after).collect()
+    assert after_called == [True]
+
+    # Edge case: before is called exactly once
+    before_count = []
+
+    def before():
+        before_count.append(1)
+
+    flu([1, 2, 3]).side_effect(lambda x: x, before=before).collect()
+    assert len(before_count) == 1
+
 
 def test_sort():
     gen = flu(range(3, 0, -1)).sort()
     assert gen.collect() == [1, 2, 3]
+    # Edge case: empty iterator returns empty
+    assert flu([]).sort().collect() == []
 
 
 def test_shuffle():
@@ -163,6 +230,8 @@ def test_shuffle():
     assert new_order != original_order
     assert len(new_order) == len(original_order)
     assert sum(new_order) == sum(original_order)
+    # Edge case: empty iterator returns empty
+    assert flu([]).shuffle().collect() == []
 
 
 def test_map():
@@ -179,6 +248,16 @@ def test_rate_limit():
 def test_map_item():
     gen = flu(range(3)).map(lambda x: {"a": x}).map_item("a")
     assert gen.collect() == [0, 1, 2]
+    # Tuple indexing
+    assert flu([(1, 2, 3), (4, 5, 6)]).map_item(0).collect() == [1, 4]
+    # Negative index on sequences
+    assert flu([[1, 2, 3], [4, 5, 6]]).map_item(-1).collect() == [3, 6]
+    # Edge case: missing dict key raises KeyError
+    with pytest.raises(KeyError):
+        flu([{"a": 1}, {"b": 2}]).map_item("a").collect()
+    # Edge case: out of range index raises IndexError
+    with pytest.raises(IndexError):
+        flu([[1, 2], [3]]).map_item(2).collect()
 
 
 def test_map_attr():
@@ -189,6 +268,14 @@ def test_map_attr():
     gen = flu(range(3)).map(lambda x: Person(x)).map_attr("age")
     assert gen.collect() == [0, 1, 2]
 
+    # Edge case: missing attribute raises AttributeError
+    class Obj:
+        def __init__(self):
+            self.exists = True
+
+    with pytest.raises(AttributeError):
+        flu([Obj(), Obj()]).map_attr("missing").collect()
+
 
 def test_filter():
     gen = flu(range(3)).filter(lambda x: 0 < x < 2)
@@ -198,6 +285,10 @@ def test_filter():
 def test_take():
     gen = flu(range(10)).take(5)
     assert gen.collect() == [0, 1, 2, 3, 4]
+    # Edge case: n=0 returns empty
+    assert flu(range(10)).take(0).collect() == []
+    # Edge case: n=None returns all
+    assert flu(range(5)).take(None).collect() == [0, 1, 2, 3, 4]
 
 
 def test_take_while():
@@ -236,6 +327,8 @@ def test_group_by():
     assert gen[1][0] == 4
     assert len(gen[0][1].collect()) == 2
     assert len(gen[1][1].collect()) == 1
+    # Edge case: empty iterator returns empty
+    assert flu([]).group_by().collect() == []
 
 
 def test_chunk():
@@ -270,6 +363,9 @@ def test_zip():
     gen2 = flu(range(3)).zip(range(3), range(2))
     assert gen2.collect() == [(0, 0, 0), (1, 1, 1)]
 
+    # Edge case: zip with empty returns empty
+    assert flu([1, 2, 3]).zip([]).collect() == []
+
 
 def test_zip_longest():
     gen = flu(range(3)).zip_longest(range(5))
@@ -278,6 +374,8 @@ def test_zip_longest():
     assert gen.collect() == [(0, 0), (1, 1), (2, 2), ("a", 3), ("a", 4)]
     gen = flu(range(3)).zip_longest(range(5), range(4), fill_value="a")
     assert gen.collect() == [(0, 0, 0), (1, 1, 1), (2, 2, 2), ("a", 3, 3), ("a", 4, "a")]
+    # Edge case: pads shorter iterables correctly
+    assert flu([1]).zip_longest([2, 3, 4], fill_value=0).collect() == [(1, 2), (0, 3), (0, 4)]
 
 
 def test_window():
@@ -300,6 +398,9 @@ def test_window():
 
     with pytest.raises(ValueError):
         flu(range(5)).window(3, step=0).collect()
+
+    # Edge case: window larger than iterable fills with fill_value
+    assert flu([1, 2]).window(5).collect() == [(1, 2, None, None, None)]
 
 
 def test_flu():
@@ -333,6 +434,10 @@ def test_flatten():
     # Depth 2 with iterate strings
     gen = flu(nested).flatten(depth=2, base_type=tuple, iterate_strings=True)
     assert [x for x in gen] == [1, 2, (3, [4]), "r", "b", "s", "d", "a", "b", "c", (7,)]
+
+    # Edge case: depth=0 should not flatten at all
+    nested_simple = [[1, 2], [3, 4]]
+    assert flu(nested_simple).flatten(depth=0).collect() == [[1, 2], [3, 4]]
 
 
 def test_denormalize():
@@ -376,17 +481,26 @@ def test_tee():
     # No break chaining
     assert flu(range(5)).tee().map(sum).sum() == 20
 
+    # Edge case: tee on empty iterator returns empty copies
+    copy1, copy2 = flu([]).tee()
+    assert copy1.collect() == []
+    assert copy2.collect() == []
+
 
 def test_join_left():
     # Default unpacking
     res = flu(range(6)).join_left(range(0, 6, 2)).collect()
     assert res == [(0, 0), (1, None), (2, 2), (3, None), (4, 4), (5, None)]
+    # Edge case: empty left returns empty
+    assert flu([]).join_left([1, 2, 3]).collect() == []
 
 
 def test_join_inner():
     # Default unpacking
     res = flu(range(6)).join_inner(range(0, 6, 2)).collect()
     assert res == [(0, 0), (2, 2), (4, 4)]
+    # Edge case: both empty returns empty
+    assert flu([]).join_inner([]).collect() == []
 
 
 def test_join_full():
@@ -427,3 +541,43 @@ def test_join_full():
         x[1] if x[1] is not None else -1,
     )
     assert sorted(res, key=sort_key) == sorted(expected, key=sort_key)
+
+
+# Integration tests for complex pipelines
+
+
+def test_pipeline_with_empty_intermediate():
+    """Pipeline that produces empty intermediate results."""
+    result = (
+        flu(range(10))
+        .filter(lambda x: x > 100)  # filters everything
+        .map(lambda x: x * 2)
+        .collect()
+    )
+    assert result == []
+
+
+def test_chained_transformations():
+    """Multiple chained transformations."""
+    result = (
+        flu(range(20))
+        .filter(lambda x: x % 2 == 0)
+        .map(lambda x: x * 2)
+        .take(5)
+        .collect()
+    )
+    assert result == [0, 4, 8, 12, 16]
+
+
+def test_flatten_then_unique():
+    """Flatten nested structure then dedupe."""
+    data = [[1, 2], [2, 3], [3, 4]]
+    result = flu(data).flatten().unique().sort().collect()
+    assert result == [1, 2, 3, 4]
+
+
+def test_group_by_then_map():
+    """Group then transform groups."""
+    data = [1, 1, 2, 2, 2, 3]
+    result = flu(data).group_by().map(lambda g: (g[0], g[1].count())).collect()
+    assert result == [(1, 2), (2, 3), (3, 1)]

@@ -109,3 +109,30 @@ def test_glob_imports(capsys):
     result = capsys.readouterr()
     stdout = result.out
     assert stdout
+
+
+# Error handling tests
+
+
+def test_import_nonexistent_module_raises():
+    """Importing non-existent module should raise ModuleNotFoundError."""
+    with pytest.raises(ModuleNotFoundError):
+        build_import_dict(["nonexistent_module_xyz123"])
+
+
+def test_import_nonexistent_attribute_raises():
+    """Importing non-existent attribute should raise AttributeError."""
+    with pytest.raises(AttributeError):
+        build_import_dict(["json:nonexistent_function"])
+
+
+def test_build_import_dict_empty_list():
+    """build_import_dict with empty list should return empty dict."""
+    result = build_import_dict([])
+    assert result == {}
+
+
+def test_cli_exception_in_command():
+    """CLI should propagate exceptions from user commands."""
+    with pytest.raises(ZeroDivisionError):
+        main(["flu", "1/0"])
