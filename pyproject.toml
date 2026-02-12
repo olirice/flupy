@@ -1,12 +1,12 @@
-[tool.poetry]
+[project]
 name = "flupy"
 version = "1.2.3"
 description = "Fluent data processing in Python - a chainable stream processing library for expressive data manipulation using method chaining"
-authors = ["Oliver Rice <oliver@oliverrice.com>"]
-license = "MIT"
 readme = "README.md"
-repository = "https://github.com/olirice/flupy"
-packages = [{include = "flupy", from = "src"}]
+license = "MIT"
+authors = [{name = "Oliver Rice", email = "oliver@oliverrice.com"}]
+requires-python = ">=3.9"
+dependencies = ["typing_extensions>=4"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
@@ -20,28 +20,32 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-typing_extensions = ">=4"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-pytest-cov = "*"
-pytest-benchmark = "*"
-pre-commit = "*"
-pylint = "*"
-black = "*"
-mypy = "*"
-sphinx = "*"
-sphinx-rtd-theme = "*"
-
-[tool.poetry.scripts]
+[project.scripts]
 flu = "flupy.cli.cli:main"
 flu_precommit = "flupy.cli.cli:precommit"
 
+[project.urls]
+Repository = "https://github.com/olirice/flupy"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-benchmark",
+    "pre-commit",
+    "pylint",
+    "black",
+    "mypy",
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+
 [build-system]
-requires = ["poetry-core>=2.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/flupy"]
 
 [tool.black]
 line-length = 120

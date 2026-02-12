@@ -8,24 +8,20 @@ jobs:
 
     steps:
 
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
 
     - name: python setup 3.9
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
 
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
-      with:
-        version: 1.7.1
-        virtualenvs-create: true
-        virtualenvs-in-project: true
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
 
     - name: Install dependencies
       run: |
-        poetry install --with dev
+        uv sync
 
     - name: run tests
       run: |
-        poetry run pre-commit run --all
+        uv run pre-commit run --all

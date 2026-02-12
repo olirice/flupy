@@ -11,12 +11,11 @@ build:
     python: "3.11"
   jobs:
     post_create_environment:
-      # Install poetry
-      - pip install poetry
+      # Install uv
+      - pip install uv
     post_install:
-      # Install dependencies with Poetry
-      # VIRTUAL_ENV needs to be set manually for Poetry to work correctly
-      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH poetry install --with dev
+      # Install dependencies with uv
+      - VIRTUAL_ENV=$READTHEDOCS_VIRTUALENV_PATH uv sync --no-dev --group dev
 
 # Build documentation in the "docs/" directory with Sphinx
 sphinx:
