@@ -60,16 +60,11 @@ exclude = '''
 '''
 
 [tool.mypy]
+files = ["src/flupy"]
 python_version = "3.9"
-ignore_missing_imports = true
-strict_optional = true
-follow_imports = "skip"
-warn_redundant_casts = true
-warn_unused_ignores = false
-check_untyped_defs = true
-no_implicit_reexport = true
-disallow_untyped_defs = true
-disallow_any_generics = true
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code"]
 
 [tool.pytest.ini_options]
 addopts = "--cov=src/flupy src/tests"

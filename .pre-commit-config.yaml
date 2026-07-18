@@ -31,6 +31,6 @@ repos:
     rev: v1.17.0
     hooks:
     -   id: mypy
-        files: flupy/
-        args: ["--config-file", "mypy.ini"]
+        files: ^src/flupy/
+        additional_dependencies: [typing_extensions]
 
