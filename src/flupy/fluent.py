@@ -9,6 +9,7 @@ from typing import (
     Any,
     Callable,
     Collection,
+    Concatenate,
     Deque,
     Dict,
     Generator,
@@ -18,6 +19,8 @@ from typing import (
     Iterator,
     List,
     Optional,
+    ParamSpec,
+    Protocol,
     Set,
     Tuple,
     Type,
@@ -26,8 +29,6 @@ from typing import (
     cast,
     overload,
 )
-
-from typing_extensions import Concatenate, ParamSpec, Protocol
 
 __all__ = ["flu"]
 
