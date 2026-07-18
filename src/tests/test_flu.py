@@ -147,7 +147,7 @@ def test_side_effect():
         flu(range(5)).side_effect(ffile.write).collect()
 
     gen_result = flu(range(5)).side_effect(ffile.write, before=ffile.open, after=ffile.close).collect()
-    assert ffile.is_open == False
+    assert ffile.is_open is False
     assert ffile.content == [0, 1, 2, 3, 4]
     assert gen_result == [0, 1, 2, 3, 4]
 
@@ -229,7 +229,10 @@ def test_group_by():
 
     # Identity Function
     points = [{"x": 1, "y": 0}, {"x": 4, "y": 3}, {"x": 1, "y": 5}]
-    key_func = lambda u: u["x"]
+
+    def key_func(u):
+        return u["x"]
+
     gen = flu(points).group_by(key=key_func, sort=True).collect()
     assert len(gen) == 2
     assert gen[0][0] == 1
@@ -419,11 +422,14 @@ def test_join_full():
     # Full join with duplicates
     res = flu([1, 2, 2, 3]).join_full([2, 2, 4]).collect()
     expected = [(1, None), (2, 2), (2, 2), (2, 2), (2, 2), (3, None), (None, 4)]  # 2x2 cartesian product
+
     # Sort with custom key to handle None values
-    sort_key = lambda x: (
-        x[0] is None,
-        x[0] if x[0] is not None else -1,
-        x[1] is None,
-        x[1] if x[1] is not None else -1,
-    )
+    def sort_key(x):
+        return (
+            x[0] is None,
+            x[0] if x[0] is not None else -1,
+            x[1] is None,
+            x[1] if x[1] is not None else -1,
+        )
+
     assert sorted(res, key=sort_key) == sorted(expected, key=sort_key)

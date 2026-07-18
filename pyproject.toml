@@ -1,12 +1,12 @@
-[tool.poetry]
+[project]
 name = "flupy"
-version = "1.2.3"
+version = "1.2.4"
 description = "Fluent data processing in Python - a chainable stream processing library for expressive data manipulation using method chaining"
-authors = ["Oliver Rice <oliver@oliverrice.com>"]
+authors = [{ name = "Oliver Rice", email = "oliver@oliverrice.com" }]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/olirice/flupy"
-packages = [{include = "flupy", from = "src"}]
+requires-python = ">=3.10"
+dependencies = []
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Natural Language :: English",
@@ -19,43 +19,48 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.10"
+[project.urls]
+Repository = "https://github.com/olirice/flupy"
+Documentation = "https://flupy.readthedocs.io"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "*"
-pytest-cov = "*"
-pytest-benchmark = "*"
-pre-commit = "*"
-pylint = "*"
-black = "*"
-mypy = "*"
-sphinx = "*"
-sphinx-rtd-theme = "*"
-
-[tool.poetry.scripts]
+[project.scripts]
 flu = "flupy.cli.cli:main"
-flu_precommit = "flupy.cli.cli:precommit"
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-benchmark",
+    "pre-commit",
+    "mypy",
+    "ruff",
+    "sphinx",
+    "sphinx-rtd-theme",
+]
 
 [build-system]
-requires = ["poetry-core>=2.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.black]
+[tool.hatch.build.targets.wheel]
+packages = ["src/flupy"]
+
+[tool.ruff]
 line-length = 120
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "I",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# benchmark bodies intentionally assign pipeline results without consuming them
+"benchmark/*" = ["F841"]
 
 [tool.mypy]
 files = ["src/flupy"]

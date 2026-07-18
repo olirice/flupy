@@ -644,7 +644,9 @@ class Fluent(Generic[T]):
         *iterable: Iterable[Any],
     ) -> "Fluent[Tuple[T, ...]]": ...
 
-    def zip(self, *iterable: Iterable[Any]) -> Union[
+    def zip(
+        self, *iterable: Iterable[Any]
+    ) -> Union[
         "Fluent[Tuple[T, ...]]",
         "Fluent[Tuple[T, _T1]]",
         "Fluent[Tuple[T, _T1, _T2]]",
@@ -800,7 +802,6 @@ class Fluent(Generic[T]):
                 iter_elements: List[Iterable[Any]] = []
                 element: Any
                 for element in record:
-
                     # Check for string and string iteration is allowed
                     if isinstance(element, str) and iterate_strings:
                         iter_elements.append(element)
