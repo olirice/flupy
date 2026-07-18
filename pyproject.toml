@@ -2,7 +2,7 @@
 name = "flupy"
 version = "1.2.4"
 description = "Fluent data processing in Python - a chainable stream processing library for expressive data manipulation using method chaining"
-authors = [{ name = "Oliver Rice", email = "oliver@oliverrice.com" }]
+authors = [{ name = "Oliver Rice", email = "flupy@oliverrice.com" }]
 license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10"
