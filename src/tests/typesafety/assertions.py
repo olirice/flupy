@@ -6,7 +6,7 @@
 # expression resolves to today, including the calls whose element type is
 # Any - this file is the single place to check which methods propagate their
 # element type and which resolve to Any.
-from typing import Any, List, Tuple, Union
+from typing import Any, List, Tuple, TypeGuard, Union
 
 from typing_extensions import assert_type
 
@@ -20,6 +20,15 @@ assert_type(flu([1, 2, 3]), flu[int])
 assert_type(flu([1, 2, 3]).map(str), Fluent[str])
 assert_type(flu([1, 2, 3]).map(str).filter(lambda x: len(x) > 0), Fluent[str])
 assert_type(flu(["1", "2"]).map(int).map(lambda x: x * 2.0), Fluent[float])
+
+
+# filter narrows T to S when func is a TypeGuard[S], the same pattern
+# typeshed uses for the builtin filter(); a plain predicate still yields Fluent[T]
+def _is_int(val: object) -> TypeGuard[int]:
+    return isinstance(val, int)
+
+
+assert_type(flu([1, "a"]).filter(_is_int), Fluent[int])
 
 # collect / to_list / head / tail overloads
 assert_type(flu([1, 2, 3]).collect(), List[int])
