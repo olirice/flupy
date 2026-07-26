@@ -24,6 +24,7 @@ from typing import (
     Set,
     Tuple,
     Type,
+    TypeGuard,
     TypeVar,
     Union,
     cast,
@@ -591,8 +592,16 @@ class Fluent(Generic[T]):
         """
         return self.map(lambda x: getattr(x, attr))
 
-    def filter(self, func: Callable[Concatenate[T, P], object], *args: P.args, **kwargs: P.kwargs) -> "Fluent[T]":
+    @overload
+    def filter(self, func: Callable[[T], TypeGuard[_T1]]) -> "Fluent[_T1]": ...
+
+    @overload
+    def filter(self, func: Callable[Concatenate[T, P], object], *args: P.args, **kwargs: P.kwargs) -> "Fluent[T]": ...
+
+    def filter(self, func: Callable[Concatenate[T, P], object], *args: P.args, **kwargs: P.kwargs) -> "Fluent[Any]":
         """Yield elements of iterable where *func* returns truthy
+
+        If *func* is a TypeGuard, the returned Fluent is narrowed to the guarded type.
 
         >>> flu(range(10)).filter(lambda x: x % 2 == 0).to_list()
         [0, 2, 4, 6, 8]
