@@ -36,6 +36,7 @@ dev = [
     "ruff",
     "sphinx",
     "sphinx-rtd-theme",
+    "typing-extensions",
 ]
 
 [build-system]

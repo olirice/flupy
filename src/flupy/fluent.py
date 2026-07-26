@@ -61,6 +61,7 @@ class SupportsLessThan(Protocol):
 
 
 SupportsLessThanT = TypeVar("SupportsLessThanT", bound="SupportsLessThan")
+SupportsIterationT = TypeVar("SupportsIterationT", bound="SupportsIteration[Any]")
 
 
 class Empty:
@@ -663,7 +664,7 @@ class Fluent(Generic[T]):
         tup_iter = zip(iter(self), *iterable)
         return Fluent(tup_iter)
 
-    def zip_longest(self, *iterable: Iterable[Any], fill_value: Any = None) -> "Fluent[Tuple[Any, ...]]":
+    def zip_longest(self, *iterable: Iterable[Any], fill_value: Any = None) -> "Fluent[Tuple[T, ...]]":
         """Yields tuples containing the i-th element from the i-th
         argument in the instance, and the iterable
         Iteration continues until the longest iterable is exhaused.
@@ -784,7 +785,7 @@ class Fluent(Generic[T]):
 
         return Fluent(walk(self, level=0))
 
-    def denormalize(self: "Fluent[SupportsIteration[Any]]", iterate_strings: bool = False) -> "Fluent[Tuple[Any, ...]]":
+    def denormalize(self: "Fluent[SupportsIterationT]", iterate_strings: bool = False) -> "Fluent[Tuple[Any, ...]]":
         """Denormalize iterable components of each record
 
         >>> flu([("abc", [1, 2, 3])]).denormalize().to_list()
@@ -823,7 +824,7 @@ class Fluent(Generic[T]):
 
         return Fluent(_impl())
 
-    def window(self, n: int, step: int = 1, fill_value: Any = None) -> "Fluent[Tuple[Any, ...]]":
+    def window(self, n: int, step: int = 1, fill_value: Any = None) -> "Fluent[Tuple[T, ...]]":
         """Yield a sliding window of width *n* over the given iterable.
 
         Each window will advance in increments of *step*:
@@ -844,7 +845,7 @@ class Fluent(Generic[T]):
         [(0, 1, 2, 3), (3, 4, 5, 6), (6, 7, 8, -1)]
         """
 
-        def _impl() -> Generator[Tuple[Any, ...], None, None]:
+        def _impl() -> Generator[Tuple[T, ...], None, None]:
             if n < 0:
                 raise ValueError("n must be >= 0")
             elif n == 0:
