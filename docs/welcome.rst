@@ -5,7 +5,18 @@ Welcome to Flupy
 flupy is a lightweight library and CLI for implementing python data pipelines with a fluent interface.
 
 
-Under the hood, flupy is built on generators. That means its pipelines evaluate lazily and use a constant amount of memory no matter how much data are being processed. This allows flupy to tackle Petabyte scale data manipulation as easily as it operates on a small list.
+Transformations such as ``map``, ``filter``, and ``take`` process items lazily, allowing pipelines to work with large or infinite inputs. Memory use depends on the operations in the pipeline and the size of individual items.
+
+Memory and evaluation
+=====================
+
+* ``map``, ``filter``, and ``take`` stream items without accumulating the input. ``chunk(n)`` and ``window(n)`` buffer up to ``n`` items.
+* ``sort``, ``shuffle``, and the default ``group_by()`` load the entire input before returning. They require finite input.
+* ``group_by(sort=False)`` skips sorting but buffers each consecutive group before yielding it. An infinite run of one key never yields a group.
+* Joins buffer the right-hand input (``other``), which must be finite, and stream the left-hand input.
+* ``unique`` retains all distinct keys seen so far. ``tee`` buffers items until all copies have consumed them.
+* ``denormalize`` buffers each record's iterable components to form their Cartesian product; those components must be finite.
+* ``collect()`` and ``to_list()`` materialize their results. Reductions such as ``count()`` and ``sum()`` consume the input without collecting it, but still require it to finish.
 
 API
 ===
@@ -78,4 +89,3 @@ Since 2008, what domains are our customers comming from?::
 
     print(pipeline)
     # [('google.com', 1), ('ibm.com', 2)]
-

@@ -385,7 +385,7 @@ class Fluent(Generic[T]):
 
         Returns all entries from both iterables. When no matching entry is found, entries are paired with None
 
-        Note: join_full loads both *self* and *other* into memory
+        Note: join_full loads *other* into memory and streams *self*.
 
         >>> flu(range(4)).join_full(range(2, 6)).to_list()
         [(0, None), (1, None), (2, 2), (3, 3), (None, 4), (None, 5)]
@@ -447,7 +447,10 @@ class Fluent(Generic[T]):
 
         *key* is a function to compute a key value used in grouping and sorting for each element. When *key* is None, elements are grouped on their own value
 
-        When the iterable is pre-sorted according to *key*, setting *sort* to False will prevent loading the dataset into memory and improve performance
+        By default, sorting loads the entire iterable into memory before this method returns.
+        Setting *sort* to False skips sorting and groups consecutive equal keys.
+        Each group is still collected into memory before it is yielded, so an
+        infinite run of one key never yields a group.
 
         >>> flu([2, 4, 2, 4]).group_by().to_list()
         [(2, <flu object>), (4, <flu object>)]
@@ -475,6 +478,8 @@ class Fluent(Generic[T]):
 
     def unique(self, key: Callable[[T], Hashable] = identity) -> "Fluent[T]":
         """Yield elements that are unique by a *key*.
+
+        Retains all distinct keys seen so far in memory.
 
         >>> flu([2, 3, 2, 3]).unique().to_list()
         [2, 3]
@@ -797,6 +802,9 @@ class Fluent(Generic[T]):
     def denormalize(self: "Fluent[SupportsIterationT]", iterate_strings: bool = False) -> "Fluent[Tuple[Any, ...]]":
         """Denormalize iterable components of each record
 
+        Each record's iterable components are buffered for the Cartesian product
+        and must be finite.
+
         >>> flu([("abc", [1, 2, 3])]).denormalize().to_list()
         [('abc', 1), ('abc', 2), ('abc', 3)]
 
@@ -896,6 +904,9 @@ class Fluent(Generic[T]):
 
     def tee(self, n: int = 2) -> "Fluent[Fluent[T]]":
         """Return n independent iterators from a single iterable
+
+        Items are buffered until all copies have consumed them. Memory use grows
+        with the distance between the most and least advanced copies.
 
         once tee() has made a split, the original iterable should not be used
         anywhere else; otherwise, the iterable could get advanced without the

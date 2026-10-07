@@ -25,9 +25,19 @@
 ---
 
 ## Overview
-Flupy implements a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) for operating on python iterables. All flupy methods return generators and are evaluated lazily. This allows expressions to transform arbitrary size data in extremely limited memory.
+Flupy implements a [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) for operating on python iterables. Transformations such as `map`, `filter`, and `take` process items lazily, allowing pipelines to work with large or infinite inputs. Memory use depends on the operations in the pipeline and the size of individual items.
 
 You can think of flupy as a light weight, 0 dependency, pure python alternative to the excellent [Apache Spark](https://spark.apache.org/) project.
+
+### Memory and evaluation
+
+- `map`, `filter`, and `take` stream items without accumulating the input. `chunk(n)` and `window(n)` buffer up to `n` items.
+- `sort`, `shuffle`, and the default `group_by()` load the entire input before returning. They require finite input.
+- `group_by(sort=False)` skips sorting but buffers each consecutive group before yielding it. An infinite run of one key never yields a group.
+- Joins buffer the right-hand input (`other`), which must be finite, and stream the left-hand input.
+- `unique` retains all distinct keys seen so far. `tee` buffers items until all copies have consumed them.
+- `denormalize` buffers each record's iterable components to form their Cartesian product; those components must be finite.
+- `collect()` and `to_list()` materialize their results. Reductions such as `count()` and `sum()` consume the input without collecting it, but still require it to finish.
 
 ## Setup
 
