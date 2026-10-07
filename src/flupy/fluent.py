@@ -46,8 +46,8 @@ P = ParamSpec("P")
 CollectionT = TypeVar("CollectionT", bound=Collection[Any])
 
 
-class SupportsGetItem(Protocol[T_co]):
-    def __getitem__(self, __k: Hashable) -> T_co:
+class SupportsGetItem(Protocol[T_contra, T_co]):
+    def __getitem__(self, __k: T_contra) -> T_co:
         pass
 
 
@@ -566,7 +566,7 @@ class Fluent(Generic[T]):
 
         return Fluent(_impl())
 
-    def map_item(self: "Fluent[SupportsGetItem[T]]", item: Hashable) -> "Fluent[T]":
+    def map_item(self: Iterable[SupportsGetItem[_T1, _T2]], item: _T1) -> "Fluent[_T2]":
         """Extracts *item* from every element of the iterable
 
         >>> flu([(2, 4), (2, 5)]).map_item(1).to_list()
@@ -576,7 +576,7 @@ class Fluent(Generic[T]):
         [8, 5]
         """
 
-        def _impl() -> Generator[T, None, None]:
+        def _impl() -> Generator[_T2, None, None]:
             for x in self:
                 yield x[item]
 
