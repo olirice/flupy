@@ -324,7 +324,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -790,15 +790,14 @@ wheels = [
 
 [[package]]
 name = "python-discovery"
-version = "1.4.4"
+version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filelock" },
-    { name = "platformdirs" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4c/81/58c70036dffeccb7fe7d79d6260c69f7a28272bbd3909c29a01ea9422744/python_discovery-1.4.4.tar.gz", hash = "sha256:5cad33982d412c1f3ffb8f9ca4ea292c9680bca3942451d30b69c37fce53a4a3", size = 72212, upload-time = "2026-07-08T23:06:50.691Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0c/57/250bd238b966cece44328235eb85290045d059265fdaf7527a3a958123db/python_discovery-1.6.1.tar.gz", hash = "sha256:cf87d3627dfb4412437fdd5b13eae402607722998d21567993aedbc59b23c15e", size = 84338, upload-time = "2026-09-18T01:31:53.971Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9d/ae/84bc0d2440c95772272bb6f4b3d09ccf08b2898fce89b3d4f969a9fc74e9/python_discovery-1.4.4-py3-none-any.whl", hash = "sha256:abebe9120b43453b68c908acfb1e72a19d1a959ed2cb620ad38fc57d08056dbe", size = 34181, upload-time = "2026-07-08T23:06:49.402Z" },
+    { url = "https://files.pythonhosted.org/packages/16/7d/e9ffbadfbf89c93848412d04594135c4ae8c1d37d9e053b9c3ed718fabc4/python_discovery-1.6.1-py3-none-any.whl", hash = "sha256:d43fcdef879fe795352bd13ccf8d185ba5a9f86f36cfcd00529f596e737442b3", size = 38664, upload-time = "2026-09-18T01:31:52.448Z" },
 ]
 
 [[package]]
@@ -931,23 +930,23 @@ resolution-markers = [
     "python_full_version < '3.11'",
 ]
 dependencies = [
-    { name = "alabaster", marker = "python_full_version < '3.11'" },
-    { name = "babel", marker = "python_full_version < '3.11'" },
-    { name = "colorama", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "docutils", version = "0.21.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "imagesize", marker = "python_full_version < '3.11'" },
-    { name = "jinja2", marker = "python_full_version < '3.11'" },
-    { name = "packaging", marker = "python_full_version < '3.11'" },
-    { name = "pygments", marker = "python_full_version < '3.11'" },
-    { name = "requests", marker = "python_full_version < '3.11'" },
-    { name = "snowballstemmer", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-applehelp", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-devhelp", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-htmlhelp", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-jsmath", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-qthelp", marker = "python_full_version < '3.11'" },
-    { name = "sphinxcontrib-serializinghtml", marker = "python_full_version < '3.11'" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "alabaster" },
+    { name = "babel" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "docutils", version = "0.21.2", source = { registry = "https://pypi.org/simple" } },
+    { name = "imagesize" },
+    { name = "jinja2" },
+    { name = "packaging" },
+    { name = "pygments" },
+    { name = "requests" },
+    { name = "snowballstemmer" },
+    { name = "sphinxcontrib-applehelp" },
+    { name = "sphinxcontrib-devhelp" },
+    { name = "sphinxcontrib-htmlhelp" },
+    { name = "sphinxcontrib-jsmath" },
+    { name = "sphinxcontrib-qthelp" },
+    { name = "sphinxcontrib-serializinghtml" },
+    { name = "tomli" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/be0b61178fe2cdcb67e2a92fc9ebb488e3c51c4f74a36a7824c0adf23425/sphinx-8.1.3.tar.gz", hash = "sha256:43c1911eecb0d3e161ad78611bc905d1ad0e523e4ddc202a58a821773dc4c927", size = 8184611, upload-time = "2024-10-13T20:27:13.93Z" }
 wheels = [
@@ -962,23 +961,23 @@ resolution-markers = [
     "python_full_version == '3.11.*'",
 ]
 dependencies = [
-    { name = "alabaster", marker = "python_full_version == '3.11.*'" },
-    { name = "babel", marker = "python_full_version == '3.11.*'" },
-    { name = "colorama", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "docutils", version = "0.22.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
-    { name = "imagesize", marker = "python_full_version == '3.11.*'" },
-    { name = "jinja2", marker = "python_full_version == '3.11.*'" },
-    { name = "packaging", marker = "python_full_version == '3.11.*'" },
-    { name = "pygments", marker = "python_full_version == '3.11.*'" },
-    { name = "requests", marker = "python_full_version == '3.11.*'" },
-    { name = "roman-numerals", marker = "python_full_version == '3.11.*'" },
-    { name = "snowballstemmer", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-applehelp", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-devhelp", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-htmlhelp", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-jsmath", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-qthelp", marker = "python_full_version == '3.11.*'" },
-    { name = "sphinxcontrib-serializinghtml", marker = "python_full_version == '3.11.*'" },
+    { name = "alabaster" },
+    { name = "babel" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "docutils", version = "0.22.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "imagesize" },
+    { name = "jinja2" },
+    { name = "packaging" },
+    { name = "pygments" },
+    { name = "requests" },
+    { name = "roman-numerals" },
+    { name = "snowballstemmer" },
+    { name = "sphinxcontrib-applehelp" },
+    { name = "sphinxcontrib-devhelp" },
+    { name = "sphinxcontrib-htmlhelp" },
+    { name = "sphinxcontrib-jsmath" },
+    { name = "sphinxcontrib-qthelp" },
+    { name = "sphinxcontrib-serializinghtml" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/42/50/a8c6ccc36d5eacdfd7913ddccd15a9cee03ecafc5ee2bc40e1f168d85022/sphinx-9.0.4.tar.gz", hash = "sha256:594ef59d042972abbc581d8baa577404abe4e6c3b04ef61bd7fc2acbd51f3fa3", size = 8710502, upload-time = "2025-12-04T07:45:27.343Z" }
 wheels = [
@@ -994,23 +993,23 @@ resolution-markers = [
     "python_full_version >= '3.12' and python_full_version < '3.15'",
 ]
 dependencies = [
-    { name = "alabaster", marker = "python_full_version >= '3.12'" },
-    { name = "babel", marker = "python_full_version >= '3.12'" },
-    { name = "colorama", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "docutils", version = "0.22.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
-    { name = "imagesize", marker = "python_full_version >= '3.12'" },
-    { name = "jinja2", marker = "python_full_version >= '3.12'" },
-    { name = "packaging", marker = "python_full_version >= '3.12'" },
-    { name = "pygments", marker = "python_full_version >= '3.12'" },
-    { name = "requests", marker = "python_full_version >= '3.12'" },
-    { name = "roman-numerals", marker = "python_full_version >= '3.12'" },
-    { name = "snowballstemmer", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-applehelp", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-devhelp", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-htmlhelp", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-jsmath", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-qthelp", marker = "python_full_version >= '3.12'" },
-    { name = "sphinxcontrib-serializinghtml", marker = "python_full_version >= '3.12'" },
+    { name = "alabaster" },
+    { name = "babel" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "docutils", version = "0.22.4", source = { registry = "https://pypi.org/simple" } },
+    { name = "imagesize" },
+    { name = "jinja2" },
+    { name = "packaging" },
+    { name = "pygments" },
+    { name = "requests" },
+    { name = "roman-numerals" },
+    { name = "snowballstemmer" },
+    { name = "sphinxcontrib-applehelp" },
+    { name = "sphinxcontrib-devhelp" },
+    { name = "sphinxcontrib-htmlhelp" },
+    { name = "sphinxcontrib-jsmath" },
+    { name = "sphinxcontrib-qthelp" },
+    { name = "sphinxcontrib-serializinghtml" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/cd/bd/f08eb0f4eed5c83f1ba2a3bd18f7745a2b1525fad70660a1c00224ec468a/sphinx-9.1.0.tar.gz", hash = "sha256:7741722357dd75f8190766926071fed3bdc211c74dd2d7d4df5404da95930ddb", size = 8718324, upload-time = "2025-12-31T15:09:27.646Z" }
 wheels = [
@@ -1176,7 +1175,7 @@ wheels = [
 
 [[package]]
 name = "virtualenv"
-version = "21.6.1"
+version = "21.7.13"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "distlib" },
@@ -1185,7 +1184,7 @@ dependencies = [
     { name = "python-discovery" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/34/d9/b477fddb68840b570af8b22afe9b035cbc277b5fb7b33dea390617a8b10f/virtualenv-21.6.1.tar.gz", hash = "sha256:15f978b7cd329f24855ff4a0c4b4899cc7678589f49adbdcbbb4d3232e641128", size = 5526620, upload-time = "2026-07-10T19:33:53.312Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/50/c9b84eb106d0db420b9878dac0a386c5791726f127ce20b06897f6e3a1e9/virtualenv-21.7.13.tar.gz", hash = "sha256:0355558b6f33619aab31347e43643b0ebc97f61ea3acf617b2b69e1f8a843d11", size = 5360306, upload-time = "2026-09-18T04:35:49.354Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/7c/4e7225d46d634a0d8d534dd8a6ce0c319d09b4d0cf0337eb314ca4789d8c/virtualenv-21.6.1-py3-none-any.whl", hash = "sha256:afe991df855715a2b2f60edfcc0107ef95a79fdfd8cb4cdaa71603d1c12e463b", size = 5506392, upload-time = "2026-07-10T19:33:51.629Z" },
+    { url = "https://files.pythonhosted.org/packages/9a/ce/e74453531b0c49a58d0e8a4f9bab4495705859fee4a4f7de27d58f4a791a/virtualenv-21.7.13-py3-none-any.whl", hash = "sha256:1bea5af7463f59c4719db48fe739579a2a4f569c96f26c086edda85c96da9f59", size = 5328680, upload-time = "2026-09-18T04:35:47.194Z" },
 ]
