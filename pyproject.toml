@@ -1,6 +1,6 @@
 [project]
 name = "flupy"
-version = "1.2.4"
+version = "1.2.5"
 description = "Fluent data processing in Python - a chainable stream processing library for expressive data manipulation using method chaining"
 authors = [{ name = "Oliver Rice", email = "flupy@oliverrice.com" }]
 license = "MIT"
