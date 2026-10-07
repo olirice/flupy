@@ -76,14 +76,15 @@ def main(argv: Optional[List[str]] = None) -> None:
 
         _ = flu(sys.stdin).map(str.rstrip)
 
-    locals_dict = {
+    namespace = {
+        **import_dict,
         "flu": flu,
         "_": _,
         "walk_files": walk_files,
         "walk_dirs": walk_dirs,
     }
 
-    pipeline = eval(_command, import_dict, locals_dict)
+    pipeline = eval(_command, namespace)
 
     if hasattr(pipeline, "__iter__") and not isinstance(pipeline, (str, bytes)):
         for r in pipeline:

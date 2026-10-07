@@ -65,6 +65,24 @@ def test_basic_pipeline(capsys):
     assert stdout.startswith("0")
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        "flu([1, 2]).map(lambda x: flu([x, x]).sum()).collect()",
+        "[flu([x, x]).sum() for x in flu([1, 2])]",
+        "(flu([x, x]).sum() for x in flu([1, 2]))",
+    ],
+)
+def test_helpers_in_nested_expressions(capsys, command):
+    main(["flu", command])
+    assert capsys.readouterr().out == "2\n4\n"
+
+
+def test_imports_in_nested_expressions(capsys):
+    main(["flu", "flu([4, 16]).map(lambda x: flu([sqrt(x)]).sum())", "-i", "math:sqrt"])
+    assert capsys.readouterr().out == "2.0\n4.0\n"
+
+
 def test_pass_on_none_pipeline(capsys):
     main(["flu", "None"])
     result = capsys.readouterr()
