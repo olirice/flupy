@@ -21,6 +21,12 @@ assert_type(flu([1, 2, 3]).map(str), Fluent[str])
 assert_type(flu([1, 2, 3]).map(str).filter(lambda x: len(x) > 0), Fluent[str])
 assert_type(flu(["1", "2"]).map(int).map(lambda x: x * 2.0), Fluent[float])
 
+# map_item preserves the indexed value type for mappings and sequences.
+assert_type(flu([{"a": 1}]).map_item("a"), Fluent[int])
+assert_type(flu([(1, 2)]).map_item(0), Fluent[int])
+assert_type(flu([["a", "b"]]).map_item(1), Fluent[str])
+assert_type(flu([{"a": 1}]).map_item("a").map(str), Fluent[str])
+
 
 # filter narrows T to S when func is a TypeGuard[S], the same pattern
 # typeshed uses for the builtin filter(); a plain predicate still yields Fluent[T]
