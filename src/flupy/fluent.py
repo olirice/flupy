@@ -385,6 +385,9 @@ class Fluent(Generic[T]):
 
         Returns all entries from both iterables. When no matching entry is found, entries are paired with None
 
+        Left-hand entries retain their input order, with matches in right-hand
+        input order. Unmatched right-hand entries follow in their original order.
+
         Note: join_full loads both *self* and *other* into memory
 
         >>> flu(range(4)).join_full(range(2, 6)).to_list()
@@ -395,12 +398,12 @@ class Fluent(Generic[T]):
 
             # Build lookup for other
             other_lookup: Dict[Hashable, List[_T1]] = defaultdict(list)
-            other_keys_seen: Set[Hashable] = set()
+            other_entries: List[Tuple[Hashable, _T1]] = []
 
             for entry_other in other:
                 other_key_val = other_key(entry_other)
                 other_lookup[other_key_val].append(entry_other)
-                other_keys_seen.add(other_key_val)
+                other_entries.append((other_key_val, entry_other))
 
             # Track which keys from other have been matched
             matched_other_keys: Set[Hashable] = set()
@@ -418,9 +421,8 @@ class Fluent(Generic[T]):
                     yield (entry, None)
 
             # Yield unmatched entries from other
-            unmatched_keys = other_keys_seen - matched_other_keys
-            for unmatched_key in unmatched_keys:
-                for entry_other in other_lookup[unmatched_key]:
+            for other_key_val, entry_other in other_entries:
+                if other_key_val not in matched_other_keys:
                     yield (None, entry_other)
 
         return Fluent(_impl())

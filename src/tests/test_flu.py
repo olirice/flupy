@@ -433,3 +433,14 @@ def test_join_full():
         )
 
     assert sorted(res, key=sort_key) == sorted(expected, key=sort_key)
+
+
+def test_join_full_preserves_unmatched_right_order():
+    right = [("z", 1), ("matched", 2), ("a", 3), ("z", 4)]
+    assert flu(["matched"]).join_full(right, other_key=lambda x: x[0]).collect() == [
+        ("matched", ("matched", 2)),
+        (None, ("z", 1)),
+        (None, ("a", 3)),
+        (None, ("z", 4)),
+    ]
+    assert flu([]).join_full(right, other_key=lambda x: x[0]).collect() == [(None, row) for row in right]
