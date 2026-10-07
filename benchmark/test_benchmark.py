@@ -207,7 +207,7 @@ def test_zip_longest(benchmark):
 def test_window(benchmark):
     @benchmark
     def work():
-        gen = flu(range(5)).window(n=3, step=3).collect
+        gen = flu(range(5)).window(n=3, step=3).collect()
 
 
 def test_flatten(benchmark):
