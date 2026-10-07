@@ -366,7 +366,7 @@ class Fluent(Generic[T]):
                 other_lookup[other_key(entry_other)].append(entry_other)
 
             for entry in self:
-                matches: List[_T1] = other_lookup[key(entry)]
+                matches: List[_T1] = other_lookup.get(key(entry), [])
 
                 for match in matches:
                     yield (entry, match)
